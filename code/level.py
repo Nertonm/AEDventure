@@ -3,6 +3,8 @@ from settings import *
 from tile import *
 from player import Player
 from debug import debug
+from weapon import *
+from capecao import *
 
 class Level:
     def __init__(self):
@@ -37,6 +39,11 @@ class Level:
                     WallDown((x,y),[self.visible_sprites,self.obstacle_sprites])
                 if col == 'p':
                     self.player = Player((x,y),[self.visible_sprites], self.obstacle_sprites)
+                    self.capecao = Capecao(self.player)  # Cria a espada
+                    self.visible_sprites.add(self.capecao)  # Adiciona a espada ao grupo visível
+
+                    self.sword = Sword(self.player)  # Cria a espada
+                    self.visible_sprites.add(self.sword)  # Adiciona a espada ao grupo visível
                     ground_sprite = Ground((x, y),[self.visible_sprites, self.ground_sprites])  # Adiciona ao ground_sprites
                     self.ground_sprites.add(ground_sprite)  # Adiciona explicitamente ao grupo de chão
                 if col == ' ':
