@@ -31,6 +31,13 @@ class WallRight(pygame.sprite.Sprite):
         self.rect = self.image.get_rect(topleft=pos)
         self.hitbox = self.rect.inflate(0, -10)
 
+class WallDown(pygame.sprite.Sprite):
+    def __init__(self, pos, groups):
+        super().__init__(groups)
+        self.image = pygame.image.load('../graphics/dugeon_tiles/WallDown.png').convert_alpha()
+        self.rect = self.image.get_rect(topleft=pos)
+        self.hitbox = self.rect.inflate(0, -10)
+
 class Ground(pygame.sprite.Sprite):
     def __init__(self, pos, groups):
         super().__init__(groups)
@@ -42,5 +49,13 @@ class Door(pygame.sprite.Sprite):
     def __init__(self, pos, groups):
         super().__init__(groups)
         self.image = pygame.image.load('../graphics/dugeon_tiles/door.png').convert_alpha()
+        self.rect = self.image.get_rect(topleft=pos)
+        self.hitbox = self.rect.inflate(0, -10)
+
+
+class RB(pygame.sprite.Sprite):
+    def __init__(self, pos, groups):
+        super().__init__(groups)
+        self.image = pygame.image.load('../graphics/monsters/rb.png').convert_alpha()
         self.rect = self.image.get_rect(topleft=pos)
         self.hitbox = self.rect.inflate(0, -10)

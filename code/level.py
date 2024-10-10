@@ -33,11 +33,18 @@ class Level:
                     WallLeft((x,y),[self.visible_sprites,self.obstacle_sprites])
                 if col == 'xc':
                     WallUp((x,y),[self.visible_sprites,self.obstacle_sprites])
+                if col == 'xb':
+                    WallDown((x,y),[self.visible_sprites,self.obstacle_sprites])
                 if col == 'p':
                     self.player = Player((x,y),[self.visible_sprites], self.obstacle_sprites)
+                    ground_sprite = Ground((x, y),[self.visible_sprites, self.ground_sprites])  # Adiciona ao ground_sprites
+                    self.ground_sprites.add(ground_sprite)  # Adiciona explicitamente ao grupo de chão
                 if col == ' ':
                     ground_sprite = Ground((x, y),[self.visible_sprites, self.ground_sprites])  # Adiciona ao ground_sprites
                     self.ground_sprites.add(ground_sprite)  # Adiciona explicitamente ao grupo de chão
+                if col == 'rb':
+                    RB((x,y),[self.visible_sprites,self.obstacle_sprites])
+
 
     def run(self):
         # update and draw the game
