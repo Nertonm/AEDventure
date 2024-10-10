@@ -23,12 +23,20 @@ class Level:
             for col_index, col in enumerate(row):
                 x = col_index * TILESIZE
                 y = row_index * TILESIZE
-                if col == 'x':
+                if col == 'd':
+                    Door((x,y),[self.visible_sprites,self.obstacle_sprites])
+                if col == 'x ':
                     Tile((x,y),[self.visible_sprites,self.obstacle_sprites])
+                if col == 'xd':
+                    WallRight((x,y),[self.visible_sprites,self.obstacle_sprites])
+                if col == 'xe':
+                    WallLeft((x,y),[self.visible_sprites,self.obstacle_sprites])
+                if col == 'xc':
+                    WallUp((x,y),[self.visible_sprites,self.obstacle_sprites])
                 if col == 'p':
                     self.player = Player((x,y),[self.visible_sprites], self.obstacle_sprites)
                 if col == ' ':
-                    ground_sprite = ground((x, y),[self.visible_sprites, self.ground_sprites])  # Adiciona ao ground_sprites
+                    ground_sprite = Ground((x, y),[self.visible_sprites, self.ground_sprites])  # Adiciona ao ground_sprites
                     self.ground_sprites.add(ground_sprite)  # Adiciona explicitamente ao grupo de chão
 
     def run(self):
@@ -55,12 +63,12 @@ class YSortCameraGroup(pygame.sprite.Group):
 
         # Desenha primeiro os sprites de chão
         for ground_sprite in sorted(self.sprites(), key=lambda sprite: sprite.rect.centery):
-            if isinstance(ground_sprite, ground):  # Verifica se é um sprite de chão
+            if isinstance(ground_sprite, Ground):  # Verifica se é um sprite de chão
                 ground_offset_pos = ground_sprite.rect.topleft - self.offset
                 self.display_surface.blit(ground_sprite.image, ground_offset_pos)
 
         # for sprite in self.sprites():
         for sprite in sorted(self.sprites(), key = lambda sprite: sprite.rect.centery):
-            if not isinstance(sprite, ground): # Exclui sprites do chão
+            if not isinstance(sprite, Ground): # Exclui sprites do chão
                 offset_pos = sprite.rect.topleft - self.offset
                 self.display_surface.blit(sprite.image, offset_pos)
