@@ -2,8 +2,7 @@ import pygame
 import sys
 from settings import *
 from level import Level
-from support import *
-
+from support import Menu
 
 class Game:
     def __init__(self):
@@ -39,13 +38,11 @@ class Game:
                     pygame.quit()
                     sys.exit()
 
-            # Cor de Fundo
             self.screen.fill((66, 66, 66))
 
             if game_paused:
                 keys = pygame.key.get_pressed()
                 if menu_state == "main":
-                    # Desenhar botões da tela de pausa
                     if self.resume_button.draw(self.screen) or keys[pygame.K_ESCAPE]:
                         del keys
                         game_paused = False
@@ -58,7 +55,6 @@ class Game:
                     self.draw_text("Quit", font, TEXT_COLOR, 406, 385)
 
                 elif menu_state == "options":
-                    # Desenhar os botões de opções
                     if self.video_button.draw(self.screen):
                         print("Video Settings")
                     self.draw_text("Video Settings", font, TEXT_COLOR, 150, 150)
@@ -76,7 +72,6 @@ class Game:
                 self.draw_text("Press P to pause", font, TEXT_COLOR, 150, 250)
                 self.level.run()
 
-            # Tratamento de eventos
             keys = pygame.key.get_pressed()
             if keys[pygame.K_p]:
                 game_paused = True
@@ -85,11 +80,9 @@ class Game:
             pygame.display.update()
             self.clock.tick(60)
 
-
 def main():
     game = Game()
     game.run()
-
 
 if __name__ == '__main__':
     main()
