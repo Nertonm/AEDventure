@@ -28,7 +28,7 @@ class Game:
 
     def run(self):
         font = pygame.font.SysFont("Comic Sans", 40)
-        game_paused = True
+        game_paused = False
         menu_state = "main"
         run = True
 
@@ -37,14 +37,23 @@ class Game:
                 if event.type == pygame.QUIT:
                     pygame.quit()
                     sys.exit()
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_p or event.key == pygame.K_ESCAPE:
+                        if game_paused:
+                            if menu_state == "main":
+                                game_paused = False
+                            else:
+                                menu_state = "main"
+                        else:
+                            game_paused = True
 
             self.screen.fill((66, 66, 66))
 
             if game_paused:
                 keys = pygame.key.get_pressed()
+
                 if menu_state == "main":
-                    if self.resume_button.draw(self.screen) or keys[pygame.K_ESCAPE]:
-                        del keys
+                    if self.resume_button.draw(self.screen):
                         game_paused = False
                     self.draw_text("Resume", font, TEXT_COLOR, 374, 135)
                     if self.options_button.draw(self.screen):
@@ -69,13 +78,8 @@ class Game:
                     self.draw_text("Back", font, TEXT_COLOR, 150, 300)
 
             else:
-                self.draw_text("Press P to pause", font, TEXT_COLOR, 150, 250)
+                self.draw_text("Press P or ESC to pause", font, TEXT_COLOR, 150, 250)
                 self.level.run()
-
-            keys = pygame.key.get_pressed()
-            if keys[pygame.K_p]:
-                game_paused = True
-                del keys
 
             pygame.display.update()
             self.clock.tick(60)
