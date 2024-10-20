@@ -1,0 +1,76 @@
+{
+    "Map/SizeTest": {
+        "height": 4300,
+        "width": 2
+    },
+    "activeFile": "map/test.tmx",
+    "expandedProjectPaths": [
+        "map",
+        ".",
+        "tilesets"
+    ],
+    "file.lastUsedOpenFilter": "Todos os Ficheiros (*)",
+    "fileStates": {
+        "map/TX Props.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "map/TX PropsBig.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 4
+        },
+        "map/TX Propsa.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 5.5
+        },
+        "map/map.tmx": {
+            "scale": 0.5,
+            "selectedLayer": -1,
+            "viewCenter": {
+                "x": 661,
+                "y": 1103
+            }
+        },
+        "map/test.tmx": {
+            "scale": 0.33,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 656.0606060606062,
+                "y": -125.75757575757575
+            }
+        },
+        "tilesets/TX Tileset Grass.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        }
+    },
+    "last.externalTilesetPath": "/home/nerton/Projects/AEDventure/map",
+    "last.imagePath": "/home/nerton/Projects/AEDventure/graphics/Texture",
+    "last.worldFilePath": "/home/nerton/Projects/AEDventure/map",
+    "map.fixedSize": true,
+    "map.lastUsedFormat": "tmx",
+    "map.tileHeight": 64,
+    "map.tileWidth": 64,
+    "openFiles": [
+        "map/map.tmx",
+        "tilesets/TX Tileset Grass.tsx",
+        "map/TX Props.tsx",
+        "map/test.tmx"
+    ],
+    "project": "sem título.tiled-project",
+    "recentFiles": [
+        "map/TX PropsBig.tsx",
+        "map/TX Propsa.tsx",
+        "map/TX Props.tsx",
+        "map/map.tmx",
+        "tilesets/TX Tileset Grass.tsx",
+        "map/test.tmx"
+    ],
+    "tileset.lastUsedFilter": "Todos os Ficheiros (*)",
+    "tileset.lastUsedFormat": "tsx",
+    "tileset.tileSize": {
+        "height": 64,
+        "width": 96
+    },
+    "tileset.type": 0
+}
