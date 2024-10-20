@@ -12,7 +12,6 @@ class Level:
         self.visible_sprites = YSortCameraGroup()
         self.obstacle_sprites = pygame.sprite.Group()
         self.create_map()
-        self.player
 
     def get_player_pos(self, tmx_data):
         for obj in tmx_data.objects:
@@ -25,6 +24,7 @@ class Level:
         self.visible_sprites.load_floor(tmx_data)
         self.process_layers(tmx_data)
         self.player = Player((self.get_player_pos(tmx_data)), [self.visible_sprites], self.obstacle_sprites)
+        self.visible_sprites.player = self.player
 
     def process_layers(self, tmx_data):
         for layer in tmx_data.visible_layers:
@@ -85,5 +85,8 @@ class YSortCameraGroup(pygame.sprite.Group):
 
     def draw_sprites(self):
         for sprite in sorted(self.sprites(), key=lambda sprite: sprite.rect.centery):
-            offset_pos = sprite.rect.topleft - self.offset
-            self.display_surface.blit(sprite.image, offset_pos)
+            if sprite != self.player:
+                offset_pos = sprite.rect.topleft - self.offset
+                self.display_surface.blit(sprite.image, offset_pos)
+            offset_pos = self.player.rect.topleft - self.offset
+            self.display_surface.blit(self.player.image, offset_pos)
