@@ -3,6 +3,7 @@ import sys
 from settings import *
 from level import Level
 from support import Menu
+from pytmx.util_pygame import load_pygame
 
 class Game:
     def __init__(self):
@@ -83,7 +84,6 @@ class Game:
 
             pygame.display.update()
             self.clock.tick(60)
-
 def main():
     game = Game()
     game.run()
