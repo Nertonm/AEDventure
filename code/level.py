@@ -11,19 +11,30 @@ class Level:
         self.display_surface = pygame.display.get_surface()
         self.visible_sprites = YSortCameraGroup()
         self.obstacle_sprites = pygame.sprite.Group()
-        self.create_map()
+        self.doors = pygame.sprite.Group()
+        self.create_map('../map/map.tmx')
+        self.tmx_data = pytmx.load_pygame('../map/map.tmx')
 
-    def get_player_pos(self, tmx_data):
+    def get_pos(self, tmx_data, name):
         for obj in tmx_data.objects:
-            if obj.name == 'player':
+            if obj.name == name:
                 return obj.x, obj.y
         return 0, 0
 
-    def create_map(self):
-        tmx_data = pytmx.load_pygame('../map/map.tmx')
+    def get_name(self,tmx_data, pos):
+        print(pos[0], pos[1])
+        for obj in tmx_data.objects:
+            if obj.x == pos[0] and obj.y == pos[1]:
+                print("DADADAfa")
+                print(obj.path)
+                return obj.path
+        return None
+
+    def create_map(self, map_path):
+        tmx_data = pytmx.load_pygame(map_path)
         self.visible_sprites.load_floor(tmx_data)
         self.process_layers(tmx_data)
-        self.player = Player((self.get_player_pos(tmx_data)), [self.visible_sprites], self.obstacle_sprites)
+        self.player = Player((self.get_pos(tmx_data, 'player')), [self.visible_sprites], self.obstacle_sprites)
         self.visible_sprites.player = self.player
 
     def process_layers(self, tmx_data):
@@ -45,10 +56,30 @@ class Level:
             Tile(position, [self.visible_sprites, self.obstacle_sprites], 'grass', tile)
         elif layer_name == 'object':
             Tile(position, [self.visible_sprites, self.obstacle_sprites], 'object', tile)
+        elif layer_name == 'door':
+            Tile(position, [self.visible_sprites, self.obstacle_sprites, self.doors], 'door', tile)
+
+    def change_map(self, new_map_path):
+        self.visible_sprites.empty()
+        self.obstacle_sprites.empty()
+        self.doors.empty()
+        self.visible_sprites.floor_tiles.clear()
+        self.tmx_data = pytmx.load_pygame(new_map_path)
+        self.create_map(new_map_path)
+
+    def check_collision_with_door(self, tmx_data):
+        for sprite in self.doors:
+            keys = pygame.key.get_pressed()
+            debug(keys, 100, 100)
+            if keys[pygame.K_e]:
+                if self.player.rect.colliderect(sprite.rect):
+                    print("DADADAfa")
+                    self.change_map(self.get_name(tmx_data, sprite.rect))
 
     def run(self):
         self.visible_sprites.custom_draw(self.player)
         self.visible_sprites.update()
+        self.check_collision_with_door(self.tmx_data)
         debug(self.player.status)
 
 class YSortCameraGroup(pygame.sprite.Group):

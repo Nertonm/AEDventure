@@ -3,17 +3,29 @@
         "height": 4300,
         "width": 2
     },
-    "activeFile": "map/test.tmx",
+    "activeFile": "map/Dungeon_Tileset.tsx",
     "expandedProjectPaths": [
-        "map",
         ".",
-        "tilesets"
+        "tilesets",
+        "map"
     ],
     "file.lastUsedOpenFilter": "Todos os Ficheiros (*)",
     "fileStates": {
-        "map/TX Props.tsx": {
+        "map/AllPreview.tsx": {
             "scaleInDock": 1,
             "scaleInEditor": 1
+        },
+        "map/Dungeon_Tileset.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "map/Dungeon_Tileset_at.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "map/TX Props.tsx": {
+            "scaleInDock": 0.75,
+            "scaleInEditor": 3
         },
         "map/TX PropsBig.tsx": {
             "scaleInDock": 1,
@@ -23,13 +35,78 @@
             "scaleInDock": 1,
             "scaleInEditor": 5.5
         },
-        "map/map.tmx": {
-            "scale": 0.5,
-            "selectedLayer": -1,
+        "map/TX Propsb.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1.5
+        },
+        "map/TilesetElement.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "map/TilesetFloorDetail.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "map/abc.tmx": {
+            "scale": 2,
+            "selectedLayer": 2,
             "viewCenter": {
-                "x": 661,
-                "y": 1103
+                "x": 464,
+                "y": 485.75
             }
+        },
+        "map/atlas_walls_high-16x32.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "map/atlas_walls_low-16x16.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "map/cu.tmx": {
+            "expandedObjectLayers": [
+                3
+            ],
+            "scale": 0.6583203125,
+            "selectedLayer": 1,
+            "viewCenter": {
+                "x": 934.1956921616329,
+                "y": 228.61211653711507
+            }
+        },
+        "map/map.tmx": {
+            "expandedObjectLayers": [
+                7
+            ],
+            "scale": 1,
+            "selectedLayer": 6,
+            "viewCenter": {
+                "x": 1534,
+                "y": 1159.5
+            }
+        },
+        "map/parede.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "map/parede2.tsx": {
+            "scaleInDock": 1
+        },
+        "map/raiz 1.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "map/raiz2.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "map/terra.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "map/terrain.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
         },
         "map/test.tmx": {
             "scale": 0.33,
@@ -55,16 +132,34 @@
         "map/map.tmx",
         "tilesets/TX Tileset Grass.tsx",
         "map/TX Props.tsx",
-        "map/test.tmx"
+        "map/TX Propsb.tsx",
+        "map/abc.tmx",
+        "map/AllPreview.tsx",
+        "map/Dungeon_Tileset_at.tsx",
+        "map/TX Propsa.tsx",
+        "map/terra.tsx",
+        "map/Dungeon_Tileset.tsx",
+        "map/terrain.tsx",
+        "map/TilesetFloorDetail.tsx",
+        "map/atlas_walls_low-16x16.tsx",
+        "map/raiz 1.tsx",
+        "map/TilesetElement.tsx",
+        "map/parede.tsx"
     ],
     "project": "sem título.tiled-project",
     "recentFiles": [
-        "map/TX PropsBig.tsx",
-        "map/TX Propsa.tsx",
-        "map/TX Props.tsx",
         "map/map.tmx",
         "tilesets/TX Tileset Grass.tsx",
-        "map/test.tmx"
+        "map/TX Props.tsx",
+        "map/TX Propsb.tsx",
+        "map/abc.tmx",
+        "map/AllPreview.tsx",
+        "map/Dungeon_Tileset_at.tsx",
+        "map/TX Propsa.tsx",
+        "map/terra.tsx",
+        "map/parede.tsx",
+        "map/TilesetElement.tsx",
+        "map/raiz 1.tsx"
     ],
     "tileset.lastUsedFilter": "Todos os Ficheiros (*)",
     "tileset.lastUsedFormat": "tsx",
