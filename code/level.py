@@ -58,6 +58,8 @@ class Level:
             Tile(position, [self.visible_sprites, self.obstacle_sprites], 'object', tile)
         elif layer_name == 'door':
             Tile(position, [self.visible_sprites, self.obstacle_sprites, self.doors], 'door', tile)
+        elif layer_name == 'wall':
+            Tile(position, [self.visible_sprites], 'wall', tile)
 
     def change_map(self, new_map_path):
         self.visible_sprites.empty()
