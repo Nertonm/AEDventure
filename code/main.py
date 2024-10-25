@@ -48,7 +48,7 @@ class Game:
                         else:
                             game_paused = True
 
-            self.screen.fill((66, 66, 66))
+            self.screen.fill(BACKGROUND_COLOR)
 
             if game_paused:
                 keys = pygame.key.get_pressed()
