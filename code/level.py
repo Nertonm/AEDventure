@@ -50,8 +50,8 @@ class Level:
 
     def create_tile(self, layer_name, x, y, tile):
         position = (x * TILESIZE, y * TILESIZE)
-        if layer_name == 'boundary':
-            Tile(position, [self.obstacle_sprites], 'invisible')
+        if layer_name == 'invisible':
+            Tile(position, [self.visible_sprites], 'invisible')
         elif layer_name == 'grass':
             Tile(position, [self.visible_sprites, self.obstacle_sprites], 'grass', tile)
         elif layer_name == 'object':
@@ -59,7 +59,7 @@ class Level:
         elif layer_name == 'door':
             Tile(position, [self.visible_sprites, self.obstacle_sprites, self.doors], 'door', tile)
         elif layer_name == 'wall':
-            Tile(position, [self.visible_sprites], 'wall', tile)
+            Tile(position, [self.visible_sprites, self.obstacle_sprites], 'wall', tile)
 
     def change_map(self, new_map_path):
         self.visible_sprites.empty()
@@ -118,8 +118,5 @@ class YSortCameraGroup(pygame.sprite.Group):
 
     def draw_sprites(self):
         for sprite in sorted(self.sprites(), key=lambda sprite: sprite.rect.centery):
-            if sprite != self.player:
                 offset_pos = sprite.rect.topleft - self.offset
                 self.display_surface.blit(sprite.image, offset_pos)
-            offset_pos = self.player.rect.topleft - self.offset
-            self.display_surface.blit(self.player.image, offset_pos)
