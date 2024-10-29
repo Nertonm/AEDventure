@@ -2,91 +2,33 @@ import pygame
 import sys
 from settings import *
 from level import Level
-from support import Menu
-from pytmx.util_pygame import load_pygame
 
 class Game:
     def __init__(self):
+
+        # general setup
         pygame.init()
         self.screen = pygame.display.set_mode((WIDTH, HEIGHT))
         pygame.display.set_caption('AEDventure')
         self.clock = pygame.time.Clock()
+
         self.level = Level()
-        self.menu = Menu()
-        self.menu.load_button_images()
-
-        self.resume_button = self.menu.resume_button
-        self.options_button = self.menu.options_button
-        self.quit_button = self.menu.quit_button
-        self.video_button = self.menu.video_button
-        self.audio_button = self.menu.audio_button
-        self.keys_button = self.menu.keys_button
-        self.back_button = self.menu.back_button
-
-    def draw_text(self, text, font, text_col, x, y):
-        img = font.render(text, True, text_col)
-        self.screen.blit(img, (x, y))
 
     def run(self):
-        font = pygame.font.SysFont("Comic Sans", 40)
-        game_paused = False
-        menu_state = "main"
-        run = True
-
-        while run:
+        while True:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     pygame.quit()
                     sys.exit()
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_p or event.key == pygame.K_ESCAPE:
-                        if game_paused:
-                            if menu_state == "main":
-                                game_paused = False
-                            else:
-                                menu_state = "main"
-                        else:
-                            game_paused = True
+                        self.level.toggle_menu()
 
-            self.screen.fill(BACKGROUND_COLOR)
-
-            if game_paused:
-                keys = pygame.key.get_pressed()
-
-                if menu_state == "main":
-                    if self.resume_button.draw(self.screen):
-                        game_paused = False
-                    self.draw_text("Resume", font, TEXT_COLOR, 374, 135)
-                    if self.options_button.draw(self.screen):
-                        menu_state = "options"
-                    self.draw_text("Options", font, TEXT_COLOR, 367, 260)
-                    if self.quit_button.draw(self.screen):
-                        run = False
-                    self.draw_text("Quit", font, TEXT_COLOR, 406, 385)
-
-                elif menu_state == "options":
-                    if self.video_button.draw(self.screen):
-                        print("Video Settings")
-                    self.draw_text("Video Settings", font, TEXT_COLOR, 150, 150)
-                    if self.audio_button.draw(self.screen):
-                        print("Audio Settings")
-                    self.draw_text("Audio Settings", font, TEXT_COLOR, 150, 200)
-                    if self.keys_button.draw(self.screen):
-                        print("Change Key Bindings")
-                    self.draw_text("Change Key Bindings", font, TEXT_COLOR, 150, 250)
-                    if self.back_button.draw(self.screen):
-                        menu_state = "main"
-                    self.draw_text("Back", font, TEXT_COLOR, 150, 300)
-
-            else:
-                self.draw_text("Press P or ESC to pause", font, TEXT_COLOR, 150, 250)
-                self.level.run()
-
+            self.screen.fill('black')
+            self.level.run()
             pygame.display.update()
-            self.clock.tick(60)
-def main():
-    game = Game()
-    game.run()
+            self.clock.tick(FPS)
 
 if __name__ == '__main__':
-    main()
+    game = Game()
+    game.run()

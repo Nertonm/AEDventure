@@ -3,17 +3,28 @@ from tile import Tile
 from player import Player
 from debug import debug
 from support import *
+from menu import Menu
 import pytmx
 
 
 class Level:
     def __init__(self):
+
+        # get the display surface
         self.display_surface = pygame.display.get_surface()
+        self.game_paused = False
+
+        # sprite group setup
         self.visible_sprites = YSortCameraGroup()
         self.obstacle_sprites = pygame.sprite.Group()
+
+        # map data and map creation
         self.doors = pygame.sprite.Group()
         self.create_map('../map/map.tmx')
         self.tmx_data = pytmx.load_pygame('../map/map.tmx')
+
+        # user interface
+        self.pause_menu = Menu(self)
 
     def get_pos(self, tmx_data, name):
         for obj in tmx_data.objects:
@@ -72,15 +83,23 @@ class Level:
     def check_collision_with_door(self, tmx_data):
         for sprite in self.doors:
             keys = pygame.key.get_pressed()
-            debug(keys, 100, 100)
+            # debug(keys, 100, 100)
             if keys[pygame.K_e]:
                 if self.player.rect.colliderect(sprite.rect):
-                    print("DADADAfa")
+                    # print("DADADAfa")
                     self.change_map(self.get_name(tmx_data, sprite.rect))
+
+    def toggle_menu(self):
+        self.game_paused = not self.game_paused
 
     def run(self):
         self.visible_sprites.custom_draw(self.player)
-        self.visible_sprites.update()
+
+        if self.game_paused:
+            self.pause_menu.display()
+        else:
+            self.visible_sprites.update()
+
         self.check_collision_with_door(self.tmx_data)
         debug(self.player.status)
 
