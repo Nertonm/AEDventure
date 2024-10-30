@@ -4,6 +4,7 @@ from settings import *
 
 class SortingChallenge:
     def __init__(self, level):
+        # Inicialização de variáveis e configuração inicial
         self.level = level
         self.display_surface = pygame.display.get_surface()
         self.font = pygame.font.Font(UI_FONT, UI_FONT_SIZE_MENU)
@@ -20,6 +21,7 @@ class SortingChallenge:
         self.button_selected = False
         self.button_hovered = False
 
+        # Configuração do botão de fechar
         button_width = 100
         button_height = 50
         self.button_rect = pygame.Rect(
@@ -30,11 +32,13 @@ class SortingChallenge:
         )
 
     def toggle_menu(self):
+        # Alterna o estado do menu de desafio
         self.is_active = not self.is_active
         if not self.is_active:
             self.level.reset_player_state()
 
     def input(self):
+        # Gerencia a entrada do usuário
         if not self.is_active:
             return
 
@@ -64,10 +68,14 @@ class SortingChallenge:
             if self.button_selected:
                 self.is_active = False
                 self.level.reset_player_state()
+                self.level.show_challenge = False  # Garante que o menu de desafio não esteja ativo
+                self.level.show_menu = False  # Garante que o menu de pausa não seja exibido
+                self.level.game_paused = False  # Garante que o jogo não esteja pausado
             else:
                 self.swap_elements()
 
     def swap_elements(self):
+        # Troca elementos do array
         if self.can_swap and not self.button_selected:
             if self.selection_index < len(self.array) - 1:
                 self.array[self.selection_index], self.array[self.selection_index + 1] = \
@@ -77,34 +85,44 @@ class SortingChallenge:
                 self.last_swap_time = pygame.time.get_ticks()
 
     def swap_cooldown(self):
+        # Gerencia o cooldown da troca de elementos
         if not self.can_swap:
             current_time = pygame.time.get_ticks()
             if current_time - self.last_swap_time >= self.cooldown:
                 self.can_swap = True
 
     def move_cooldown(self):
+        # Gerencia o cooldown do movimento
         if not self.can_move:
             current_time = pygame.time.get_ticks()
             if current_time - self.last_move_time >= self.move_cooldown_time:
                 self.can_move = True
 
     def check_sorted(self):
+        # Verifica se o array está ordenado
         self.sorted = all(self.array[i] <= self.array[i + 1] for i in range(len(self.array) - 1))
         if self.sorted:
             self.level.complete_challenge()
             self.is_active = False
 
+    # challenge_sorting.py
     def check_button_click(self, event):
+        # Verifica se o botão foi clicado
         if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
             if self.button_rect.collidepoint(event.pos):
                 self.is_active = False
                 self.level.reset_player_state()
+                self.level.show_challenge = False  # Garante que o menu de desafio não esteja ativo
+                self.level.show_menu = False  # Garante que o menu de pausa não seja exibido
+                self.level.game_paused = False  # Garante que o jogo não esteja pausado
 
     def check_button_hover(self):
+        # Verifica se o mouse está sobre o botão
         mouse_pos = pygame.mouse.get_pos()
         self.button_hovered = self.button_rect.collidepoint(mouse_pos)
 
     def display(self):
+        # Exibe o desafio de ordenação na tela
         if not self.is_active:
             return
 
@@ -113,10 +131,12 @@ class SortingChallenge:
         self.move_cooldown()
         self.check_button_hover()
 
+        # Desenha o fundo semi-transparente
         surface = pygame.Surface(self.display_surface.get_size(), pygame.SRCALPHA)
         surface.fill((0, 0, 0, 150))
         self.display_surface.blit(surface, (0, 0))
 
+        # Desenha os elementos do array
         total_width = len(self.array) * 100
         start_x = (self.display_surface.get_width() - total_width) // 2
 
@@ -127,6 +147,7 @@ class SortingChallenge:
                 center=(start_x + index * 100 + 50, self.display_surface.get_height() // 2))
             self.display_surface.blit(value_surf, value_rect)
 
+        # Desenha o botão de fechar
         button_color = (0, 255, 0) if self.button_hovered or self.button_selected else (255, 0, 0)
         pygame.draw.rect(self.display_surface, button_color, self.button_rect)
         button_text = self.font.render("Close", True, (255, 255, 255))

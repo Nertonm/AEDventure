@@ -27,7 +27,7 @@ class Menu:
                 self.can_move = False
                 self.selection_time = pygame.time.get_ticks()
 
-            if keys[pygame.K_RETURN]:
+            if keys[pygame.K_SPACE]:
                 self.select_option()
 
     def selection_cooldown(self):
