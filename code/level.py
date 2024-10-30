@@ -1,30 +1,29 @@
+import pygame
 from settings import *
 from tile import Tile
 from player import Player
 from debug import debug
 from support import *
 from menu import Menu
+from challenge_sorting import SortingChallenge
 import pytmx
-
 
 class Level:
     def __init__(self):
-
-        # get the display surface
         self.display_surface = pygame.display.get_surface()
         self.game_paused = False
-
-        # sprite group setup
         self.visible_sprites = YSortCameraGroup()
         self.obstacle_sprites = pygame.sprite.Group()
-
-        # map data and map creation
         self.doors = pygame.sprite.Group()
         self.create_map('../map/map.tmx')
         self.tmx_data = pytmx.load_pygame('../map/map.tmx')
-
-        # user interface
         self.pause_menu = Menu(self)
+        self.challenge = None
+        self.menu = Menu(self)
+        self.sorting_challenge = SortingChallenge(self)
+        self.show_menu = False
+        self.show_challenge = False
+        self.player_can_move = True
 
     def get_pos(self, tmx_data, name):
         for obj in tmx_data.objects:
@@ -32,7 +31,7 @@ class Level:
                 return obj.x, obj.y
         return 0, 0
 
-    def get_name(self,tmx_data, pos):
+    def get_name(self, tmx_data, pos):
         print(pos[0], pos[1])
         for obj in tmx_data.objects:
             if obj.x == pos[0] and obj.y == pos[1]:
@@ -83,22 +82,43 @@ class Level:
     def check_collision_with_door(self, tmx_data):
         for sprite in self.doors:
             keys = pygame.key.get_pressed()
-            # debug(keys, 100, 100)
             if keys[pygame.K_e]:
                 if self.player.rect.colliderect(sprite.rect):
-                    # print("DADADAfa")
                     self.change_map(self.get_name(tmx_data, sprite.rect))
 
     def toggle_menu(self):
         self.game_paused = not self.game_paused
+        self.player_can_move = not self.game_paused
+
+    def start_challenge(self):
+        self.show_challenge = True
+        self.sorting_challenge.is_active = True
+        self.player_can_move = False
+
+    def toggle_challenge_menu(self):
+        self.sorting_challenge.toggle_menu()
+
+    def complete_challenge(self):
+        self.show_challenge = False
+        self.sorting_challenge.is_active = False
+        self.reset_player_state()
+        print("Desafio concluído! Avançando no jogo...")
+
+    def reset_player_state(self):
+        self.player_can_move = True
 
     def run(self):
         self.visible_sprites.custom_draw(self.player)
 
         if self.game_paused:
             self.pause_menu.display()
+        elif self.show_challenge:
+            self.sorting_challenge.display()
         else:
             self.visible_sprites.update()
+
+        if self.challenge:
+            self.challenge.display()
 
         self.check_collision_with_door(self.tmx_data)
         debug(self.player.status)
