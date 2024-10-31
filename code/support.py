@@ -57,3 +57,7 @@ class Menu:
         self.audio_button = Button(225, 200, self.audio_img, 1)
         self.keys_button = Button(246, 325, self.keys_img, 1)
         self.back_button = Button(332, 450, self.back_img, 1)
+
+        def draw_text(self, text, font, text_col, x, y):
+            img = font.render(text, True, text_col)
+            self.screen.blit(img, (x, y))
