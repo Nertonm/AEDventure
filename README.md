@@ -12,7 +12,7 @@
 **A ultima linha do mapa deve ser prenchida com boundary para lidar com a colisão do mapa**
 
 ### **Tile e Tamanho**
-- **Tamanho do Tile**: 64x64 pixels
+- **Tamanho do Tile**: 128x128 pixels
 - **Tamanho do Jogador**: 128x128 pixels
 
 ### **Objetos**
