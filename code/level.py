@@ -75,7 +75,7 @@ class Level:
             Tile(position, [self.visible_sprites], 'invisible')
         elif layer_name == 'grass':
             Tile(position, [self.visible_sprites, self.obstacle_sprites], 'grass', tile)
-        elif layer_name == 'object':
+        elif layer_name == 'objects':
             Tile(position, [self.visible_sprites, self.obstacle_sprites], 'object', tile)
         elif layer_name == 'door':
             Tile(position, [self.visible_sprites, self.obstacle_sprites, self.doors], 'door', tile)
