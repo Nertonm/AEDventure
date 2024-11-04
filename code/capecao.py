@@ -8,11 +8,11 @@ class Capecao(pygame.sprite.Sprite):
         self.attacking = False
         self.player = player
         self.speed = 3
+        self.position = position
     
     def update(self):
         player_pos = self.player.rect.center
-        capecao_pos = position
-        direction = pygame.math.Vector2(player_pos) - pygame.math.Vector2(capecao_pos)
+        direction = pygame.math.Vector2(player_pos) - pygame.math.Vector2(self.position)
 
         if direction.length() > 1:
             direction = direction.normalize()  # Normaliza a direção
