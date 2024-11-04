@@ -1,22 +1,26 @@
 import pygame
 
 class Capecao(pygame.sprite.Sprite):
-    def __init__(self, player):
+    def __init__(self, player, position):
         super().__init__()
-        self.image = pygame.image.load('../pseucapecao1.png').convert_alpha()
+        self.image = pygame.image.load('../graphics/capecao/right_idle/idle_right.png').convert_alpha()
         self.rect = self.image.get_rect()
         self.attacking = False
         self.player = player
-
+        self.speed = 3
+    
     def update(self):
-        # Posiciona o Capecão no lado oposto ao que o jogador está olhando
-        if self.player.lado == "right":
-            self.rect.midright = self.player.rect.midleft  # Capecão à esquerda
-        elif self.player.lado == "left":
-            self.rect.midleft = self.player.rect.midright  # Capecão à direita
-        elif self.player.lado == "up":
-            self.rect.midtop = self.player.rect.midbottom  # Capecão abaixo
-        elif self.player.lado == "down":
-            self.rect.midbottom = self.player.rect.midtop  # Capecão acima
+        player_pos = self.player.rect.center
+        capecao_pos = position
+        direction = pygame.math.Vector2(player_pos) - pygame.math.Vector2(capecao_pos)
+
+        if direction.length() > 1:
+            direction = direction.normalize()  # Normaliza a direção
+
+        # o capecão vai ser atraído de acordo com o movimento do jogador
+        self.rect.centerx += direction.x * self.speed
+        self.rect.centery += direction.y * self.speed
+    
+        
 
 
