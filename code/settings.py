@@ -8,8 +8,9 @@ TILESIZE = 128
 # Cores
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
-TEXT_COLOR = (200, 200, 200)  # Cor do texto padrão
-TEXT_COLOR_SELECTED = (255, 255, 0)  # Cor do texto quando selecionado (ex: amarelo)
+TEXT_COLOR = (255, 255, 255)  # Default text color
+TEXT_COLOR_SELECTED = (255, 255, 0)  # Color for the first selected number
+TEXT_COLOR_SECOND_SELECTED = (255, 150, 0)  # Color for the second selected number
 
 # Outras configurações
 UI_FONT = '../graphics/font/Daydream.ttf' # ou defina um caminho para a sua fonte personalizada
