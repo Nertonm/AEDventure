@@ -7,7 +7,7 @@ class Capecao(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.attacking = False
         self.player = player
-        self.speed = 3
+        self.speed = 4
         self.position = position
     
     def update(self):

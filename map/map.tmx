@@ -77,7 +77,7 @@
   <object id="2" name="player" x="1224" y="584"/>
  </objectgroup>
  <objectgroup id="9" name="capecao">
-  <object id="23" name="capecao" x="1056" y="500"/>
+  <object id="23" name="capecao" x="1090" y="582"/>
  </objectgroup>
  <layer id="8" name="objects" width="30" height="20">
   <data encoding="csv">
