@@ -11,15 +11,15 @@ class Capecao(pygame.sprite.Sprite):
         self.position = position
     
     def update(self):
-        player_pos = self.player.rect.center
-        direction = pygame.math.Vector2(player_pos) - pygame.math.Vector2(self.position)
+        if self.rect.x < self.player.rect.x:
+            self.rect.x += self.speed
+        elif self.rect.x > self.player.rect.x:
+            self.rect.x -= self.speed
 
-        if direction.length() > 1:
-            direction = direction.normalize()  # Normaliza a direção
-
-        # o capecão vai ser atraído de acordo com o movimento do jogador
-        self.rect.centerx += direction.x * self.speed
-        self.rect.centery += direction.y * self.speed
+        if self.rect.y < self.player.rect.y:
+            self.rect.y += self.speed
+        elif self.rect.y > self.player.rect.y:
+            self.rect.y -= self.speed
     
         
 
