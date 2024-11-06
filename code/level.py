@@ -101,6 +101,7 @@ class Level:
             keys = pygame.key.get_pressed()
             if keys[pygame.K_e]:
                 if self.player.rect.colliderect(sprite.rect):
+                    print(sprite.rect)
                     self.change_map(self.get_name(tmx_data, sprite.rect))
 
     def toggle_menu(self):
