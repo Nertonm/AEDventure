@@ -7,6 +7,7 @@ from support import *
 from menu import Menu
 from challenge_sorting import SortingChallenge
 import pytmx
+from capecao import *
 
 
 class Level:
@@ -53,6 +54,8 @@ class Level:
         self.visible_sprites.load_floor(tmx_data)
         self.process_layers(tmx_data)
         self.player = Player((self.get_pos(tmx_data, 'player')), [self.visible_sprites], self.obstacle_sprites)
+        self.capecao = Capecao(self.player, (self.get_pos(tmx_data, 'capecao')))
+        self.visible_sprites.add(self.capecao)
         self.visible_sprites.player = self.player
 
     def process_layers(self, tmx_data):
