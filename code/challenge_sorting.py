@@ -83,12 +83,12 @@ class SortingChallenge:
             if keys[pygame.K_LEFT] and not self.button_selected:
                 self.selection_index -= 1
                 if self.selection_index < 0:
-                    self.selection_index = len(self.array) - 1
+                    self.selection_index = len(self.array) - 2
                 self.can_move = False
                 self.last_move_time = current_time
             elif keys[pygame.K_RIGHT] and not self.button_selected:
                 self.selection_index += 1
-                if self.selection_index >= len(self.array):
+                if self.selection_index >= len(self.array) - 1:
                     self.selection_index = 0
                 self.can_move = False
                 self.last_move_time = current_time
