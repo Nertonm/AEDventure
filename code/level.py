@@ -8,7 +8,8 @@ from menu import Menu
 from challenge_sorting import SortingChallenge
 import pytmx
 from capecao import *
-
+import random
+from collections import deque
 
 class Level:
     def __init__(self):
@@ -155,6 +156,39 @@ class Level:
         debug(self.game_paused)
         debug(self.player_can_move, 50)
 
+class Room:
+    def __init__(self):
+        visited_rooms = []
+        rooms = {
+            'room1': ['room2', 'room3'],
+            'room2': ['room1', 'room4'],
+            'room3': ['room1', 'room4'],
+            'room4': ['room2', 'room3']
+        }
+        required_path = ['room1', 'room2', 'room4', 'room3']
+    def visit_room(room):
+        if room in rooms and (not visited_rooms or visited_rooms[-1] != room):
+            visited_rooms.append(room)
+            check_path()
+
+    def bfs(start_room, target_room):
+        visited = set()
+        queue = deque([start_room])
+
+        while queue:
+            current_room = queue.popleft()
+            if current_room == target_room:
+                return True
+            if current_room not in visited:
+                visited.add(current_room)
+                queue.extend(rooms[current_room])
+        return False
+
+    def check_path():
+        if visited_rooms == required_path:
+            print("Path completed successfully!")
+        else:
+            print(f"Current path: {visited_rooms}")
 
 class YSortCameraGroup(pygame.sprite.Group):
     def __init__(self):
