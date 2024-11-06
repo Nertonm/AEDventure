@@ -7,6 +7,7 @@ from support import *
 from menu import Menu
 from challenge_sorting import SortingChallenge
 import pytmx
+from capecao import *
 
 
 class Level:
@@ -17,10 +18,11 @@ class Level:
         self.visible_sprites = YSortCameraGroup()
         self.obstacle_sprites = pygame.sprite.Group()
         self.doors = pygame.sprite.Group()
+        self.sorting_challenge_complete = False
 
         # Carregamento do mapa e dados do TMX
-        self.create_map('../map/map.tmx')
-        self.tmx_data = pytmx.load_pygame('../map/map.tmx')
+        self.create_map('../map/hub.tmx')
+        self.tmx_data = pytmx.load_pygame('../map/hub.tmx')
 
         # Inicialização de menus e desafios
         self.pause_menu = Menu(self)
@@ -53,6 +55,8 @@ class Level:
         self.visible_sprites.load_floor(tmx_data)
         self.process_layers(tmx_data)
         self.player = Player((self.get_pos(tmx_data, 'player')), [self.visible_sprites], self.obstacle_sprites)
+        self.capecao = Capecao(self.player, (self.get_pos(tmx_data, 'capecao')))
+        self.visible_sprites.add(self.capecao)
         self.visible_sprites.player = self.player
 
     def process_layers(self, tmx_data):
@@ -75,7 +79,7 @@ class Level:
             Tile(position, [self.visible_sprites], 'invisible')
         elif layer_name == 'grass':
             Tile(position, [self.visible_sprites, self.obstacle_sprites], 'grass', tile)
-        elif layer_name == 'object':
+        elif layer_name == 'objects':
             Tile(position, [self.visible_sprites, self.obstacle_sprites], 'object', tile)
         elif layer_name == 'door':
             Tile(position, [self.visible_sprites, self.obstacle_sprites, self.doors], 'door', tile)
@@ -97,6 +101,7 @@ class Level:
             keys = pygame.key.get_pressed()
             if keys[pygame.K_e]:
                 if self.player.rect.colliderect(sprite.rect):
+                    print(sprite.rect)
                     self.change_map(self.get_name(tmx_data, sprite.rect))
 
     def toggle_menu(self):
@@ -121,13 +126,16 @@ class Level:
         # Alterna o estado do menu de desafio
         self.sorting_challenge.toggle_menu()
 
-    def complete_challenge(self):
-        # Completa o desafio e reseta o estado do jogador
+    def end_challenge(self):
+        # Encerra o processo do desafio
         self.game_paused = not self.game_paused
         self.show_challenge = False
         self.sorting_challenge.is_active = False
         self.reset_player_state()
-        print("Desafio concluído! Avançando no jogo...")
+
+    def mark_challenge_complete(self):
+        # Marca o desafio como completo
+        self.sorting_challenge_complete = True
 
     def reset_player_state(self):
         # Reseta o estado do jogador
@@ -149,8 +157,9 @@ class Level:
             self.challenge.display()
 
         self.check_collision_with_door(self.tmx_data)
-        debug(self.game_paused)
-        debug(self.player_can_move, 50)
+        debug(f"game_paused: {self.game_paused}")
+        debug(f"player_can_move: {self.player_can_move}", 50)
+        debug(f"sorting_challenge_complete: {self.sorting_challenge_complete}", 100)
 
 
 class YSortCameraGroup(pygame.sprite.Group):

@@ -2,6 +2,7 @@ import pygame
 import sys
 from settings import *
 from level import Level
+from game_opening import OpeningScreen
 
 class Game:
     def __init__(self):
@@ -11,11 +12,27 @@ class Game:
         pygame.display.set_caption('AEDventure')
         self.clock = pygame.time.Clock()
         self.level = Level()
+        self.opening_screen = OpeningScreen(self.screen)
+        self.show_opening = True
 
     def run(self):
         # Loop principal do jogo
+        while self.show_opening:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    sys.exit()
+                click_result = self.opening_screen.check_click(event)
+                if click_result == "start":
+                    self.show_opening = False
+                elif click_result == "exit":
+                    pygame.quit()
+                    sys.exit()
+
+            self.opening_screen.display()
+            self.clock.tick(FPS)
+
         while True:
-            # Tratamento de eventos
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     pygame.quit()
