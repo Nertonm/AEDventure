@@ -160,10 +160,32 @@ class Room:
     def __init__(self):
         visited_rooms = []
         rooms = {
-            'room1': ['room2', 'room3'],
-            'room2': ['room1', 'room4'],
-            'room3': ['room1', 'room4'],
-            'room4': ['room2', 'room3']
+            'room0': ['room1_up', 'room1_down', 'room1_left', 'room1_right', 'room1_down_right'],
+            'room1_up': ['room2_up_left', 'room2_up_right'],
+            'room1_down': ['room2_left_down', 'room2_down'],
+            'room1_left': ['room2_up_left', 'room2_left']
+            'room1_right': ['room2_right']
+            'room1_down_right': ['room2_down_right']
+
+            'room2_up_left': ['room3_up_left', 'room3_up']
+            'room2_up_right': ['room3_up_up_right']
+            'room2_left_down': ['room3_down_left']
+            'room2_down': ['room3_down_left', 'room3_down_right']
+            'room2_right': ['room3_right_down', 'room3_right_left']
+            'room2_down_right': ['room3_down_right']
+            'room2_left': ['room3_left', 'room3_left_up', 'room3_left_down']
+
+            'room3_up_left': []
+            'room3_up': []
+            'room3_up_up_right': []
+            'room3_down_left': []
+            'room3_down_right': []
+            'room3_right_down': []
+            'room3_right_left': []
+            'room3_left': []
+            'room3_left_up': []
+            'room3_left_down': []
+
         }
         required_path = ['room1', 'room2', 'room4', 'room3']
     def visit_room(room):
