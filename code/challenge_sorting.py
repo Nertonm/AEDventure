@@ -1,6 +1,7 @@
 import pygame
 import random
 from settings import *
+from debug import debug
 
 class SortingChallenge:
     def __init__(self, level):
@@ -9,8 +10,10 @@ class SortingChallenge:
         self.display_surface = pygame.display.get_surface()
         self.font = pygame.font.Font(UI_FONT, UI_FONT_SIZE_MENU)
         self.font_small = pygame.font.Font(UI_FONT, UI_FONT_SIZE)
-        self.array = random.sample(range(1, 11), 10)
-        self.selection_index = 0  # Inicialização do selection_index
+        self.difficulty = None  # Adiciona a dificuldade como None inicialmente
+        self.selected_button = None  # Adiciona o botão selecionado
+        self.array = []
+        self.selection_index = 0
         self.sorted = False
         self.cooldown = 200
         self.last_swap_time = 0
@@ -21,11 +24,11 @@ class SortingChallenge:
         self.is_active = True
         self.button_selected = False
         self.button_hovered = False
-        self.enter_cooldown = 200  # Cooldown para a tecla Enter
+        self.enter_cooldown = 200
         self.last_enter_time = 0
-        self.challenge_completed = False  # Novo atributo
-        self.sort_algorithm = None  # Algoritmo de ordenação não selecionado
-        self.current_position = 0  # Posição inicial para o Selection Sort
+        self.challenge_completed = False
+        self.sort_algorithm = None
+        self.current_position = 0
 
         # Configuração dos botões de seleção de algoritmo
         self.bubble_button_rect = pygame.Rect(
@@ -36,6 +39,12 @@ class SortingChallenge:
         )
         self.selection_button_rect = pygame.Rect(
             (self.display_surface.get_width() // 2) + 50,
+            self.display_surface.get_height() // 2,
+            100,
+            50
+        )
+        self.hard_button_rect = pygame.Rect(  # Adiciona a definição do hard_button_rect
+            (self.display_surface.get_width() // 2) + 200,
             self.display_surface.get_height() // 2,
             100,
             50
@@ -96,9 +105,9 @@ class SortingChallenge:
         # Permite ao jogador selecionar o algoritmo de ordenação
         if algorithm in ['bubble', 'selection']:
             self.sort_algorithm = algorithm
+            self.array = self.generate_array()  # Gera o array com base na dificuldade
             self.sort_steps = self.generate_sort_steps()
             self.current_step = 0
-            self.array = random.sample(range(1, 11), 10)
             self.sorted = False
             self.success_message = None
             self.failure_message = None
@@ -118,7 +127,7 @@ class SortingChallenge:
         if self.failure_message:
             if keys[pygame.K_RETURN] and current_time - self.last_enter_time >= self.enter_cooldown:
                 # Reseta o estado do jogo se o jogador falhar e pressionar Enter
-                self.array = random.sample(range(1, 11), 10)
+                self.array = random.sample(range(1, 100), 10)
                 self.sort_steps = self.generate_sort_steps()
                 self.current_step = 0
                 self.failure_message = None
@@ -211,7 +220,7 @@ class SortingChallenge:
 
     def reset_array_with_failure(self):
         # Reinicia o array se a troca estiver incorreta e define a mensagem de falha
-        self.array = random.sample(range(1, 11), 10)
+        self.array = random.sample(range(1, 100), 10)
         self.sort_steps = self.generate_sort_steps()
         self.current_step = 0
         self.current_position = 0
@@ -247,7 +256,7 @@ class SortingChallenge:
             if self.button_rect.collidepoint(event.pos):
                 if self.failure_message:
                     # Reseta o estado do jogo se o jogador falhar e clicar em "Try Again"
-                    self.array = random.sample(range(1, 11), 10)
+                    self.array = random.sample(range(1, 100), 10)
                     self.sort_steps = self.generate_sort_steps()
                     self.current_step = 0
                     self.failure_message = None
@@ -273,6 +282,7 @@ class SortingChallenge:
 
     def display(self):
         if not self.is_active:
+            self.display_difficulty_selection()
             return
 
         self.input()
@@ -289,13 +299,13 @@ class SortingChallenge:
             self.display_algorithm_selection()
         else:
             if not self.success_message and not self.failure_message:
-                total_width = len(self.array) * 100
+                total_width = len(self.array) * 120  # Aumenta o espaço total
                 start_x = (self.display_surface.get_width() - total_width) // 2
 
                 if self.sort_algorithm == 'bubble':
                     if self.selection_index < len(self.array) - 1:
-                        swap_rect_x = start_x + self.selection_index * 100
-                        swap_rect_width = 200
+                        swap_rect_x = start_x + self.selection_index * 120
+                        swap_rect_width = 240
                         swap_rect = pygame.Rect(swap_rect_x, self.display_surface.get_height() // 2 - 50,
                                                 swap_rect_width, 100)
                         swap_surface = pygame.Surface((swap_rect.width, swap_rect.height), pygame.SRCALPHA)
@@ -303,8 +313,8 @@ class SortingChallenge:
                         self.display_surface.blit(swap_surface, (swap_rect.x, swap_rect.y))
                 elif self.sort_algorithm == 'selection':
                     if self.selection_index < len(self.array):
-                        swap_rect_x = start_x + self.selection_index * 100
-                        swap_rect_width = 100
+                        swap_rect_x = start_x + self.selection_index * 120
+                        swap_rect_width = 120
                         swap_rect = pygame.Rect(swap_rect_x, self.display_surface.get_height() // 2 - 50,
                                                 swap_rect_width, 100)
                         swap_surface = pygame.Surface((swap_rect.width, swap_rect.height), pygame.SRCALPHA)
@@ -326,9 +336,9 @@ class SortingChallenge:
                             color = TEXT_COLOR_SECOND_SELECTED
                         else:
                             color = TEXT_COLOR
-                    value_surf = self.font.render(str(value), True, color)
+                    value_surf = self.font_small.render(str(value), True, color)
                     value_rect = value_surf.get_rect(
-                        center=(start_x + index * 100 + 50, self.display_surface.get_height() // 2))
+                        center=(start_x + index * 120 + 60, self.display_surface.get_height() // 2))
                     self.display_surface.blit(value_surf, value_rect)
 
             if self.failure_message:
@@ -361,6 +371,7 @@ class SortingChallenge:
                     center=(self.display_surface.get_width() // 2, self.display_surface.get_height() // 2 - 100))
                 self.display_surface.blit(completed_message_surf, completed_message_rect)
 
+        debug(self.array, 500)
         pygame.display.update()
 
     def display_algorithm_selection(self):
@@ -395,3 +406,78 @@ class SortingChallenge:
         pygame.draw.rect(self.display_surface, selection_button_color, selection_button_rect)
         selection_button_surf_rect = selection_button_surf.get_rect(center=selection_button_rect.center)
         self.display_surface.blit(selection_button_surf, selection_button_surf_rect)
+
+    def display_difficulty_selection(self):
+        # Exibe a tela de seleção de dificuldade
+        selection_message = "Escolha a dificuldade"
+        selection_message_surf = self.font_small.render(selection_message, True, (255, 255, 255))
+        selection_message_rect = selection_message_surf.get_rect(
+            center=(self.display_surface.get_width() // 2, self.display_surface.get_height() // 2 - 100))
+
+        # Cria uma superfície semi-transparente
+        overlay = pygame.Surface((self.display_surface.get_width(), self.display_surface.get_height()))
+        overlay.set_alpha(128)  # Define a transparência (0-255)
+        overlay.fill((0, 0, 0))  # Preenche a superfície com a cor preta
+        self.display_surface.blit(overlay, (0, 0))  # Desenha a superfície na tela
+
+        self.display_surface.blit(selection_message_surf, selection_message_rect)
+
+        mouse_pos = pygame.mouse.get_pos()
+
+        easy_button_text = "Easy"
+        easy_button_color = (0, 255, 0) if self.bubble_button_rect.collidepoint(mouse_pos) else (255, 0, 0)
+        easy_button_surf = self.font_small.render(easy_button_text, True, (255, 255, 255))
+        easy_button_rect = easy_button_surf.get_rect(
+            center=(self.display_surface.get_width() // 2 - 200, self.display_surface.get_height() // 2))
+        easy_button_rect.inflate_ip(20, 10)
+        self.bubble_button_rect = easy_button_rect
+        pygame.draw.rect(self.display_surface, easy_button_color, easy_button_rect)
+        easy_button_surf_rect = easy_button_surf.get_rect(center=easy_button_rect.center)
+        self.display_surface.blit(easy_button_surf, easy_button_surf_rect)
+
+        medium_button_text = "Normal"
+        medium_button_color = (0, 255, 0) if self.selection_button_rect.collidepoint(mouse_pos) else (255, 0, 0)
+        medium_button_surf = self.font_small.render(medium_button_text, True, (255, 255, 255))
+        medium_button_rect = medium_button_surf.get_rect(
+            center=(self.display_surface.get_width() // 2, self.display_surface.get_height() // 2))
+        medium_button_rect.inflate_ip(20, 10)
+        self.selection_button_rect = medium_button_rect
+        pygame.draw.rect(self.display_surface, medium_button_color, medium_button_rect)
+        medium_button_surf_rect = medium_button_surf.get_rect(center=medium_button_rect.center)
+        self.display_surface.blit(medium_button_surf, medium_button_surf_rect)
+
+        hard_button_text = "Hard"
+        hard_button_color = (0, 255, 0) if self.hard_button_rect.collidepoint(mouse_pos) else (255, 0, 0)
+        hard_button_surf = self.font_small.render(hard_button_text, True, (255, 255, 255))
+        hard_button_rect = hard_button_surf.get_rect(
+            center=(self.display_surface.get_width() // 2 + 200, self.display_surface.get_height() // 2))
+        hard_button_rect.inflate_ip(20, 10)
+        self.hard_button_rect = hard_button_rect
+        pygame.draw.rect(self.display_surface, hard_button_color, hard_button_rect)
+        hard_button_surf_rect = hard_button_surf.get_rect(center=hard_button_rect.center)
+        self.display_surface.blit(hard_button_surf, hard_button_surf_rect)
+
+    def generate_array(self):
+        # Gera o array com base na dificuldade
+        if self.difficulty == 'easy':
+            return random.sample(range(1, 11), 10)
+        elif self.difficulty == 'hard':
+            return random.sample(range(1, 201), 10)
+        else:  # medium
+            return random.sample(range(1, 101), 10)
+
+    def check_difficulty_selection(self, event):
+        # Verifica se o jogador selecionou uma dificuldade
+        if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+            if self.bubble_button_rect.collidepoint(event.pos):
+                self.difficulty = 'easy'
+                self.selected_button = 'easy'
+            elif self.selection_button_rect.collidepoint(event.pos):
+                self.difficulty = 'medium'
+                self.selected_button = 'medium'
+            elif self.hard_button_rect.collidepoint(event.pos):
+                self.difficulty = 'hard'
+                self.selected_button = 'hard'
+            if self.difficulty:
+                self.is_active = True
+

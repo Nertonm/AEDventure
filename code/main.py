@@ -15,7 +15,6 @@ class Game:
     def run(self):
         # Loop principal do jogo
         while True:
-            # Tratamento de eventos
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     pygame.quit()
@@ -26,10 +25,12 @@ class Game:
                     if event.key == pygame.K_e and not self.level.show_challenge:
                         self.level.start_challenge()
                 if event.type == pygame.MOUSEBUTTONDOWN:
-                    self.level.sorting_challenge.check_button_click(event)
-                    self.level.pause_menu.check_mouse_click(event)
+                    if self.level.show_challenge and not self.level.sorting_challenge.is_active:
+                        self.level.sorting_challenge.check_difficulty_selection(event)
+                    else:
+                        self.level.sorting_challenge.check_button_click(event)
+                        self.level.pause_menu.check_mouse_click(event)
 
-            # Atualização da tela
             self.screen.fill('black')
             self.level.run()
             pygame.display.update()
