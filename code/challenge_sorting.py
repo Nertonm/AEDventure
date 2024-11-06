@@ -8,6 +8,7 @@ class SortingChallenge:
         self.level = level
         self.display_surface = pygame.display.get_surface()
         self.font = pygame.font.Font(UI_FONT, UI_FONT_SIZE_MENU)
+        self.font_small = pygame.font.Font(UI_FONT, UI_FONT_SIZE)  # Fonte menor
         self.array = random.sample(range(1, 11), 10)
         self.selection_index = 0
         self.sorted = False
@@ -22,6 +23,7 @@ class SortingChallenge:
         self.button_hovered = False
         self.enter_cooldown = 200  # Cooldown para a tecla Enter
         self.last_enter_time = 0
+        self.challenge_completed = False  # Novo atributo
 
         # Configuração do botão de fechar
         button_width = 100
@@ -116,7 +118,7 @@ class SortingChallenge:
 
     def swap_elements(self):
         # Troca elementos do array
-        if self.can_swap and not self.button_selected:
+        if self.can_swap and not self.button_selected and not self.sorted:
             if self.selection_index < len(self.array) - 1:
                 # Verifica se a troca do jogador corresponde ao passo do Bubble Sort
                 expected_swap = self.bubble_sort_steps[self.current_step]
@@ -151,13 +153,15 @@ class SortingChallenge:
                 self.can_move = True
 
     def check_sorted(self):
-        # Verifica se o array está ordenado
         self.sorted = all(self.array[i] <= self.array[i + 1] for i in range(len(self.array) - 1))
         if self.sorted:
             self.success_message = "Congratulations!"
             self.level.mark_challenge_complete()
+            self.challenge_completed = True  # Desafio completado
 
     def check_button_click(self, event):
+        if not self.is_active:
+            return
         # Verifica se o botão foi clicado
         if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
             if self.button_rect.collidepoint(event.pos):
@@ -183,7 +187,6 @@ class SortingChallenge:
         self.button_hovered = self.button_rect.collidepoint(mouse_pos)
 
     def display(self):
-        # Exibe o desafio de ordenação na tela
         if not self.is_active:
             return
 
@@ -192,28 +195,22 @@ class SortingChallenge:
         self.move_cooldown()
         self.check_button_hover()
 
-        # Desenha o fundo semi-transparente para a tela inteira
         surface = pygame.Surface(self.display_surface.get_size(), pygame.SRCALPHA)
         surface.fill((0, 0, 0, 150))
         self.display_surface.blit(surface, (0, 0))
 
-        # Desenha os elementos do array apenas se não houver mensagem de sucesso ou falha
         if not self.success_message and not self.failure_message:
             total_width = len(self.array) * 100
             start_x = (self.display_surface.get_width() - total_width) // 2
 
-            # Desenha o retângulo translúcido atrás dos números a serem trocados
             if self.selection_index < len(self.array) - 1:
                 swap_rect_x = start_x + self.selection_index * 100
-                swap_rect_width = 200  # Cobre dois elementos de 100 pixels cada
+                swap_rect_width = 200
                 swap_rect = pygame.Rect(swap_rect_x, self.display_surface.get_height() // 2 - 50, swap_rect_width, 100)
-
-                # Cria uma superfície com transparência para o retângulo de troca
                 swap_surface = pygame.Surface((swap_rect.width, swap_rect.height), pygame.SRCALPHA)
-                swap_surface.fill((200, 200, 200, 150))  # Define a cor e a transparência
+                swap_surface.fill((200, 200, 200, 150))
                 self.display_surface.blit(swap_surface, (swap_rect.x, swap_rect.y))
 
-            # Desenha cada elemento do array
             for index, value in enumerate(self.array):
                 if index == self.selection_index:
                     color = TEXT_COLOR_SELECTED
@@ -226,7 +223,6 @@ class SortingChallenge:
                     center=(start_x + index * 100 + 50, self.display_surface.get_height() // 2))
                 self.display_surface.blit(value_surf, value_rect)
 
-        # Desenha o botão de fechar ou "Try Again"
         if self.failure_message:
             button_text = "Try Again"
             button_color = (0, 255, 0) if self.button_hovered or self.button_selected else (255, 0, 0)
@@ -234,16 +230,12 @@ class SortingChallenge:
             button_text = "Close"
             button_color = (0, 255, 0) if self.button_hovered or self.button_selected else (255, 0, 0)
 
-        # Renderiza o texto do botão
         button_text_surf = self.font.render(button_text, True, (255, 255, 255))
         button_text_rect = button_text_surf.get_rect(center=self.button_rect.center)
-
-        # Usa o tamanho do retângulo do texto diretamente
         self.button_rect = button_text_rect
         pygame.draw.rect(self.display_surface, button_color, self.button_rect)
         self.display_surface.blit(button_text_surf, button_text_rect)
 
-        # Desenha a mensagem de sucesso ou falha, se houver
         if self.success_message:
             message_surf = self.font.render(self.success_message, True, (0, 255, 0))
             message_rect = message_surf.get_rect(center=self.display_surface.get_rect().center)
@@ -252,5 +244,13 @@ class SortingChallenge:
             message_surf = self.font.render(self.failure_message, True, (255, 0, 0))
             message_rect = message_surf.get_rect(center=self.display_surface.get_rect().center)
             self.display_surface.blit(message_surf, message_rect)
+
+        # Exibe a mensagem se o desafio já foi completado
+        if self.challenge_completed:
+            completed_message = "You have completed this challenge."
+            completed_message_surf = self.font_small.render(completed_message, True, (255, 255, 0))
+            completed_message_rect = completed_message_surf.get_rect(
+                center=(self.display_surface.get_width() // 2, self.display_surface.get_height() // 2 - 100))
+            self.display_surface.blit(completed_message_surf, completed_message_rect)
 
         pygame.display.update()
