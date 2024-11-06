@@ -8,8 +8,7 @@ class SortingChallenge:
         self.level = level
         self.display_surface = pygame.display.get_surface()
         self.font = pygame.font.Font(UI_FONT, UI_FONT_SIZE_MENU)
-        self.font_small = pygame.font.Font(UI_FONT, UI_FONT_SIZE)  # Fonte menor
-        self.font_smaller = pygame.font.Font(UI_FONT, 12)  # Fonte menor
+        self.font_small = pygame.font.Font(UI_FONT, UI_FONT_SIZE)
         self.array = random.sample(range(1, 11), 10)
         self.selection_index = 0  # Inicialização do selection_index
         self.sorted = False
@@ -134,14 +133,22 @@ class SortingChallenge:
         if self.can_move:
             if keys[pygame.K_LEFT] and not self.button_selected:
                 self.selection_index -= 1
-                if self.selection_index < 0:
-                    self.selection_index = len(self.array) - 1
+                if self.sort_algorithm == 'bubble':
+                    if self.selection_index < 0:
+                        self.selection_index = len(self.array) - 2
+                else:
+                    if self.selection_index < 0:
+                        self.selection_index = len(self.array) - 1
                 self.can_move = False
                 self.last_move_time = current_time
             elif keys[pygame.K_RIGHT] and not self.button_selected:
                 self.selection_index += 1
-                if self.selection_index >= len(self.array):
-                    self.selection_index = 0
+                if self.sort_algorithm == 'bubble':
+                    if self.selection_index >= len(self.array) - 1:
+                        self.selection_index = 0
+                else:
+                    if self.selection_index >= len(self.array):
+                        self.selection_index = 0
                 self.can_move = False
                 self.last_move_time = current_time
             elif keys[pygame.K_DOWN]:
@@ -253,10 +260,11 @@ class SortingChallenge:
                     self.success_message = None
                     self.failure_message = None
                     self.level.end_challenge()
-            elif self.bubble_button_rect.collidepoint(event.pos):
-                self.select_sort_algorithm('bubble')
-            elif self.selection_button_rect.collidepoint(event.pos):
-                self.select_sort_algorithm('selection')
+            elif self.sort_algorithm is None:  # Verifica se o algoritmo já foi selecionado
+                if self.bubble_button_rect.collidepoint(event.pos):
+                    self.select_sort_algorithm('bubble')
+                elif self.selection_button_rect.collidepoint(event.pos):
+                    self.select_sort_algorithm('selection')
 
     def check_button_hover(self):
         # Verifica se o mouse está sobre o botão
@@ -359,19 +367,31 @@ class SortingChallenge:
         # Exibe a tela de seleção do algoritmo
         selection_message = "Escolha o tipo de algoritmo de ordenacao"
         selection_message_surf = self.font_small.render(selection_message, True, (255, 255, 255))
-        selection_message_rect = selection_message_surf.get_rect(center=(self.display_surface.get_width() // 2, self.display_surface.get_height() // 2 - 100))
+        selection_message_rect = selection_message_surf.get_rect(
+            center=(self.display_surface.get_width() // 2, self.display_surface.get_height() // 2 - 100))
         self.display_surface.blit(selection_message_surf, selection_message_rect)
 
+        # Ajusta a posição dos botões para aumentar a distância entre eles
         bubble_button_text = "Bubble Sort"
-        bubble_button_color = (0, 255, 0) if self.bubble_button_rect.collidepoint(pygame.mouse.get_pos()) else (255, 0, 0)
-        bubble_button_surf = self.font_smaller.render(bubble_button_text, True, (255, 255, 255))
-        bubble_button_rect = bubble_button_surf.get_rect(center=self.bubble_button_rect.center)
-        pygame.draw.rect(self.display_surface, bubble_button_color, self.bubble_button_rect)
-        self.display_surface.blit(bubble_button_surf, bubble_button_rect)
+        bubble_button_color = (0, 255, 0) if self.bubble_button_rect.collidepoint(pygame.mouse.get_pos()) else (
+        255, 0, 0)
+        bubble_button_surf = self.font_small.render(bubble_button_text, True, (255, 255, 255))
+        bubble_button_rect = bubble_button_surf.get_rect(
+            center=(self.display_surface.get_width() // 2 - 200, self.display_surface.get_height() // 2))
+        bubble_button_rect.inflate_ip(20, 10)  # Aumenta o tamanho do retângulo
+        self.bubble_button_rect = bubble_button_rect  # Atualiza a área de colisão
+        pygame.draw.rect(self.display_surface, bubble_button_color, bubble_button_rect)
+        bubble_button_surf_rect = bubble_button_surf.get_rect(center=bubble_button_rect.center)
+        self.display_surface.blit(bubble_button_surf, bubble_button_surf_rect)
 
         selection_button_text = "Selection Sort"
-        selection_button_color = (0, 255, 0) if self.selection_button_rect.collidepoint(pygame.mouse.get_pos()) else (255, 0, 0)
-        selection_button_surf = self.font_smaller.render(selection_button_text, True, (255, 255, 255))
-        selection_button_rect = selection_button_surf.get_rect(center=self.selection_button_rect.center)
-        pygame.draw.rect(self.display_surface, selection_button_color, self.selection_button_rect)
-        self.display_surface.blit(selection_button_surf, selection_button_rect)
+        selection_button_color = (0, 255, 0) if self.selection_button_rect.collidepoint(pygame.mouse.get_pos()) else (
+        255, 0, 0)
+        selection_button_surf = self.font_small.render(selection_button_text, True, (255, 255, 255))
+        selection_button_rect = selection_button_surf.get_rect(
+            center=(self.display_surface.get_width() // 2 + 200, self.display_surface.get_height() // 2))
+        selection_button_rect.inflate_ip(20, 10)  # Aumenta o tamanho do retângulo
+        self.selection_button_rect = selection_button_rect  # Atualiza a área de colisão
+        pygame.draw.rect(self.display_surface, selection_button_color, selection_button_rect)
+        selection_button_surf_rect = selection_button_surf.get_rect(center=selection_button_rect.center)
+        self.display_surface.blit(selection_button_surf, selection_button_surf_rect)
