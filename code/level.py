@@ -21,8 +21,8 @@ class Level:
         self.sorting_challenge_complete = False
 
         # Carregamento do mapa e dados do TMX
-        self.create_map('../map/map.tmx')
-        self.tmx_data = pytmx.load_pygame('../map/map.tmx')
+        self.create_map('../map/hub.tmx')
+        self.tmx_data = pytmx.load_pygame('../map/hub.tmx')
 
         # Inicialização de menus e desafios
         self.pause_menu = Menu(self)
