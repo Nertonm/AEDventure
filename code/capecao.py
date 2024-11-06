@@ -6,8 +6,7 @@ class Capecao(pygame.sprite.Sprite):
         super().__init__()
         self.image = pygame.image.load('../graphics/capecao/right_idle/idle_right.png').convert_alpha()
         self.rect = self.image.get_rect(topleft = position)
-        self.hitbox = self.rect.inflate(0, -26)
-        self.attacking = False
+        #self.hitbox = self.rect.inflate(0, -26)
 
         # graphics setup
         self.import_capecao_assets()
@@ -39,22 +38,40 @@ class Capecao(pygame.sprite.Sprite):
 
         # set the image
         self.image = animation[int(self.frame_index)]
-        self.rect = self.image.get_rect(center=self.hitbox.center)
+        #self.rect = self.image.get_rect(center=self.hitbox.center)
+
+    def moving(self, moving):
+        if moving:
+            self.status = self.status.replace('_idle', '')
+        elif not moving and '_idle' not in self.status:
+            self.status += '_idle'
+
     
     def move(self):
+        # checa se o capecao esta se movendo ou nao
+        moving = False
         # IF trata do capecao seguindo o jogador pela direita
-        # ELIF trata o capecao seguindo o jogador pela esquerda
         if self.rect.x < self.player.rect.x - 60:
             self.rect.x += self.speed
             self.status = 'right'
-        elif self.rect.x > self.player.rect.x + 100:
+            moving = True
+        # ELIF trata o capecao seguindo o jogador pela esquerda
+        elif self.rect.x > self.player.rect.x + 120:
             self.rect.x -= self.speed
             self.status = 'left'
+            moving = True
+        self.moving(moving)
 
+        # IF trata do capecao seguindo o jogador por baixo
         if self.rect.y < self.player.rect.y + 62:
             self.rect.y += self.speed
+            moving = True
+        # ELIF trata do capecao seguindo o jogador por cima
         elif self.rect.y > self.player.rect.y + 62:
             self.rect.y -= self.speed
+            moving = True
+        self.moving(moving)
+
 
     def update(self):
         self.animate()
