@@ -91,7 +91,9 @@ class Player(pygame.sprite.Sprite):
 	def move(self,speed):
 		if self.direction.magnitude() != 0:
 			self.direction = self.direction.normalize()
-
+		keys = pygame.key.get_pressed()
+		if keys[pygame.K_LSHIFT]:
+			speed = speed*1.8
 		self.hitbox.x += self.direction.x * speed
 		self.collision('horizontal')
 		self.hitbox.y += self.direction.y * speed
