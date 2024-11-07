@@ -163,7 +163,7 @@ class Level:
         debug(f"player_can_move: {self.player_can_move}", 50)
         debug(f"sorting_challenge_complete: {self.sorting_challenge_complete}", 100)
 
-class Room:
+class BFS:
     def __init__(self):
         self.visited_rooms = []
         self.rooms = {
@@ -191,15 +191,25 @@ class Room:
             'room3_left_up': [],
             'room3_left_down': [],
         }
-        self.required_path = [('room0'),
-                              ('room1_right','room1_up', 'room1_down', 'room1_left',
-                               'room1_right', 'room1_down_right'), ('room2_up_left',
-                               'room2_up_right', 'room2_left_down', 'room2_down',
-                               'room2_right', 'room2_down_right', 'room2_left'),
-                              ('room3_up_left','room3_up','room3_up_up_right',
+        if DIFFICULTY == 'hard':
+            self.required_path = [('room0'),
+                                ('room1_right','room1_up', 'room1_down', 'room1_left',
+                                'room1_right', 'room1_down_right'), ('room2_up_left',
+                                'room2_up_right', 'room2_left_down', 'room2_down',
+                                'room2_right', 'room2_down_right', 'room2_left'),
+                                ('room3_up_left','room3_up','room3_up_up_right',
                                'room3_down_left','room3_down_right','room3_right_down',
                                'room3_right_left','room3_left','room3_left_up','room3_left_down')]
-
+        elif DIFFICULTY == 'medium':
+            self.required_path = [('room0'),
+                                ('room1_right','room1_up', 'room1_down', 'room1_left',
+                                'room1_right', 'room1_down_right'), ('room2_up_left',
+                                'room2_up_right', 'room2_left_down', 'room2_down',
+                                'room2_right', 'room2_down_right', 'room2_left')]
+        elif DIFFICULTY == 'easy':
+            self.required_path = [('room0'),
+                                ('room1_right','room1_up', 'room1_down', 'room1_left',
+                                'room1_right', 'room1_down_right')]
         self.current_tuple_index = 0
         self.current_tuple_visited = set()
 
