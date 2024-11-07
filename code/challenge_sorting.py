@@ -127,7 +127,7 @@ class SortingChallenge:
         if self.failure_message:
             if keys[pygame.K_RETURN] and current_time - self.last_enter_time >= self.enter_cooldown:
                 # Reseta o estado do jogo se o jogador falhar e pressionar Enter
-                self.array = random.sample(range(1, 100), 10)
+                self.array = self.generate_array()
                 self.sort_steps = self.generate_sort_steps()
                 self.current_step = 0
                 self.failure_message = None
@@ -220,7 +220,7 @@ class SortingChallenge:
 
     def reset_array_with_failure(self):
         # Reinicia o array se a troca estiver incorreta e define a mensagem de falha
-        self.array = random.sample(range(1, 100), 10)
+        self.array = self.generate_array()  # Gera o array com base na dificuldade
         self.sort_steps = self.generate_sort_steps()
         self.current_step = 0
         self.current_position = 0
@@ -256,7 +256,7 @@ class SortingChallenge:
             if self.button_rect.collidepoint(event.pos):
                 if self.failure_message:
                     # Reseta o estado do jogo se o jogador falhar e clicar em "Try Again"
-                    self.array = random.sample(range(1, 100), 10)
+                    self.array = self.generate_array()
                     self.sort_steps = self.generate_sort_steps()
                     self.current_step = 0
                     self.failure_message = None
