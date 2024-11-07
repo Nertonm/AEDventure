@@ -24,8 +24,8 @@ class Level:
         self.difficulty = difficulty
 
         # Carregamento do mapa e dados do TMX
-        self.create_map('../map/hub.tmx')
-        self.tmx_data = pytmx.load_pygame('../map/hub.tmx')
+        self.create_map('../map/room0.tmx')
+        self.tmx_data = pytmx.load_pygame('../map/room0.tmx')
 
         # Inicialização de menus e desafios
         self.pause_menu = Menu(self)
@@ -184,7 +184,7 @@ class BFS:
             'room1_up': ['room2_up_left', 'room2_up_right'],
             'room1_down': ['room2_left_down', 'room2_down'],
             'room1_left': ['room2_up_left', 'room2_left'],
-            'room1_right': ['room2_right'],
+            'room1_right': ['room2_right', 'room2_up_right'],
             'room1_down_right': ['room2_down_right'],
             'room2_up_left': ['room3_up_left', 'room3_up'],
             'room2_up_right': ['room3_up_up_right'],
