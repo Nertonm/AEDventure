@@ -1,9 +1,14 @@
 import pygame, sys, time
 
 class Hanoi:
-    def __init__(self, display_surface, end_challenge_callback):
+    def __init__(self, display_surface, end_challenge_callback, difficulty):
         # Variáveis utilizadas pro funcionamento
-        self.n_disks = 3
+        if difficulty == 'easy':
+            self.n_disks = 3
+        elif difficulty == 'medium':
+            self.n_disks = 5
+        else:
+            self.n_disks = 7
         self.disks = []
         self.steps = 0
         self.pointing_at = 0
