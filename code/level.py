@@ -32,7 +32,7 @@ class Level:
         self.pause_menu = Menu(self)
         self.challenge = None
         self.menu = Menu(self)
-        self.hanoi_challenge = Hanoi(self.display_surface, self.end_challenge)
+        self.hanoi_challenge = Hanoi(self.display_surface, self.end_challenge, difficulty)
         self.sorting_challenge = SortingChallenge(self, difficulty)
 
         # Estados do jogo
@@ -142,7 +142,7 @@ class Level:
             self.show_challenge = True
             self.sorting_challenge.is_active = False  # Desativa o desafio até que a dificuldade seja selecionada
             self.player_can_move = False
-            #self.hanoi_challenge.start()
+            self.hanoi_challenge.start()
 
     def toggle_challenge_menu(self):
         # Alterna o estado do menu de desafio
@@ -171,8 +171,8 @@ class Level:
 
         if self.game_paused:
             if self.show_challenge:
-                #self.hanoi_challenge.display()
-                self.sorting_challenge.display()
+                self.hanoi_challenge.display()
+                #self.sorting_challenge.display()
             else:
                 self.pause_menu.display()
         else:
