@@ -118,10 +118,10 @@ class Level:
 
     def start_challenge(self):
         # Inicia o desafio de ordenação apenas se não estiver ativo
-        if not self.show_challenge and not self.show_menu:  # Verifica se o menu de pausa não está ativo
+        if not self.show_challenge and not self.show_menu:
             self.game_paused = True
             self.show_challenge = True
-            self.sorting_challenge.is_active = True
+            self.sorting_challenge.is_active = False  # Desativa o desafio até que a dificuldade seja selecionada
             self.player_can_move = False
 
     def toggle_challenge_menu(self):
