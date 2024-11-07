@@ -25,6 +25,10 @@ class Level:
         self.difficulty = difficulty
         self.map_name = 'room0'  # Nome do mapa atual
 
+
+        self.bfs_start = False
+        self.bfs = BFS()  # Initialize BFS object
+
         # Carregamento do mapa e dados do TMX
         self.create_map('../map/hub.tmx', player_pos=-1)
         self.tmx_data = pytmx.load_pygame('../map/hub.tmx')
@@ -219,6 +223,17 @@ class Level:
         if self.challenge:
             self.challenge.display()
 
+        # BFS logic
+        if self.map_name == 'room0':
+            self.bfs_start = True
+            self.bfs.visit_room('room0')
+            self.mapa_atual = self.map_name  # Initialize mapa_atual with the current map
+        if self.bfs_start:
+            if self.mapa_atual != self.map_name:
+                self.bfs.visit_room(self.map_name)
+                self.mapa_atual = self.map_name  # Initialize mapa_atual with the current map
+                print(self.bfs.visited_rooms)
+
         self.check_collision_with_puzzle(self.tmx_data)
         self.check_collision_with_door(self.tmx_data)
         debug(f"game_paused: {self.game_paused}")
@@ -235,21 +250,21 @@ class BFS:
             'room1_down': ['room2_left_down', 'room2_down'],
             'room1_left': ['room2_up_left', 'room2_left'],
             'room1_right': ['room2_right', 'room2_up_right'],
-            'room1_down_right': ['room2_down_right'],
+            'room1_down_right': ['room2_down_right', 'room2_right'],
             'room2_up_left': ['room3_up_left', 'room3_up'],
-            'room2_up_right': ['room3_up_up_right'],
+            'room2_up_right': ['room3_up_right', 'room3_up'],
             'room2_left_down': ['room3_down_left'],
             'room2_down': ['room3_down_left', 'room3_down_right'],
-            'room2_right': ['room3_right_down', 'room3_right_left'],
+            'room2_right': ['room3_right_down', 'room3_right_up'],
             'room2_down_right': ['room3_down_right'],
             'room2_left': ['room3_left', 'room3_left_up', 'room3_left_down'],
             'room3_up_left': [],
             'room3_up': [],
-            'room3_up_up_right': [],
+            'room3_up_right': [],
             'room3_down_left': [],
             'room3_down_right': [],
             'room3_right_down': [],
-            'room3_right_left': [],
+            'room3_right_up': [],
             'room3_left': [],
             'room3_left_up': [],
             'room3_left_down': [],
@@ -260,7 +275,7 @@ class BFS:
                                 'room1_right', 'room1_down_right'), ('room2_up_left',
                                 'room2_up_right', 'room2_left_down', 'room2_down',
                                 'room2_right', 'room2_down_right', 'room2_left'),
-                                ('room3_up_left','room3_up','room3_up_up_right',
+                                ('room3_up_left','room3_up','room3_up_right',
                                'room3_down_left','room3_down_right','room3_right_down',
                                'room3_right_left','room3_left','room3_left_up','room3_left_down')]
         elif DIFFICULTY == 'medium':
@@ -279,16 +294,18 @@ class BFS:
     def visit_room(self, room):
         current_tuple = self.required_path[self.current_tuple_index]
         if isinstance(current_tuple, tuple):
-            if room not in current_tuple:
+            if (room not in current_tuple) and (room not in self.visited_rooms):
+                print("Caminho errado")
                 return False
         else:
             if room != current_tuple:
                 return False
 
         if room in self.rooms:
-            self.visited_rooms.append(room)
-            self.current_tuple_visited.add(room)
-            self.check_path()
+            if room not in self.visited_rooms:
+                self.visited_rooms.append(room)
+                self.current_tuple_visited.add(room)
+                self.check_path()
             return True
         print("Caminho errado")
         return False
