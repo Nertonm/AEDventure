@@ -4,29 +4,31 @@ from settings import *
 from level import Level
 from game_opening import OpeningScreen
 
-
 class Game:
     def __init__(self):
-        # Inicialização do Pygame e configuração da tela
         pygame.init()
         self.screen = pygame.display.set_mode((WIDTH, HEIGHT))
         pygame.display.set_caption('AEDventure')
         self.clock = pygame.time.Clock()
-        self.level = Level()
+        self.level = None
         self.opening_screen = OpeningScreen(self.screen)
         self.show_opening = True
 
     def run(self):
-        # Loop principal do jogo
+        global DIFFICULTY
         while self.show_opening:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     pygame.quit()
                     sys.exit()
                 click_result = self.opening_screen.check_click(event)
-                if click_result == "start":
+                key_result = self.opening_screen.check_key(event)
+                if click_result == "start_game" or key_result == "start_game":
+                    DIFFICULTY = self.opening_screen.selected_difficulty
+                    print(DIFFICULTY)
+                    self.level = Level(DIFFICULTY)  # Pass the updated difficulty
                     self.show_opening = False
-                elif click_result == "exit":
+                elif click_result == "exit" or key_result == "exit":
                     pygame.quit()
                     sys.exit()
 
@@ -56,6 +58,5 @@ class Game:
             self.clock.tick(FPS)
 
 if __name__ == "__main__":
-    # Criação e execução do jogo
     game = Game()
     game.run()
