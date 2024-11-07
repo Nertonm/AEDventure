@@ -146,6 +146,8 @@ class Level:
                 if self.player.rect.colliderect(sprite.rect):
                     print(sprite.rect)
                     if self.map_name == 'hanoi':
+                        self.start_hanoi()
+                    if self.map_name == 'sorting':
                         self.start_challenge()
 
     def toggle_menu(self):
@@ -163,7 +165,7 @@ class Level:
         self.show_challenge = False
         self.player_can_move = True
 
-    def start_challenge(self):
+    def start_hanoi(self):
         # Inicia o desafio de ordenação apenas se não estiver ativo
         if not self.show_challenge and not self.show_menu:
             self.game_paused = True
@@ -171,7 +173,13 @@ class Level:
             self.sorting_challenge.is_active = False  # Desativa o desafio até que a dificuldade seja selecionada
             self.player_can_move = False
             self.hanoi_challenge.start()
-
+    def start_challenge(self):
+        # Inicia o desafio de ordenação apenas se não estiver ativo
+        if not self.show_challenge and not self.show_menu:
+            self.game_paused = True
+            self.show_challenge = True
+            self.sorting_challenge.is_active = False  # Desativa o desafio até que a dificuldade seja selecionada
+            self.player_can_move = False
     def toggle_challenge_menu(self):
         # Alterna o estado do menu de desafio
         self.sorting_challenge.toggle_menu()
@@ -199,8 +207,10 @@ class Level:
 
         if self.game_paused:
             if self.show_challenge:
-                self.hanoi_challenge.display()
-                #self.sorting_challenge.display()
+                if self.map_name == 'hanoi':
+                    self.hanoi_challenge.display()
+                elif self.map_name == 'sorting':
+                    self.sorting_challenge.display()
             else:
                 self.pause_menu.display()
         else:
