@@ -8,6 +8,7 @@ from menu import Menu
 from challenge_sorting import SortingChallenge
 import pytmx
 from capecao import *
+from hanoi import Hanoi
 import random
 from collections import deque
 
@@ -29,6 +30,7 @@ class Level:
         self.pause_menu = Menu(self)
         self.challenge = None
         self.menu = Menu(self)
+        self.hanoi_challenge = Hanoi(self.display_surface, self.end_challenge)
         self.sorting_challenge = SortingChallenge(self)
 
         # Estados do jogo
@@ -116,6 +118,11 @@ class Level:
         self.player_can_move = not self.game_paused
         self.show_menu = self.game_paused  # Atualiza o estado de exibição do menu de pausa
 
+    def end_challenge(self):
+        self.game_paused = False
+        self.show_challenge = False
+        self.player_can_move = True
+
     def start_challenge(self):
         # Inicia o desafio de ordenação apenas se não estiver ativo
         if not self.show_challenge and not self.show_menu:
@@ -123,6 +130,7 @@ class Level:
             self.show_challenge = True
             self.sorting_challenge.is_active = False  # Desativa o desafio até que a dificuldade seja selecionada
             self.player_can_move = False
+            self.hanoi_challenge.start()
 
     def toggle_challenge_menu(self):
         # Alterna o estado do menu de desafio
@@ -149,7 +157,8 @@ class Level:
 
         if self.game_paused:
             if self.show_challenge:
-                self.sorting_challenge.display()
+                #self.sorting_challenge.display()
+                self.hanoi_challenge.display()
             else:
                 self.pause_menu.display()
         else:

@@ -4,6 +4,7 @@ from settings import *
 from level import Level
 from game_opening import OpeningScreen
 
+
 class Game:
     def __init__(self):
         # Inicialização do Pygame e configuração da tela
