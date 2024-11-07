@@ -20,13 +20,14 @@ class Level:
         self.visible_sprites = YSortCameraGroup()
         self.obstacle_sprites = pygame.sprite.Group()
         self.doors = pygame.sprite.Group()
+        self.puzzle = pygame.sprite.Group()
         self.sorting_challenge_complete = False
         self.difficulty = difficulty
         self.map_name = 'room0'  # Nome do mapa atual
 
         # Carregamento do mapa e dados do TMX
-        self.create_map('../map/room0.tmx')
-        self.tmx_data = pytmx.load_pygame('../map/room0.tmx')
+        self.create_map('../map/hub.tmx', player_pos=-1)
+        self.tmx_data = pytmx.load_pygame('../map/hub.tmx')
 
         # Inicialização de menus e desafios
         self.pause_menu = Menu(self)
@@ -56,12 +57,25 @@ class Level:
                 return obj.path
         return None
 
-    def create_map(self, map_path):
+    def get_player_new_location(self, tmx_data, pos):
+        # Obtém o nome de um objeto no mapa pela posição
+        for obj in tmx_data.objects:
+            if obj.x == pos[0] and obj.y == pos[1]:
+                print(obj.path)
+                if hasattr(obj, 'player'):
+                    return obj.player
+        return False
+
+    def create_map(self, map_path, player_pos):
         # Cria o mapa a partir de um arquivo TMX
         tmx_data = pytmx.load_pygame(map_path)
         self.visible_sprites.load_floor(tmx_data)
         self.process_layers(tmx_data)
-        self.player = Player((self.get_pos(tmx_data, 'player')), [self.visible_sprites], self.obstacle_sprites)
+        if player_pos == -1:
+            player_pos = self.get_pos(tmx_data, 'player')
+        else:
+            player_pos = self.get_pos(tmx_data, player_pos)
+        self.player = Player((player_pos), [self.visible_sprites], self.obstacle_sprites)
         self.capecao = Capecao(self.player, (self.get_pos(tmx_data, 'capecao')))
         self.visible_sprites.add(self.capecao)
         self.visible_sprites.player = self.player
@@ -93,8 +107,10 @@ class Level:
             Tile(position, [self.visible_sprites, self.obstacle_sprites, self.doors], 'door', tile)
         elif layer_name == 'wall':
             Tile(position, [self.visible_sprites, self.obstacle_sprites], 'wall', tile)
+        elif layer_name == 'puzzle':
+            Tile(position, [self.visible_sprites, self.obstacle_sprites, self.puzzle], 'door', tile)
 
-    def change_map(self, new_map_path):
+    def change_map(self, new_map_path, player_pos):
         # Clear all sprite groups
         self.visible_sprites.empty()
         self.obstacle_sprites.empty()
@@ -103,10 +119,8 @@ class Level:
 
         # Load new map data
         self.tmx_data = pytmx.load_pygame(new_map_path)
-        self.create_map(new_map_path)
+        self.create_map(new_map_path, player_pos)
 
-        # Reinitialize player and other necessary objects
-        self.player = Player((self.get_pos(self.tmx_data, 'player')), [self.visible_sprites], self.obstacle_sprites)
         self.capecao = Capecao(self.player, (self.get_pos(self.tmx_data, 'capecao')))
         self.visible_sprites.add(self.capecao)
         self.visible_sprites.player = self.player
@@ -118,7 +132,21 @@ class Level:
             if keys[pygame.K_e]:
                 if self.player.rect.colliderect(sprite.rect):
                     print(sprite.rect)
-                    self.change_map(self.get_name(tmx_data, sprite.rect))
+                    door = self.get_name(tmx_data, sprite.rect)
+                    if self.get_player_new_location(tmx_data,sprite.rect):
+                        player_pos = self.get_player_new_location(tmx_data,sprite.rect)
+                    else:
+                        player_pos = -1
+                    self.change_map(door, player_pos)
+
+    def check_collision_with_puzzle(self, tmx_data):
+        for obj in tmx_data.objects:
+            if obj.type == 'puzzle':
+                puzzle_rect = pygame.Rect(obj.x, obj.y, obj.width, obj.height)
+                if self.player.rect.colliderect(puzzle_rect):
+                    puzzle_name = obj.name
+                    if puzzle_name in self.item_challenge_map:
+                        self.start_challenge(self.item_challenge_map[puzzle_name])
 
     def toggle_menu(self):
         # Não faz nada se o menu de desafio estiver ativo
@@ -181,6 +209,7 @@ class Level:
         if self.challenge:
             self.challenge.display()
 
+        self.check_collision_with_puzzle(self.tmx_data)
         self.check_collision_with_door(self.tmx_data)
         debug(f"game_paused: {self.game_paused}")
         debug(f"player_can_move: {self.player_can_move}", 50)
