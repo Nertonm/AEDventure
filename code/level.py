@@ -8,7 +8,8 @@ from menu import Menu
 from challenge_sorting import SortingChallenge
 import pytmx
 from capecao import *
-
+import random
+from collections import deque
 
 class Level:
     def __init__(self):
@@ -46,6 +47,7 @@ class Level:
         # Obtém o nome de um objeto no mapa pela posição
         for obj in tmx_data.objects:
             if obj.x == pos[0] and obj.y == pos[1]:
+                print("aojfjafijoafio")
                 return obj.path
         return None
 
@@ -161,6 +163,100 @@ class Level:
         debug(f"player_can_move: {self.player_can_move}", 50)
         debug(f"sorting_challenge_complete: {self.sorting_challenge_complete}", 100)
 
+class BFS:
+    def __init__(self):
+        self.visited_rooms = []
+        self.rooms = {
+            'room0': ['room1_up', 'room1_down', 'room1_left', 'room1_right', 'room1_down_right'],
+            'room1_up': ['room2_up_left', 'room2_up_right'],
+            'room1_down': ['room2_left_down', 'room2_down'],
+            'room1_left': ['room2_up_left', 'room2_left'],
+            'room1_right': ['room2_right'],
+            'room1_down_right': ['room2_down_right'],
+            'room2_up_left': ['room3_up_left', 'room3_up'],
+            'room2_up_right': ['room3_up_up_right'],
+            'room2_left_down': ['room3_down_left'],
+            'room2_down': ['room3_down_left', 'room3_down_right'],
+            'room2_right': ['room3_right_down', 'room3_right_left'],
+            'room2_down_right': ['room3_down_right'],
+            'room2_left': ['room3_left', 'room3_left_up', 'room3_left_down'],
+            'room3_up_left': [],
+            'room3_up': [],
+            'room3_up_up_right': [],
+            'room3_down_left': [],
+            'room3_down_right': [],
+            'room3_right_down': [],
+            'room3_right_left': [],
+            'room3_left': [],
+            'room3_left_up': [],
+            'room3_left_down': [],
+        }
+        if DIFFICULTY == 'hard':
+            self.required_path = [('room0'),
+                                ('room1_right','room1_up', 'room1_down', 'room1_left',
+                                'room1_right', 'room1_down_right'), ('room2_up_left',
+                                'room2_up_right', 'room2_left_down', 'room2_down',
+                                'room2_right', 'room2_down_right', 'room2_left'),
+                                ('room3_up_left','room3_up','room3_up_up_right',
+                               'room3_down_left','room3_down_right','room3_right_down',
+                               'room3_right_left','room3_left','room3_left_up','room3_left_down')]
+        elif DIFFICULTY == 'medium':
+            self.required_path = [('room0'),
+                                ('room1_right','room1_up', 'room1_down', 'room1_left',
+                                'room1_right', 'room1_down_right'), ('room2_up_left',
+                                'room2_up_right', 'room2_left_down', 'room2_down',
+                                'room2_right', 'room2_down_right', 'room2_left')]
+        elif DIFFICULTY == 'easy':
+            self.required_path = [('room0'),
+                                ('room1_right','room1_up', 'room1_down', 'room1_left',
+                                'room1_right', 'room1_down_right')]
+        self.current_tuple_index = 0
+        self.current_tuple_visited = set()
+
+    def visit_room(self, room):
+        current_tuple = self.required_path[self.current_tuple_index]
+        if isinstance(current_tuple, tuple):
+            if room not in current_tuple:
+                return False
+        else:
+            if room != current_tuple:
+                return False
+
+        if room in self.rooms:
+            self.visited_rooms.append(room)
+            self.current_tuple_visited.add(room)
+            self.check_path()
+            return True
+        print("Caminho errado")
+        return False
+    def bfs(self, start_room, target_room):
+        visited = set()
+        queue = deque([start_room])
+
+        while queue:
+            current_room = queue.popleft()
+            if current_room == target_room:
+                return True
+            if current_room not in visited:
+                visited.add(current_room)
+                queue.extend(self.rooms[current_room])
+        return False
+
+    def check_path(self):
+        current_tuple = self.required_path[self.current_tuple_index]
+        if isinstance(current_tuple, tuple):
+            if all(room in self.current_tuple_visited for room in current_tuple):
+                self.current_tuple_index += 1
+                self.current_tuple_visited.clear()
+        else:
+            if current_tuple in self.current_tuple_visited:
+                self.current_tuple_index += 1
+                self.current_tuple_visited.clear()
+
+        if self.current_tuple_index >= len(self.required_path):
+            print("Path completed successfully!")
+        else:
+            print(f"Current path: {self.visited_rooms}")
 
 class YSortCameraGroup(pygame.sprite.Group):
     def __init__(self):
