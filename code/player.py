@@ -39,35 +39,35 @@ class Player(pygame.sprite.Sprite):
 			keys = pygame.key.get_pressed()
 
 			# movement input
-			if keys[pygame.K_UP] or keys[pygame.K_w]:
+			if keys[MOVE_UP] or keys[MOVE_UP1]:
 				self.direction.y = -1
 				self.status = 'up'
-			elif keys[pygame.K_DOWN] or keys[pygame.K_s]:
+			elif keys[MOVE_DOWN] or keys[MOVE_DOWN1]:
 				self.direction.y = 1
 				self.status = 'down'
 			else:
 				self.direction.y = 0
 
-			if keys[pygame.K_RIGHT] or keys[pygame.K_d]:
+			if keys[MOVE_RIGHT] or keys[MOVE_RIGHT1]:
 				self.direction.x = 1
 				self.status = 'right'
-			elif keys[pygame.K_LEFT] or keys[pygame.K_a]:
+			elif keys[MOVE_LEFT] or keys[MOVE_LEFT1]:
 				self.direction.x = -1
 				self.status = 'left'
 			else:
 				self.direction.x = 0
 
-			# attack input 
-			if keys[pygame.K_SPACE]:
+			# attack input
+			if keys[ATTACK] or keys[ATTACK1]:
 				self.attacking = True
 				self.attack_time = pygame.time.get_ticks()
 				print('attack')
 
-			# magic input 
-			if keys[pygame.K_LCTRL]:
-				self.attacking = True
-				self.attack_time = pygame.time.get_ticks()
-				print('magic')
+			# magic input
+			#if keys[MAGIC] or keys[MAGIC1]:
+			#	self.attacking = True
+			#	self.attack_time = pygame.time.get_ticks()
+			#	print('magic')
 
 	def get_status(self):
 
@@ -92,7 +92,7 @@ class Player(pygame.sprite.Sprite):
 		if self.direction.magnitude() != 0:
 			self.direction = self.direction.normalize()
 		keys = pygame.key.get_pressed()
-		if keys[pygame.K_LSHIFT]:
+		if keys[SPRINT] or keys[SPRINT1]:
 			speed = speed*1.8
 		self.hitbox.x += self.direction.x * speed
 		self.collision('horizontal')

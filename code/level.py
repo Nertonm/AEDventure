@@ -13,7 +13,7 @@ import random
 from collections import deque
 
 class Level:
-    def __init__(self):
+    def __init__(self, difficulty):
         # Inicialização de variáveis e grupos de sprites
         self.display_surface = pygame.display.get_surface()
         self.game_paused = False
@@ -21,6 +21,7 @@ class Level:
         self.obstacle_sprites = pygame.sprite.Group()
         self.doors = pygame.sprite.Group()
         self.sorting_challenge_complete = False
+        self.difficulty = difficulty
 
         # Carregamento do mapa e dados do TMX
         self.create_map('../map/room0.tmx')
@@ -152,8 +153,11 @@ class Level:
         self.player_can_move = True
 
     def run(self):
+        global DIFICULDADE
+
         # Executa a lógica principal do nível
         self.visible_sprites.custom_draw(self.player)
+        print(self.difficulty)
 
         if self.game_paused:
             if self.show_challenge:
