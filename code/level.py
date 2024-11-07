@@ -140,13 +140,13 @@ class Level:
                     self.change_map(door, player_pos)
 
     def check_collision_with_puzzle(self, tmx_data):
-        for obj in tmx_data.objects:
-            if obj.type == 'puzzle':
-                puzzle_rect = pygame.Rect(obj.x, obj.y, obj.width, obj.height)
-                if self.player.rect.colliderect(puzzle_rect):
-                    puzzle_name = obj.name
-                    if puzzle_name in self.item_challenge_map:
-                        self.start_challenge(self.item_challenge_map[puzzle_name])
+        for sprite in self.puzzle:
+            keys = pygame.key.get_pressed()
+            if keys[pygame.K_e]:
+                if self.player.rect.colliderect(sprite.rect):
+                    print(sprite.rect)
+                    if self.map_name == 'hanoi':
+                        self.start_challenge()
 
     def toggle_menu(self):
         # Não faz nada se o menu de desafio estiver ativo
