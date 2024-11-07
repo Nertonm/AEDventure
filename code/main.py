@@ -2,8 +2,7 @@ import pygame
 import sys
 from settings import *
 from level import Level
-from game_opening import OpeningScreen
-
+from menu import *
 class Game:
     def __init__(self):
         pygame.init()
