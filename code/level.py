@@ -22,6 +22,7 @@ class Level:
         self.doors = pygame.sprite.Group()
         self.sorting_challenge_complete = False
         self.difficulty = difficulty
+        self.map_name = 'room0'  # Nome do mapa atual
 
         # Carregamento do mapa e dados do TMX
         self.create_map('../map/room0.tmx')
@@ -63,6 +64,7 @@ class Level:
         self.capecao = Capecao(self.player, (self.get_pos(tmx_data, 'capecao')))
         self.visible_sprites.add(self.capecao)
         self.visible_sprites.player = self.player
+        self.map_name = map_path.split('/')[-1].split('.')[0]  # Atualiza o nome do mapa
 
     def process_layers(self, tmx_data):
         # Processa as camadas do TMX
@@ -157,7 +159,6 @@ class Level:
 
         # Executa a lógica principal do nível
         self.visible_sprites.custom_draw(self.player)
-        print(self.difficulty)
 
         if self.game_paused:
             if self.show_challenge:
@@ -175,6 +176,7 @@ class Level:
         debug(f"game_paused: {self.game_paused}")
         debug(f"player_can_move: {self.player_can_move}", 50)
         debug(f"sorting_challenge_complete: {self.sorting_challenge_complete}", 100)
+        debug(f"Current map: {self.map_name}", 150)  # Adiciona a linha de debug para o nome do mapa
 
 class BFS:
     def __init__(self):
