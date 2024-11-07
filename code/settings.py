@@ -4,7 +4,8 @@ WIDTH    = 1280
 HEIGHT   = 720
 FPS      = 60
 TILESIZE = 128
-DIFFICULTY = hard  # easy, medium, hard
+DIFFICULTY = 'hard'  # easy, medium, hard
+
 
 # Cores
 WHITE = (255, 255, 255)
