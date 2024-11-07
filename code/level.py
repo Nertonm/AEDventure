@@ -180,7 +180,7 @@ class BFS:
             'room1_up': ['room2_up_left', 'room2_up_right'],
             'room1_down': ['room2_left_down', 'room2_down'],
             'room1_left': ['room2_up_left', 'room2_left'],
-            'room1_right': ['room2_right'],
+            'room1_right': ['room2_right', 'room2_up_right'],
             'room1_down_right': ['room2_down_right'],
             'room2_up_left': ['room3_up_left', 'room3_up'],
             'room2_up_right': ['room3_up_up_right'],
