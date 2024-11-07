@@ -10,6 +10,7 @@ class Hanoi:
         self.floating = False
         self.floater = 0
         self.display_surface = display_surface
+        self.towers_midx = [display_surface.get_width() // 2 - 200, display_surface.get_width() // 2, display_surface.get_width() // 2 + 200]
         self.clock = pygame.time.Clock()
 
         # Posições das torres
@@ -24,14 +25,14 @@ class Hanoi:
         height, width, ypos = 20, self.n_disks * 23, 397 - 20
         for i in range(self.n_disks):
             self.disks.append({'rect': pygame.Rect(0, 0, width, height), 'val': self.n_disks - i, 'tower': 0})
-            self.disks[-1]['rect'].midtop = (120, ypos)
+            self.disks[-1]['rect'].midtop = (self.towers_midx[0], ypos)
             width -= 23
             ypos -= height + 3
 
     def draw_towers(self):
-        for xpos in range(40, 460+1, 200):
-            pygame.draw.rect(self.display_surface, self.green, pygame.Rect(xpos, 400, 160, 20))
-            pygame.draw.rect(self.display_surface, self.grey, pygame.Rect(xpos + 75, 200, 10, 200))
+        for xpos in self.towers_midx:
+            pygame.draw.rect(self.display_surface, self.green, pygame.Rect(xpos - 80, 400, 160, 20))
+            pygame.draw.rect(self.display_surface, self.grey, pygame.Rect(xpos - 5, 200, 10, 200))
 
     def draw_disks(self):
         for disk in self.disks:
@@ -42,9 +43,7 @@ class Hanoi:
 
     def check_won(self):
         if all(disk['tower'] == 2 for disk in self.disks):
-            time.sleep(0.2)
-            pygame.quit()
-            sys.exit()
+            return 1
 
     #def reset():
     #    global steps, pointing_at, floating, floater
@@ -93,6 +92,11 @@ class Hanoi:
                             self.disks[self.floater]['rect'].midtop = (self.towers_midx[self.pointing_at], 400 - 23)
                             self.steps += 1
 
+                # Cria uma superfície semi-transparente
+                overlay = pygame.Surface((self.display_surface.get_width(), self.display_surface.get_height()))
+                overlay.fill((0, 0, 128))
+                self.display_surface.blit(overlay, (0, 0))
+
                 self.display_surface.fill(self.white)
                 self.draw_towers()
                 self.draw_disks()
@@ -101,6 +105,8 @@ class Hanoi:
                 pygame.display.flip()
 
                 if not self.floating:
-                    self.check_won()
+                    if self.check_won():
+                        running = False
+                        break
 
                 self.clock.tick(60)
