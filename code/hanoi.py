@@ -1,67 +1,106 @@
-import pygame
-from settings import *
+import pygame, sys, time
 
 class Hanoi:
-    steps = 0
-    n_disks = 3
-    disks = []
-    towers_midx = [120, 320, 520]
-    pointing_at = 0
-    floating = False
-    floater = 0
+    def __init__(self, display_surface):
+        # Variáveis utilizadas pro funcionamento
+        self.n_disks = 3
+        self.disks = []
+        self.steps = 0
+        self.pointing_at = 0
+        self.floating = False
+        self.floater = 0
+        self.display_surface = display_surface
+        self.clock = pygame.time.Clock()
 
-    def make_text(screen, text, font=None, font_name = None, size = None, color=(255,0,0)):
-        if font is None:
-            font = pygame.font.Font(font_name, size)
-        font_surface  = font.render(text, True, color)
-        font_rect = font_surface.get_rect()
+        # Posições das torres
+        self.towers_midx = [120, 320, 520]
 
-    def draw_towers():
-        global screen
-        for xpos in range(40, 460 + 1, 200):
-            pygame.draw.rect(screen, green, pygame.Rect(xpos, 400, 160, 20))
-            pygame.draw.rect(screen, grey, pygame.Rect(xpos + 75, 200, 10, 200))
-        blit_text(screen, 'Start', (towers_midx[0], 403), font_name='mono', size=14, color=black)
-        blit_text(screen, 'Finish', (towers_midx[2], 403), font_name='mono', size=14, color=black)
+        # Cores
+        self.white, self.grey, self.blue, self.green = (255, 255, 255), (170, 170, 170), (78, 162, 196), (77, 206, 145)
+
+
+    def make_disks(self):
+        self.disks = []
+        height, width, ypos = 20, self.n_disks * 23, 397 - 20
+        for i in range(self.n_disks):
+            self.disks.append({'rect': pygame.Rect(0, 0, width, height), 'val': self.n_disks - i, 'tower': 0})
+            self.disks[-1]['rect'].midtop = (120, ypos)
+            width -= 23
+            ypos -= height + 3
+
+    def draw_towers(self):
+        for xpos in range(40, 460+1, 200):
+            pygame.draw.rect(self.display_surface, self.green, pygame.Rect(xpos, 400, 160, 20))
+            pygame.draw.rect(self.display_surface, self.grey, pygame.Rect(xpos + 75, 200, 10, 200))
+
+    def draw_disks(self):
+        for disk in self.disks:
+            pygame.draw.rect(self.display_surface, self.blue, disk['rect'])
+
+    def draw_ptr(self):
+        pygame.draw.polygon(self.display_surface, (255, 0, 0), [(self.towers_midx[self.pointing_at]-7 ,440), (self.towers_midx[self.pointing_at]+7, 440), (self.towers_midx[self.pointing_at], 433)])
+
+    def check_won(self):
+        if all(disk['tower'] == 2 for disk in self.disks):
+            time.sleep(0.2)
+            pygame.quit()
+            sys.exit()
+
+    #def reset():
+    #    global steps, pointing_at, floating, floater
+    #    steps, pointing_at, floating, floater = 0, 0, False, 0
+    #    make_disks()
+
+    def start(self):
+        self.make_disks()
 
     def display(self):
-        # Exibe o desafio de ordenação na tela
-        if not self.is_active:
-            return
+        running = True
+        while running:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    sys.exit()
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_ESCAPE:
+                        self.start()
+                    if event.key == pygame.K_RIGHT:
+                        self.pointing_at = (self.pointing_at + 1) % 3
+                        if self.floating:
+                            self.disks[self.floater]['rect'].midtop = (self.towers_midx[self.pointing_at], 100)
+                            self.disks[self.floater]['tower'] = self.pointing_at
+                    if event.key == pygame.K_LEFT:
+                        self.pointing_at = (self.pointing_at - 1) % 3
+                        if self.floating:
+                            self.disks[self.floater]['rect'].midtop = (self.towers_midx[self.pointing_at], 100)
+                            self.disks[self.floater]['tower'] = self.pointing_at
+                    if event.key == pygame.K_UP and not self.floating:
+                        for disk in reversed(self.disks):
+                            if disk['tower'] == self.pointing_at:
+                                self.floating, self.floater = True, self.disks.index(disk)
+                                disk['rect'].midtop = (self.towers_midx[self.pointing_at], 100)
+                                break
+                    if event.key == pygame.K_DOWN and self.floating:
+                        for disk in reversed(self.disks):
+                            if disk['tower'] == self.pointing_at and self.disks.index(disk) != self.floater:
+                                if disk['val'] > self.disks[self.floater]['val']:
+                                    self.floating = False
+                                    self.disks[self.floater]['rect'].midtop = (self.towers_midx[self.pointing_at], disk['rect'].top - 23)
+                                    self.steps += 1
+                                break
+                        else:
+                            self.floating = False
+                            self.disks[self.floater]['rect'].midtop = (self.towers_midx[self.pointing_at], 400 - 23)
+                            self.steps += 1
 
-        self.input()
+                self.display_surface.fill(self.white)
+                self.draw_towers()
+                self.draw_disks()
+                self.draw_ptr()
 
-        # Desenha o fundo semi-transparente
-        surface = pygame.Surface(self.display_surface.get_size(), pygame.SRCALPHA)
-        surface.fill((0, 0, 0, 150))
-        self.display_surface.blit(surface, (0, 0))
+                pygame.display.flip()
 
-        # Desenha os elementos do array
-        total_width = len(self.array) * 100
-        start_x = (self.display_surface.get_width() - total_width) // 2
+                if not self.floating:
+                    self.check_won()
 
-        for index, value in enumerate(self.array):
-            color = TEXT_COLOR_SELECTED if index == self.selection_index and not self.button_selected else TEXT_COLOR
-            value_surf = self.font.render(str(value), True, color)
-            value_rect = value_surf.get_rect(
-                center=(start_x + index * 100 + 50, self.display_surface.get_height() // 2))
-            self.display_surface.blit(value_surf, value_rect)
-
-        # Desenha o botão de fechar
-        button_color = (0, 255, 0) if self.button_hovered or self.button_selected else (255, 0, 0)
-        pygame.draw.rect(self.display_surface, button_color, self.button_rect)
-        button_text = self.font.render("Close", True, (255, 255, 255))
-        button_text_rect = button_text.get_rect(center=self.button_rect.center)
-        self.display_surface.blit(button_text, button_text_rect)
-
-        pygame.display.update()
-
-if __name__ == '__main__':
-    pygame.init()
-    screen = pygame.display.set_mode((640, 480))
-    pygame.display.set_caption('Torres de Hanoi')
-    clock = pygame.time.Clock()
-    hanoi = Hanoi()
-    hanoi.run()
-    pygame.quit()
-    quit()
+                self.clock.tick(60)
