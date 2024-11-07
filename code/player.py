@@ -5,6 +5,7 @@ from support import import_folder
 class Player(pygame.sprite.Sprite):
 	def __init__(self,pos,groups,obstacle_sprites):
 		super().__init__(groups)
+		self.health = 100
 		self.image = pygame.image.load('../graphics/player/personagem1.png').convert_alpha()
 		self.rect = self.image.get_rect(topleft = pos)
 		self.hitbox = self.rect.inflate(0,-26)
@@ -135,6 +136,15 @@ class Player(pygame.sprite.Sprite):
 		# set the image
 		self.image = animation[int(self.frame_index)]
 		self.rect = self.image.get_rect(center = self.hitbox.center)
+
+	def take_damage(self, amount):
+		self.health -= amount
+		if self.health <= 0:
+			self.die()
+
+	def die(self):
+		# Lógica de morte do jogador
+		print("Player died!")
 
 	def update(self):
 		self.input()
