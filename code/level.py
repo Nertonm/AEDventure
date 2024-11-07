@@ -44,6 +44,7 @@ class Level:
         # Obtém a posição de um objeto no mapa pelo nome
         for obj in tmx_data.objects:
             if obj.name == name:
+                print(obj.name)
                 return obj.x, obj.y
         return 0, 0
 
@@ -51,7 +52,7 @@ class Level:
         # Obtém o nome de um objeto no mapa pela posição
         for obj in tmx_data.objects:
             if obj.x == pos[0] and obj.y == pos[1]:
-                print("aojfjafijoafio")
+                print(obj.path)
                 return obj.path
         return None
 
@@ -94,13 +95,21 @@ class Level:
             Tile(position, [self.visible_sprites, self.obstacle_sprites], 'wall', tile)
 
     def change_map(self, new_map_path):
-        # Troca o mapa atual por um novo
+        # Clear all sprite groups
         self.visible_sprites.empty()
         self.obstacle_sprites.empty()
         self.doors.empty()
         self.visible_sprites.floor_tiles.clear()
+
+        # Load new map data
         self.tmx_data = pytmx.load_pygame(new_map_path)
         self.create_map(new_map_path)
+
+        # Reinitialize player and other necessary objects
+        self.player = Player((self.get_pos(self.tmx_data, 'player')), [self.visible_sprites], self.obstacle_sprites)
+        self.capecao = Capecao(self.player, (self.get_pos(self.tmx_data, 'capecao')))
+        self.visible_sprites.add(self.capecao)
+        self.visible_sprites.player = self.player
 
     def check_collision_with_door(self, tmx_data):
         # Verifica colisão com portas e troca de mapa
