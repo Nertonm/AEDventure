@@ -4,7 +4,7 @@ from settings import *
 from debug import debug
 
 class SortingChallenge:
-    def __init__(self, level):
+    def __init__(self, level, difficulty):
         # Inicialização de variáveis e configuração inicial
         self.level = level
         self.display_surface = pygame.display.get_surface()
@@ -29,6 +29,8 @@ class SortingChallenge:
         self.challenge_completed = False
         self.sort_algorithm = None
         self.current_position = 0
+        # Adiciona a dificuldade
+        self.difficulty = difficulty
 
         # Configuração dos botões de seleção de algoritmo
         self.bubble_button_rect = pygame.Rect(
