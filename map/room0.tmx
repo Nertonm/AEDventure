@@ -115,7 +115,7 @@
     <property name="path" value="../map/room1_right.tmx"/>
    </properties>
   </object>
-  <object id="12" name="room1_down_right" x="1292" y="654">
+  <object id="12" name="room1_down_right" x="1280" y="640">
    <properties>
     <property name="path" value="../map/room1_down_right.tmx"/>
    </properties>
