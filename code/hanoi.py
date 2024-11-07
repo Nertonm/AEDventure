@@ -1,7 +1,7 @@
 import pygame, sys, time
 
 class Hanoi:
-    def __init__(self, display_surface):
+    def __init__(self, display_surface, end_challenge_callback):
         # Variáveis utilizadas pro funcionamento
         self.n_disks = 3
         self.disks = []
@@ -12,6 +12,7 @@ class Hanoi:
         self.display_surface = display_surface
         self.towers_midx = [display_surface.get_width() // 2 - 200, display_surface.get_width() // 2, display_surface.get_width() // 2 + 200]
         self.clock = pygame.time.Clock()
+        self.end_challenge_callback = end_challenge_callback
 
         # Posições das torres
         self.towers_midx = [120, 320, 520]
@@ -43,7 +44,9 @@ class Hanoi:
 
     def check_won(self):
         if all(disk['tower'] == 2 for disk in self.disks):
-            return 1
+            time.sleep(0.2)
+            self.end_challenge_callback()
+            return True
 
     #def reset():
     #    global steps, pointing_at, floating, floater
