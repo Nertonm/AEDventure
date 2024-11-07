@@ -105,7 +105,7 @@
    </properties>
   </object>
   <object id="7" name="room1_down" x="654" y="908"/>
-  <object id="8" name="room1_left" x="11" y="393">
+  <object id="8" name="room1_left" x="0" y="384">
    <properties>
     <property name="path" value="../map/room1_left.tmx"/>
    </properties>
