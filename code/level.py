@@ -23,8 +23,8 @@ class Level:
         self.sorting_challenge_complete = False
 
         # Carregamento do mapa e dados do TMX
-        self.create_map('../map/hub.tmx')
-        self.tmx_data = pytmx.load_pygame('../map/hub.tmx')
+        self.create_map('../map/room0.tmx')
+        self.tmx_data = pytmx.load_pygame('../map/room0.tmx')
 
         # Inicialização de menus e desafios
         self.pause_menu = Menu(self)
