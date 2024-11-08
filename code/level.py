@@ -1,4 +1,3 @@
-import pygame
 from settings import *
 from tile import Tile
 from player import Player
@@ -9,8 +8,8 @@ from challenge_sorting import SortingChallenge
 import pytmx
 from capecao import *
 from hanoi import Hanoi
-import random
 from collections import deque
+
 
 class Level:
     def __init__(self, difficulty):
@@ -24,6 +23,9 @@ class Level:
         self.sorting_challenge_complete = False
         self.difficulty = difficulty
         self.map_name = 'room0'  # Nome do mapa atual
+
+        self.bfs_start = False
+        self.bfs = BFS(difficulty, self.display_surface)  # Initialize BFS object
 
         # Carregamento do mapa e dados do TMX
         self.create_map('../map/hub.tmx', player_pos=-1)
@@ -219,6 +221,25 @@ class Level:
         if self.challenge:
             self.challenge.display()
 
+        # BFS logic
+        if self.map_name == 'room0':
+            self.bfs_start = True
+            self.bfs.visit_room('room0')
+            self.mapa_atual = self.map_name  # Initialize mapa_atual with the current map
+        if self.bfs_start:
+            if self.mapa_atual != self.map_name:
+                self.bfs.visit_room(self.map_name)
+                self.mapa_atual = self.map_name  # Initialize mapa_atual with the current map
+                print(self.bfs.visited_rooms)
+                print(self.bfs.required_path)
+        if self.bfs.is_complete() and self.bfs_start:
+            self.bfs_start = False
+            self.bfs.visited_rooms.clear()
+            self.bfs.current_tuple_index = 0
+            self.bfs.current_tuple_visited.clear()
+            self.change_map('../map/hub.tmx', player_pos=-1)
+            self.bfs_start = False
+
         self.check_collision_with_puzzle(self.tmx_data)
         self.check_collision_with_door(self.tmx_data)
         debug(f"game_paused: {self.game_paused}")
@@ -227,7 +248,10 @@ class Level:
         debug(f"Current map: {self.map_name}", 150)  # Adiciona a linha de debug para o nome do mapa
 
 class BFS:
-    def __init__(self):
+    def __init__(self,difficulty='easy', display_surface=None):
+        self.difficulty = difficulty
+        self.display_surface = display_surface
+        self.win = False
         self.visited_rooms = []
         self.rooms = {
             'room0': ['room1_up', 'room1_down', 'room1_left', 'room1_right', 'room1_down_right'],
@@ -235,63 +259,70 @@ class BFS:
             'room1_down': ['room2_left_down', 'room2_down'],
             'room1_left': ['room2_up_left', 'room2_left'],
             'room1_right': ['room2_right', 'room2_up_right'],
-            'room1_down_right': ['room2_down_right'],
+            'room1_down_right': ['room2_down_right', 'room2_right'],
             'room2_up_left': ['room3_up_left', 'room3_up'],
-            'room2_up_right': ['room3_up_up_right'],
+            'room2_up_right': ['room3_up_right', 'room3_up'],
             'room2_left_down': ['room3_down_left'],
             'room2_down': ['room3_down_left', 'room3_down_right'],
-            'room2_right': ['room3_right_down', 'room3_right_left'],
+            'room2_right': ['room3_right_down', 'room3_right_up'],
             'room2_down_right': ['room3_down_right'],
             'room2_left': ['room3_left', 'room3_left_up', 'room3_left_down'],
             'room3_up_left': [],
             'room3_up': [],
-            'room3_up_up_right': [],
+            'room3_up_right': [],
             'room3_down_left': [],
             'room3_down_right': [],
             'room3_right_down': [],
-            'room3_right_left': [],
+            'room3_right_up': [],
             'room3_left': [],
             'room3_left_up': [],
             'room3_left_down': [],
         }
-        if DIFFICULTY == 'hard':
+        if difficulty == 'hard':
             self.required_path = [('room0'),
-                                ('room1_right','room1_up', 'room1_down', 'room1_left',
-                                'room1_right', 'room1_down_right'), ('room2_up_left',
+                                  ('room1_up', 'room1_down', 'room1_left', 'room1_right',
+                                   'room1_down_right'), ('room2_up_left',
                                 'room2_up_right', 'room2_left_down', 'room2_down',
                                 'room2_right', 'room2_down_right', 'room2_left'),
-                                ('room3_up_left','room3_up','room3_up_up_right',
+                                ('room3_up_left','room3_up','room3_up_right',
                                'room3_down_left','room3_down_right','room3_right_down',
                                'room3_right_left','room3_left','room3_left_up','room3_left_down')]
-        elif DIFFICULTY == 'medium':
+        elif difficulty == 'medium':
             self.required_path = [('room0'),
-                                ('room1_right','room1_up', 'room1_down', 'room1_left',
-                                'room1_right', 'room1_down_right'), ('room2_up_left',
+                                  ('room1_up', 'room1_down', 'room1_left', 'room1_right',
+                                   'room1_down_right'), ('room2_up_left',
                                 'room2_up_right', 'room2_left_down', 'room2_down',
                                 'room2_right', 'room2_down_right', 'room2_left')]
-        elif DIFFICULTY == 'easy':
+        elif difficulty == 'easy':
             self.required_path = [('room0'),
-                                ('room1_right','room1_up', 'room1_down', 'room1_left',
-                                'room1_right', 'room1_down_right')]
+                                ('room1_up','room1_down', 'room1_left', 'room1_right',
+                                'room1_down_right')]
         self.current_tuple_index = 0
         self.current_tuple_visited = set()
 
-    def visit_room(self, room):
-        current_tuple = self.required_path[self.current_tuple_index]
-        if isinstance(current_tuple, tuple):
-            if room not in current_tuple:
-                return False
-        else:
-            if room != current_tuple:
-                return False
+    def is_complete(self):
+        return self.win
 
-        if room in self.rooms:
-            self.visited_rooms.append(room)
-            self.current_tuple_visited.add(room)
-            self.check_path()
-            return True
-        print("Caminho errado")
-        return False
+    def visit_room(self, room):
+        if self.win == False:
+            current_tuple = self.required_path[self.current_tuple_index]
+            if isinstance(current_tuple, tuple):
+                if (room not in current_tuple) and (room not in self.visited_rooms):
+                    print("Caminho errado")
+                    return False
+            else:
+                if room != current_tuple:
+                    print("Caminho errado")
+                    return False
+
+            if room in self.rooms:
+                if room not in self.visited_rooms:
+                    self.visited_rooms.append(room)
+                    self.current_tuple_visited.add(room)
+                    self.check_path()
+                return True
+            print("Caminho errado")
+            return False
     def bfs(self, start_room, target_room):
         visited = set()
         queue = deque([start_room])
@@ -316,8 +347,10 @@ class BFS:
                 self.current_tuple_index += 1
                 self.current_tuple_visited.clear()
 
-        if self.current_tuple_index >= len(self.required_path):
+        if self.current_tuple_index == len(self.required_path):
             print("Path completed successfully!")
+            self.win = True
+            return True
         else:
             print(f"Current path: {self.visited_rooms}")
 
