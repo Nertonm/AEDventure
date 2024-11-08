@@ -5,7 +5,6 @@ from support import import_folder
 class Player(pygame.sprite.Sprite):
 	def __init__(self,pos,groups,obstacle_sprites):
 		super().__init__(groups)
-		self.health = 100
 		self.image = pygame.image.load('../graphics/player/personagem1.png').convert_alpha()
 		self.rect = self.image.get_rect(topleft = pos)
 		self.hitbox = self.rect.inflate(0,-26)
