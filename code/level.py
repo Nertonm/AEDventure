@@ -8,7 +8,8 @@ from menu import Menu
 from challenge_sorting import SortingChallenge
 import pytmx
 from capecao import *
-
+from enemy import Enemy
+import random
 
 class Level:
     def __init__(self):
@@ -18,6 +19,13 @@ class Level:
         self.visible_sprites = YSortCameraGroup()
         self.obstacle_sprites = pygame.sprite.Group()
         self.doors = pygame.sprite.Group()
+
+        #inimigos
+        self.enemy_sprites = pygame.sprite.Group()
+
+        self.player = Player((100,100) , [self.visible_sprites], self.obstacle_sprites)
+
+        self.create_enemies()
 
         # Carregamento do mapa e dados do TMX
         self.create_map('../map/map.tmx')
@@ -57,6 +65,10 @@ class Level:
         self.capecao = Capecao(self.player, (self.get_pos(tmx_data, 'capecao')))
         self.visible_sprites.add(self.capecao)
         self.visible_sprites.player = self.player
+
+        self.create_enemies()
+        for enemy in self.enemy_sprites:
+            self.visible_sprites.add(enemy)
 
     def process_layers(self, tmx_data):
         # Processa as camadas do TMX
@@ -136,6 +148,16 @@ class Level:
         # Reseta o estado do jogador
         self.player_can_move = True
 
+    def create_enemies(self):
+        for i in range(5):
+            enemy = Enemy(self.player,(random.randint(0,800),random.randint(0,600)))
+            self.enemy_sprites.add(enemy)
+    def check_level_completed(self):
+        # Verifica se o jogador chegou ao final do nível
+        if self.player.rect.colliderect(self.capecao.rect):
+            return True
+        return False
+
     def run(self):
         # Executa a lógica principal do nível
         self.visible_sprites.custom_draw(self.player)
@@ -147,6 +169,7 @@ class Level:
                 self.pause_menu.display()
         else:
             self.visible_sprites.update()
+            self.enemy_sprites.update()
 
         if self.challenge:
             self.challenge.display()
@@ -154,6 +177,9 @@ class Level:
         self.check_collision_with_door(self.tmx_data)
         debug(self.game_paused)
         debug(self.player_can_move, 50)
+
+        if self.check_level_completed():
+            return 'next_level'
 
 
 class YSortCameraGroup(pygame.sprite.Group):
