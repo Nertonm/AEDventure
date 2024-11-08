@@ -3,85 +3,76 @@ from support import import_folder
 
 
 class Enemy(pygame.sprite.Sprite):
-    def __init__(self, player, position, attack_range=100, attack_damage=10):
+    def __init__(self, player, pos, attack_range=20, attack_damage=10):
         super().__init__()
 
-        # Inicia a imagem e o rect do inimigo
-        self.image = pygame.image.load('../graphics/monsters/raccon/0.png').convert_alpha()  # Imagem padrão
-        self.rect = self.image.get_rect(topleft=position)
+        # Initialize the enemy's image and rect
+        self.image = pygame.image.load('../graphics/monsters/raccoon/0.png').convert_alpha()
+        self.rect = self.image.get_rect(topleft=pos)
 
-        # Inicialização dos gráficos e animações
+        # Initialize graphics and animations
         self.import_enemy_assets()
-        self.status = 'right_idle'  # Status inicial de animação
+        self.status = 'idle'
         self.frame_index = 0
-        self.animation_speed = 0.15  # Velocidade de animação
+        self.animation_speed = 0.05
 
-        # Movimentação e controle de direção
+        # Movement and direction control
         self.direction = pygame.math.Vector2()
-        self.player = player  # Referência ao jogador
-        self.speed = 3  # Velocidade de movimento do inimigo
-        self.position = pygame.math.Vector2(position)  # Posição do inimigo
+        self.player = player
+        self.speed = 1.5
+        self.position = pygame.math.Vector2(pos)
 
-        # Parâmetros de ataque
-        self.attack_range = attack_range  # Raio de ataque
-        self.attack_damage = attack_damage  # Dano do ataque
+        # Attack parameters
+        self.attack_range = attack_range
+        self.attack_damage = attack_damage
 
-        # Tempo de cooldown de ataque
-        self.attack_cooldown = 1000  # 1 segundo de cooldown
+        # Attack cooldown
+        self.attack_cooldown = 1000
         self.last_attack_time = 0
 
     def import_enemy_assets(self):
-        # Carrega as animações do inimigo
-        enemy_path = '../graphics/monsters/'
-        self.animations = {'left': [], 'right': [], 'right_idle': [], 'left_idle': []}
+        enemy_path = '../graphics/monsters/raccoon/'
+        self.animations = {'attack': [], 'idle': [], 'move': []}
 
         for animation in self.animations.keys():
             full_path = enemy_path + animation
             self.animations[animation] = import_folder(full_path)
 
-    def animate(self):
-        # Animação do inimigo baseada no status atual
-        animation = self.animations[self.status]
+    def attack_player(self):
+        current_time = pygame.time.get_ticks()
+        if current_time - self.last_attack_time >= self.attack_cooldown:
+            print(f"Enemy attacks the player! Damage: {self.attack_damage}")
+            self.last_attack_time = current_time
+            self.status = 'attack'
 
-        # Avança o índice da animação
+    def animate(self):
+        animation = self.animations[self.status]
+        if len(animation) == 0:
+            return  # Ensure there are frames to animate
+
         self.frame_index += self.animation_speed
         if self.frame_index >= len(animation):
             self.frame_index = 0
 
-        # Atualiza a imagem
         self.image = animation[int(self.frame_index)]
         self.rect = self.image.get_rect(center=self.rect.center)
 
     def move_towards_player(self):
-        # Calcula a direção para o jogador
         player_position = pygame.math.Vector2(self.player.rect.center)
         distance_to_player = player_position - self.position
 
         if distance_to_player.length() <= self.attack_range:
-            # Inicia ataque se estiver dentro do alcance
             self.attack_player()
         else:
-            # Move em direção ao jogador
-            direction = distance_to_player.normalize()  # Direção normalizada
-            self.position += direction * self.speed  # Atualiza a posição
-
-            # Atualiza o status com base no movimento
+            direction = distance_to_player.normalize()
+            self.position += direction * self.speed
             if abs(direction.x) > abs(direction.y):
-                self.status = 'right' if direction.x > 0 else 'left'
+                self.status = 'move' if direction.x > 0 else 'move'
             else:
-                self.status = 'right' if direction.y > 0 else 'left'
+                self.status = 'move' if direction.y > 0 else 'move'
 
-    def attack_player(self):
-        # Verifica se o inimigo pode atacar
-        current_time = pygame.time.get_ticks()
-        if current_time - self.last_attack_time >= self.attack_cooldown:
-            # Realiza o ataque
-            print(f"Enemy attacks the player! Damage: {self.attack_damage}")
-            self.last_attack_time = current_time
-            # Aqui você pode adicionar lógica de dano ao jogador
-            self.status = 'right_idle'  # Exemplo: mudar para animação de ataque
+            self.rect.topleft = self.position
 
     def update(self):
-        # Atualiza animação e movimento
         self.animate()
         self.move_towards_player()
