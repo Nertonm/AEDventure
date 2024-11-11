@@ -3,7 +3,7 @@ from support import import_folder
 
 
 class Enemy(pygame.sprite.Sprite):
-    def __init__(self, player, pos, attack_range=20, attack_damage=10):
+    def __init__(self, player, pos,walls, attack_range=20, attack_damage=10):
         super().__init__()
 
         # Initialize the enemy's image and rect
@@ -14,12 +14,12 @@ class Enemy(pygame.sprite.Sprite):
         self.import_enemy_assets()
         self.status = 'idle'
         self.frame_index = 0
-        self.animation_speed = 0.05
+        self.animation_speed = 0.15
 
         # Movement and direction control
         self.direction = pygame.math.Vector2()
         self.player = player
-        self.speed = 1.5
+        self.speed = 1
         self.position = pygame.math.Vector2(pos)
 
         # Attack parameters
@@ -29,6 +29,9 @@ class Enemy(pygame.sprite.Sprite):
         # Attack cooldown
         self.attack_cooldown = 1000
         self.last_attack_time = 0
+
+        # Walls
+        self.walls = walls
 
     def import_enemy_assets(self):
         enemy_path = '../graphics/monsters/raccoon/'
@@ -73,6 +76,25 @@ class Enemy(pygame.sprite.Sprite):
 
             self.rect.topleft = self.position
 
+    def check_collision(self):
+        if self.rect.colliderect(self.player.rect):
+            print("Player and enemy collided!")
+            self.attack_player()
+
+    def check_wall_collision(self):
+        for wall in self.walls:
+            if self.rect.colliderect(wall.rect):
+                if self.direction.x > 0:
+                    self.rect.right = wall.rect.left
+                if self.direction.x < 0:
+                    self.rect.left = wall.rect.right
+                if self.direction.y > 0:
+                    self.rect.bottom = wall.rect.top
+                if self.direction.y < 0:
+                    self.rect.top = wall.rect.bottom
+
     def update(self):
         self.animate()
         self.move_towards_player()
+        self.check_collision()
+        self.check_wall_collision()

@@ -149,9 +149,10 @@ class Level:
         self.player_can_move = True
 
     def create_enemies(self):
-        for i in range(5):
-            enemy = Enemy(self.player,(random.randint(0,800),random.randint(0,600)))
+        if len(self.enemy_sprites) == 0:
+            enemy = Enemy(self.player,(random.randint(0,800),random.randint(0,600)), self.walls)
             self.enemy_sprites.add(enemy)
+
     def check_level_completed(self):
         # Verifica se o jogador chegou ao final do nível
         if self.player.rect.colliderect(self.capecao.rect):
