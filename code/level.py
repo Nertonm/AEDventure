@@ -215,7 +215,7 @@ class Level:
 
     def create_enemies(self):
         if len(self.enemy_sprites) == 0:
-            enemy = Enemy(self.player,(random.randint(0,800),random.randint(0,600)), self.walls)
+            enemy = Enemy(self.player,(random.randint(0,800),random.randint(0,600)))
             self.enemy_sprites.add(enemy)
 
     def check_level_completed(self):
