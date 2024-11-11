@@ -9,7 +9,8 @@ import pytmx
 from capecao import *
 from hanoi import Hanoi
 from collections import deque
-
+from enemy import Enemy
+import random
 
 class Level:
     def __init__(self, difficulty):
@@ -26,6 +27,13 @@ class Level:
 
         self.bfs_start = False
         self.bfs = BFS(difficulty, self.display_surface)  # Initialize BFS object
+
+        #inimigos
+        self.enemy_sprites = pygame.sprite.Group()
+
+        self.player = Player((100,100) , [self.visible_sprites], self.obstacle_sprites)
+
+        self.create_enemies()
 
         # Carregamento do mapa e dados do TMX
         self.create_map('../map/hub.tmx', player_pos=-1)
@@ -82,6 +90,10 @@ class Level:
         self.visible_sprites.add(self.capecao)
         self.visible_sprites.player = self.player
         self.map_name = map_path.split('/')[-1].split('.')[0]  # Atualiza o nome do mapa
+
+        self.create_enemies()
+        for enemy in self.enemy_sprites:
+            self.visible_sprites.add(enemy)
 
     def process_layers(self, tmx_data):
         # Processa as camadas do TMX
@@ -201,6 +213,17 @@ class Level:
         # Reseta o estado do jogador
         self.player_can_move = True
 
+    def create_enemies(self):
+        if len(self.enemy_sprites) == 0:
+            enemy = Enemy(self.player,(random.randint(0,800),random.randint(0,600)), self.walls)
+            self.enemy_sprites.add(enemy)
+
+    def check_level_completed(self):
+        # Verifica se o jogador chegou ao final do nível
+        if self.player.rect.colliderect(self.capecao.rect):
+            return True
+        return False
+
     def run(self):
         global DIFICULDADE
 
@@ -217,6 +240,7 @@ class Level:
                 self.pause_menu.display()
         else:
             self.visible_sprites.update()
+            self.enemy_sprites.update()
 
         if self.challenge:
             self.challenge.display()
@@ -353,6 +377,9 @@ class BFS:
             return True
         else:
             print(f"Current path: {self.visited_rooms}")
+#        if self.check_level_completed():
+ #           return 'next_level'
+
 
 class YSortCameraGroup(pygame.sprite.Group):
     def __init__(self):

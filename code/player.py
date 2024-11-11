@@ -136,6 +136,15 @@ class Player(pygame.sprite.Sprite):
 		self.image = animation[int(self.frame_index)]
 		self.rect = self.image.get_rect(center = self.hitbox.center)
 
+	def take_damage(self, amount):
+		self.health -= amount
+		if self.health <= 0:
+			self.die()
+
+	def die(self):
+		# Lógica de morte do jogador
+		print("Player died!")
+
 	def update(self):
 		self.input()
 		self.cooldowns()
