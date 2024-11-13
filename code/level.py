@@ -91,9 +91,10 @@ class Level:
         self.visible_sprites.player = self.player
         self.map_name = map_path.split('/')[-1].split('.')[0]  # Atualiza o nome do mapa
 
-        self.create_enemies()
-        for enemy in self.enemy_sprites:
-            self.visible_sprites.add(enemy)
+        # Não serão necessários inimigos no momento
+        #self.create_enemies()
+        #for enemy in self.enemy_sprites:
+        #    self.visible_sprites.add(enemy)
 
     def process_layers(self, tmx_data):
         # Processa as camadas do TMX
