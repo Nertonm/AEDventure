@@ -93,7 +93,7 @@ class OpeningScreen:
             'medium': pygame.Rect(screen.get_width() // 2 - 150, screen.get_height() // 2 - 40, 320, 70),
             'hard': pygame.Rect(screen.get_width() // 2 - 150, screen.get_height() // 2 + 40, 320, 70)
         }
-        self.selected_difficulty = 'hard'
+        self.selected_difficulty = 'easy'
         self.show_difficulty_selection = False
         self.selected_button = 'start'
 
