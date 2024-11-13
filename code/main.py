@@ -42,8 +42,6 @@ class Game:
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_p or event.key == pygame.K_ESCAPE:
                         self.level.toggle_menu()
-                    if event.key == pygame.K_c and not self.level.show_challenge:
-                        self.level.start_challenge()
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     if self.level.show_challenge and not self.level.sorting_challenge.is_active:
                         self.level.sorting_challenge.check_difficulty_selection(event)
