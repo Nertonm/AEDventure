@@ -3,6 +3,8 @@ import sys
 from settings import *
 from level import Level
 from menu import *
+from dialogue import DialogBox  # Import the DialogBox class
+
 class Game:
     def __init__(self):
         pygame.init()
@@ -10,6 +12,7 @@ class Game:
         pygame.display.set_caption('AEDventure')
         self.clock = pygame.time.Clock()
         self.level = None
+        self.dialog_box = None
         self.opening_screen = OpeningScreen(self.screen)
         self.show_opening = True
 
@@ -26,6 +29,7 @@ class Game:
                     DIFFICULTY = self.opening_screen.selected_difficulty
                     print(DIFFICULTY)
                     self.level = Level(DIFFICULTY)  # Pass the updated difficulty
+                    self.dialog_box = DialogBox(self.screen, self.level)  # Initialize DialogBox
                     self.show_opening = False
                 elif click_result == "exit" or key_result == "exit":
                     pygame.quit()
@@ -49,8 +53,12 @@ class Game:
                         self.level.sorting_challenge.check_button_click(event)
                         self.level.pause_menu.check_mouse_click(event)
 
+                self.dialog_box.check_trigger(event)  # Check for dialog box trigger
+
             self.screen.fill('black')
             self.level.run()
+            if self.dialog_box.is_active:
+                self.dialog_box._draw()  # Draw the dialog box if active
             pygame.display.update()
             self.clock.tick(FPS)
 

@@ -4,6 +4,7 @@ from player import Player
 from debug import debug
 from support import *
 from menu import Menu
+from dialogue import DialogBox
 from challenge_sorting import SortingChallenge
 import pytmx
 from capecao import *
@@ -43,12 +44,14 @@ class Level:
         self.pause_menu = Menu(self)
         self.challenge = None
         self.menu = Menu(self)
+        self.dialogue_box = DialogBox(self.display_surface, self)
         self.hanoi_challenge = Hanoi(self.display_surface, self.end_challenge, difficulty)
         self.sorting_challenge = SortingChallenge(self, difficulty)
 
         # Estados do jogo
         self.show_menu = False
         self.show_challenge = False
+        self.show_dialogue = False
         self.player_can_move = True
 
     def get_pos(self, tmx_data, name):
@@ -91,9 +94,9 @@ class Level:
         self.visible_sprites.player = self.player
         self.map_name = map_path.split('/')[-1].split('.')[0]  # Atualiza o nome do mapa
 
-        self.create_enemies()
-        for enemy in self.enemy_sprites:
-            self.visible_sprites.add(enemy)
+       # # self.create_enemies()
+       #  for enemy in self.enemy_sprites:
+       #      self.visible_sprites.add(enemy)
 
     def process_layers(self, tmx_data):
         # Processa as camadas do TMX
@@ -187,6 +190,7 @@ class Level:
             self.sorting_challenge.is_active = False  # Desativa o desafio até que a dificuldade seja selecionada
             self.player_can_move = False
             self.hanoi_challenge.start()
+
     def start_challenge(self):
         # Inicia o desafio de ordenação apenas se não estiver ativo
         if not self.show_challenge and not self.show_menu:
@@ -236,6 +240,8 @@ class Level:
                     self.hanoi_challenge.display()
                 elif self.map_name == 'sorting':
                     self.sorting_challenge.display()
+            elif self.show_dialogue:
+                pass
             else:
                 self.pause_menu.display()
         else:

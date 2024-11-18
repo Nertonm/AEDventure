@@ -74,13 +74,13 @@ class Enemy(pygame.sprite.Sprite):
 
             self.rect.topleft = self.position
 
-    def check_collision(self):
-        if self.rect.colliderect(self.player.rect):
-            print("Player and enemy collided!")
-            self.attack_player()
+    # def check_collision(self):
+    #     if self.rect.colliderect(self.player.rect):
+    #         print("Player and enemy collided!")
+    #         self.attack_player()
 
 
     def update(self):
         self.animate()
         self.move_towards_player()
-        self.check_collision()
+        # self.check_collision()
