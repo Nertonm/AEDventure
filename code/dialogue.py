@@ -1,12 +1,11 @@
-import pygame, sys, time
-import settings
+import pygame
+from settings import *
 
 class DialogBox:
-    def __init__(self, display_surface, level):
-        self.display_surface = display_surface
-        self.font = pygame.font.Font(None, 36)
-        self.is_active = False
+    def __init__(self, level):
         self.level = level
+        self.display_surface = pygame.display.get_surface()
+        self.font = pygame.font.Font(UI_FONT, UI_FONT_SIZE_MENU)
         self.dialogues = {
             'hub': [
                 pygame.image.load('../graphics/dialogue/hub/dialogo_1.png'),
@@ -56,7 +55,30 @@ class DialogBox:
         self.current_dialogue = 'start'
         self.rect_images = [pygame.transform.scale(img, (960, 192)) for img in self.dialogues[self.current_dialogue]]
         self.current_image_index = 0
-        self.clock = pygame.time.Clock()
+        self.is_active = False
+        self.selection_time = None
+        self.can_move = True
+        self.background_color = (0, 0, 0, 150)
+
+    def input(self):
+        keys = pygame.key.get_pressed()
+
+        if self.can_move:
+            if keys[pygame.K_SPACE] and self.is_active:
+                self.current_image_index += 1
+                if self.current_image_index >= len(self.rect_images):
+                    self.is_active = False
+                    self.level.show_dialogue = False
+                    self.current_image_index = 0
+                    self.level.resume_game()
+                self.can_move = False
+                self.selection_time = pygame.time.get_ticks()
+
+    def selection_cooldown(self):
+        if not self.can_move:
+            current_time = pygame.time.get_ticks()
+            if current_time - self.selection_time >= 200:
+                self.can_move = True
 
     def set_dialogue(self, dialogue_name):
         if dialogue_name in self.dialogues:
@@ -66,12 +88,10 @@ class DialogBox:
 
     def _draw(self):
         if self.is_active:
-            # Desenha a superfície transparente preta
             overlay = pygame.Surface(self.display_surface.get_size(), pygame.SRCALPHA)
-            overlay.fill((0, 0, 0, 150))  # Define a transparência
+            overlay.fill(self.background_color)
             self.display_surface.blit(overlay, (0, 0))
 
-            # Desenha a imagem do diálogo
             rect_image_rect = self.rect_images[self.current_image_index].get_rect(
                 midbottom=(self.display_surface.get_width() // 2, self.display_surface.get_height() - 50))
             self.display_surface.blit(self.rect_images[self.current_image_index], rect_image_rect)
@@ -85,27 +105,8 @@ class DialogBox:
             self.level.toggle_menu()
 
     def display(self):
-        running = True
-        while running:
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    pygame.quit()
-                    sys.exit()
-                if event.type == pygame.KEYDOWN:
-                    if event.key == pygame.K_e:
-                        self.toggle_dialogue()
-                    if event.key == pygame.K_SPACE and self.is_active:
-                        self.current_image_index += 1
-                        if self.current_image_index >= len(self.rect_images):
-                            self.is_active = False
-                            self.level.show_dialogue = False
-                            self.current_image_index = 0
-                            self.level.resume_game()
-                            running = False
-                        else:
-                            self._draw()
+        self.input()
+        self.selection_cooldown()
 
-            self.level.run()  # Desenha a superfície original do level
-            self._draw()
-            pygame.display.flip()
-            self.clock.tick(60)
+        self._draw()
+        pygame.display.flip()

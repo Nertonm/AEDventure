@@ -57,11 +57,11 @@ class Player(pygame.sprite.Sprite):
 			else:
 				self.direction.x = 0
 
-			# attack input
-			if keys[ATTACK] or keys[ATTACK1]:
-				self.attacking = True
-				self.attack_time = pygame.time.get_ticks()
-				print('attack')
+			# # attack input
+			# if keys[ATTACK] or keys[ATTACK1]:
+			# 	self.attacking = True
+			# 	self.attack_time = pygame.time.get_ticks()
+			# 	print('attack')
 
 			# magic input
 			#if keys[MAGIC] or keys[MAGIC1]:
@@ -117,12 +117,12 @@ class Player(pygame.sprite.Sprite):
 					if self.direction.y < 0: # moving up
 						self.hitbox.top = sprite.hitbox.bottom
 
-	def cooldowns(self):
-		current_time = pygame.time.get_ticks()
-
-		if self.attacking:
-			if current_time - self.attack_time >= self.attack_cooldown:
-				self.attacking = False
+	# def cooldowns(self):
+	# 	current_time = pygame.time.get_ticks()
+	#
+	# 	if self.attacking:
+	# 		if current_time - self.attack_time >= self.attack_cooldown:
+	# 			self.attacking = False
 
 	def animate(self):
 		animation = self.animations[self.status]
@@ -147,7 +147,7 @@ class Player(pygame.sprite.Sprite):
 
 	def update(self):
 		self.input()
-		self.cooldowns()
+		# self.cooldowns()
 		self.get_status()
 		self.animate()
 		self.move(self.speed)

@@ -38,7 +38,7 @@ class Level:
         self.pause_menu = Menu(self)
         self.challenge = None
         self.menu = Menu(self)
-        self.dialog_box = DialogBox(self.display_surface, self)
+        self.dialog_box = DialogBox(self)
         self.hanoi_challenge = Hanoi(self.display_surface, self.end_challenge, difficulty)
         self.sorting_challenge = SortingChallenge(self, difficulty)
 
@@ -255,6 +255,7 @@ class Level:
                 elif self.map_name == 'sorting':
                     self.sorting_challenge.display()
             elif self.show_dialogue:
+                self.player_can_move = False
                 self.dialog_box.display()
             else:
                 self.pause_menu.display()
