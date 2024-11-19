@@ -29,18 +29,11 @@ class Level:
         self.bfs_start = False
         self.bfs = BFS(difficulty, self.display_surface)  # Initialize BFS object
 
-        #inimigos
-        #self.enemy_sprites = pygame.sprite.Group()
+        self.player = Player((100, 100), [self.visible_sprites], self.obstacle_sprites)
 
-        self.player = Player((100,100) , [self.visible_sprites], self.obstacle_sprites)
-
-        #self.create_enemies()
-
-        # Carregamento do mapa e dados do TMX
         self.create_map('../map/start.tmx', player_pos=-1)
         self.tmx_data = pytmx.load_pygame('../map/start.tmx')
 
-        # Inicialização de menus e desafios
         self.pause_menu = Menu(self)
         self.challenge = None
         self.menu = Menu(self)
@@ -48,11 +41,13 @@ class Level:
         self.hanoi_challenge = Hanoi(self.display_surface, self.end_challenge, difficulty)
         self.sorting_challenge = SortingChallenge(self, difficulty)
 
-        # Estados do jogo
         self.show_menu = False
         self.show_challenge = False
         self.show_dialogue = False
         self.player_can_move = True
+
+        self.door_cooldown = 1000  # Cooldown de 1 segundo
+        self.last_door_interaction = pygame.time.get_ticks()
 
     def get_pos(self, tmx_data, name):
         # Obtém a posição de um objeto no mapa pelo nome

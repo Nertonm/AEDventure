@@ -5,20 +5,55 @@ class DialogBox:
         self.display_surface = display_surface
         self.font = pygame.font.Font(None, 36)
         self.is_active = False
-        self.message = ""
         self.level = level
         self.dialogues = {
-            'capecao_hub': [
-                pygame.image.load('../graphics/dialogue/spr_dialoguebox_0.png'),
-                pygame.image.load('../graphics/dialogue/mimir.png')
+            'hub': [
+                pygame.image.load('../graphics/dialogue/hub/dialogo_1.png'),
+                pygame.image.load('../graphics/dialogue/hub/dialogo_2.png'),
+                pygame.image.load('../graphics/dialogue/hub/dialogo_3.png'),
+                pygame.image.load('../graphics/dialogue/hub/dialogo_4.png'),
+                pygame.image.load('../graphics/dialogue/hub/dialogo_5.png'),
+                pygame.image.load('../graphics/dialogue/hub/dialogo_6.png'),
+                pygame.image.load('../graphics/dialogue/hub/dialogo_7.png'),
+                pygame.image.load('../graphics/dialogue/hub/dialogo_8.png'),
+                pygame.image.load('../graphics/dialogue/hub/dialogo_9.png'),
+                pygame.image.load('../graphics/dialogue/hub/dialogo_10.png'),
+                pygame.image.load('../graphics/dialogue/hub/dialogo_11.png'),
+                pygame.image.load('../graphics/dialogue/hub/dialogo_12.png')
             ],
-            'another_character': [
-                pygame.image.load('../graphics/dialogue/AUAUAUAUAUAUAUUAUAUAUAUAUAU.png'),
-                pygame.image.load('../graphics/dialogue/spr_dialoguebox_0.png'),
+            'hanoi': [
+                pygame.image.load('../graphics/dialogue/desafio hanoi/dialogo_0.png'),
+                pygame.image.load('../graphics/dialogue/desafio hanoi/dialogo_1.png')
+            ],
+            'sorting': [
+                pygame.image.load('../graphics/dialogue/desafio sorting/dialogo_0.png'),
+                pygame.image.load('../graphics/dialogue/desafio sorting/dialogo_1.png')
+            ],
+            'room0': [
+                pygame.image.load('../graphics/dialogue/desafio grafo/dialogo_0.png'),
+                pygame.image.load('../graphics/dialogue/desafio grafo/dialogo_1.png')
+            ],
+            'meet': [
+                pygame.image.load('../graphics/dialogue/meet/dialogo_0.png'),
+                pygame.image.load('../graphics/dialogue/meet/dialogo_1.png'),
+                pygame.image.load('../graphics/dialogue/meet/dialogo_2.png'),
+                pygame.image.load('../graphics/dialogue/meet/dialogo_3.png'),
+                pygame.image.load('../graphics/dialogue/meet/dialogo_4.png'),
+                pygame.image.load('../graphics/dialogue/meet/dialogo_5.png'),
+                pygame.image.load('../graphics/dialogue/meet/dialogo_6.png'),
+                pygame.image.load('../graphics/dialogue/meet/dialogo_7.png')
+            ],
+            'start': [
+                pygame.image.load('../graphics/dialogue/start/dialogo_0.png'),
+                pygame.image.load('../graphics/dialogue/start/dialogo_1.png'),
+                pygame.image.load('../graphics/dialogue/start/dialogo_2.png'),
+                pygame.image.load('../graphics/dialogue/start/dialogo_3.png'),
+                pygame.image.load('../graphics/dialogue/start/dialogo_4.png'),
+                pygame.image.load('../graphics/dialogue/start/dialogo_5.png')
             ]
-        }  # Dicionário com listas de imagens de diálogo
-        self.current_dialogue = 'another_character'
-        self.rect_images = [pygame.transform.scale(img, (960, 192)) for img in self.dialogues[self.current_dialogue]]  # Redimensiona as imagens se necessário
+        }  # Dictionary with lists of dialogue images
+        self.current_dialogue = 'start'
+        self.rect_images = [pygame.transform.scale(img, (960, 192)) for img in self.dialogues[self.current_dialogue]]  # Resize images if necessary
         self.current_image_index = 0
 
     def set_dialogue(self, dialogue_name):
@@ -27,8 +62,7 @@ class DialogBox:
             self.rect_images = [pygame.transform.scale(img, (960, 192)) for img in self.dialogues[self.current_dialogue]]
             self.current_image_index = 0
 
-    def display(self, message):
-        self.message = message
+    def display(self):
         self.is_active = True
         self._draw()
 
@@ -39,22 +73,27 @@ class DialogBox:
             overlay.fill((0, 0, 0))
             self.display_surface.blit(overlay, (0, 0))
 
-            message_surf = self.font.render(self.message, True, (255, 255, 255))
-            message_rect = message_surf.get_rect(center=(self.display_surface.get_width() // 2, self.display_surface.get_height() // 2))
-            self.display_surface.blit(message_surf, message_rect)
-
             # Desenha a imagem do retângulo um pouco mais acima do centro inferior da tela
             rect_image_rect = self.rect_images[self.current_image_index].get_rect(midbottom=(self.display_surface.get_width() // 2, self.display_surface.get_height() - 50))
             self.display_surface.blit(self.rect_images[self.current_image_index], rect_image_rect)
 
-    def check_trigger(self, event):
+    def handle_input(self, event):
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_f:  # Assumindo que a tecla 'F' é o gatilho
-                self.is_active = not self.is_active
-                self.level.show_dialogue = not self.level.show_dialogue
-                self.level.toggle_menu()
-                if self.is_active:
-                    self.display("This is a dialog box")
+                self.toggle_dialogue()
             elif event.key == pygame.K_SPACE and self.is_active:  # Verifica se a barra de espaço foi pressionada
-                self.current_image_index = (self.current_image_index + 1) % len(self.rect_images)  # Alterna para a próxima imagem
-                self._draw()
+                self.current_image_index += 1
+                if self.current_image_index >= len(self.rect_images):
+                    self.is_active = False
+                    self.level.show_dialogue = False
+                    self.level.toggle_menu()
+                    self.current_image_index = 0  # Reseta o índice de seleção
+                else:
+                    self._draw()
+
+    def toggle_dialogue(self):
+        self.is_active = not self.is_active
+        self.level.show_dialogue = not self.level.show_dialogue
+        self.level.toggle_menu()
+        if self.is_active:
+            self.display()

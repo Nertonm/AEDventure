@@ -53,7 +53,7 @@ class Game:
                         self.level.sorting_challenge.check_button_click(event)
                         self.level.pause_menu.check_mouse_click(event)
 
-                self.dialog_box.check_trigger(event)  # Check for dialog box trigger
+                self.dialog_box.handle_input(event)  # Handle input for dialog box
 
             self.screen.fill('black')
             self.level.run()
