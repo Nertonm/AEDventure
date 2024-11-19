@@ -3,7 +3,6 @@ import sys
 from settings import *
 from level import Level
 from menu import *
-from dialogue import DialogBox  # Import the DialogBox class
 
 class Game:
     def __init__(self):
@@ -12,7 +11,6 @@ class Game:
         pygame.display.set_caption('AEDventure')
         self.clock = pygame.time.Clock()
         self.level = None
-        self.dialog_box = None
         self.opening_screen = OpeningScreen(self.screen)
         self.show_opening = True
 
@@ -29,7 +27,6 @@ class Game:
                     DIFFICULTY = self.opening_screen.selected_difficulty
                     print(DIFFICULTY)
                     self.level = Level(DIFFICULTY)  # Pass the updated difficulty
-                    self.dialog_box = DialogBox(self.screen, self.level)  # Initialize DialogBox
                     self.show_opening = False
                 elif click_result == "exit" or key_result == "exit":
                     pygame.quit()
@@ -43,22 +40,19 @@ class Game:
                 if event.type == pygame.QUIT:
                     pygame.quit()
                     sys.exit()
-                if event.type == pygame.KEYDOWN:
-                    if event.key == pygame.K_p or event.key == pygame.K_ESCAPE:
-                        self.level.toggle_menu()
-                if event.type == pygame.MOUSEBUTTONDOWN:
-                    if self.level.show_challenge and not self.level.sorting_challenge.is_active:
-                        self.level.sorting_challenge.check_difficulty_selection(event)
-                    else:
-                        self.level.sorting_challenge.check_button_click(event)
-                        self.level.pause_menu.check_mouse_click(event)
-
-                self.dialog_box.handle_input(event)  # Handle input for dialog box
+                if not self.level.dialog_box.is_active:  # Verifica se o diálogo não está ativo
+                    if event.type == pygame.KEYDOWN:
+                        if event.key == pygame.K_p or event.key == pygame.K_ESCAPE:
+                            self.level.toggle_menu()
+                    if event.type == pygame.MOUSEBUTTONDOWN:
+                        if self.level.show_challenge and not self.level.sorting_challenge.is_active:
+                            self.level.sorting_challenge.check_difficulty_selection(event)
+                        else:
+                            self.level.sorting_challenge.check_button_click(event)
+                            self.level.pause_menu.check_mouse_click(event)
 
             self.screen.fill('black')
             self.level.run()
-            if self.dialog_box.is_active:
-                self.dialog_box._draw()  # Draw the dialog box if active
             pygame.display.update()
             self.clock.tick(FPS)
 

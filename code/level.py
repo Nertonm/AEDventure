@@ -38,7 +38,7 @@ class Level:
         self.pause_menu = Menu(self)
         self.challenge = None
         self.menu = Menu(self)
-        self.dialogue_box = DialogBox(self.display_surface, self)
+        self.dialog_box = DialogBox(self.display_surface, self)
         self.hanoi_challenge = Hanoi(self.display_surface, self.end_challenge, difficulty)
         self.sorting_challenge = SortingChallenge(self, difficulty)
 
@@ -146,7 +146,6 @@ class Level:
             keys = pygame.key.get_pressed()
             if keys[pygame.K_e]:
                 if self.player.rect.colliderect(sprite.rect):
-                    print(sprite.rect)
                     door = self.get_name(tmx_data, sprite.rect)
                     if self.get_player_new_location(tmx_data,sprite.rect):
                         player_pos = self.get_player_new_location(tmx_data,sprite.rect)
@@ -159,15 +158,31 @@ class Level:
             keys = pygame.key.get_pressed()
             if keys[pygame.K_e]:
                 if self.player.rect.colliderect(sprite.rect):
-                    print(sprite.rect)
                     if self.map_name == 'hanoi':
                         self.start_hanoi()
                     if self.map_name == 'sorting':
                         self.start_challenge()
 
+    def check_collision_with_npc(self):
+        for npc in self.npc:
+            if self.player.rect.colliderect(npc.rect):
+                keys = pygame.key.get_pressed()
+                if keys[pygame.K_e] and not self.dialog_box.is_active:
+                    self.dialog_box.set_dialogue(self.map_name)
+                    self.dialog_box.toggle_dialogue()
+                    self.pause_game()
+
+    def pause_game(self):
+        self.game_paused = True
+        self.player_can_move = False
+
+    def resume_game(self):
+        self.game_paused = False
+        self.player_can_move = True
+    
     def toggle_menu(self):
         # Não faz nada se o menu de desafio estiver ativo
-        if self.show_challenge:
+        if self.show_challenge or self.show_dialogue:
             return
 
         # Alterna o estado do menu de pausa
@@ -196,6 +211,7 @@ class Level:
             self.show_challenge = True
             self.sorting_challenge.is_active = False  # Desativa o desafio até que a dificuldade seja selecionada
             self.player_can_move = False
+
     def toggle_challenge_menu(self):
         # Alterna o estado do menu de desafio
         self.sorting_challenge.toggle_menu()
@@ -239,7 +255,7 @@ class Level:
                 elif self.map_name == 'sorting':
                     self.sorting_challenge.display()
             elif self.show_dialogue:
-                pass
+                self.dialog_box.display()
             else:
                 self.pause_menu.display()
         else:
@@ -270,6 +286,7 @@ class Level:
 
         self.check_collision_with_puzzle(self.tmx_data)
         self.check_collision_with_door(self.tmx_data)
+        self.check_collision_with_npc()
         debug(f"game_paused: {self.game_paused}")
         debug(f"player_can_move: {self.player_can_move}", 50)
         debug(f"sorting_challenge_complete: {self.sorting_challenge_complete}", 100)
