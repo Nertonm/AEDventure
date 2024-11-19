@@ -7,7 +7,7 @@ class Player(pygame.sprite.Sprite):
 		super().__init__(groups)
 		self.image = pygame.image.load('../graphics/player/down_idle/idle_down.png').convert_alpha()
 		self.rect = self.image.get_rect(topleft = pos)
-		self.hitbox = self.rect.inflate(0, -26)
+		self.hitbox = pygame.Rect(self.rect.left - 20, self.rect.bottom, self.rect.width - 20, 20)
 
 		# graphics setup
 		self.import_player_assets()
@@ -31,26 +31,39 @@ class Player(pygame.sprite.Sprite):
 			self.animations[animation] = import_folder(full_path)
 
 	def input(self):
-		keys = pygame.key.get_pressed()
+		if not self.attacking:
+			keys = pygame.key.get_pressed()
 
-		# movement input
-		if keys[MOVE_UP] or keys[MOVE_UP1]:
-			self.direction.y = -1
-			self.status = 'up'
-		elif keys[MOVE_DOWN] or keys[MOVE_DOWN1]:
-			self.direction.y = 1
-			self.status = 'down'
-		else:
-			self.direction.y = 0
+			# movement input
+			if keys[MOVE_UP] or keys[MOVE_UP1]:
+				self.direction.y = -1
+				self.status = 'up'
+			elif keys[MOVE_DOWN] or keys[MOVE_DOWN1]:
+				self.direction.y = 1
+				self.status = 'down'
+			else:
+				self.direction.y = 0
 
-		if keys[MOVE_RIGHT] or keys[MOVE_RIGHT1]:
-			self.direction.x = 1
-			self.status = 'right'
-		elif keys[MOVE_LEFT] or keys[MOVE_LEFT1]:
-			self.direction.x = -1
-			self.status = 'left'
-		else:
-			self.direction.x = 0
+			if keys[MOVE_RIGHT] or keys[MOVE_RIGHT1]:
+				self.direction.x = 1
+				self.status = 'right'
+			elif keys[MOVE_LEFT] or keys[MOVE_LEFT1]:
+				self.direction.x = -1
+				self.status = 'left'
+			else:
+				self.direction.x = 0
+
+			# # attack input
+			# if keys[ATTACK] or keys[ATTACK1]:
+			# 	self.attacking = True
+			# 	self.attack_time = pygame.time.get_ticks()
+			# 	print('attack')
+
+			# magic input
+			#if keys[MAGIC] or keys[MAGIC1]:
+			#	self.attacking = True
+			#	self.attack_time = pygame.time.get_ticks()
+			#	print('magic')
 
 	def get_status(self):
 
@@ -89,6 +102,7 @@ class Player(pygame.sprite.Sprite):
 					if self.direction.y < 0: # moving up
 						self.hitbox.top = sprite.hitbox.bottom
 
+
 	def cooldowns(self):
 		current_time = pygame.time.get_ticks()
 
@@ -115,7 +129,7 @@ class Player(pygame.sprite.Sprite):
 
 	def update(self):
 		self.input()
-		self.cooldowns()
+		# self.cooldowns()
 		self.get_status()
 		self.animate()
 		self.move(self.speed)

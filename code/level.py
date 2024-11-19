@@ -4,12 +4,13 @@ from player import Player
 from debug import debug
 from support import *
 from menu import Menu
+from dialogue import DialogBox
 from challenge_sorting import SortingChallenge
 import pytmx
-from capecao import *
+#from capecao import *
 from hanoi import Hanoi
 from collections import deque
-from enemy import Enemy
+#from enemy import Enemy
 import random
 
 class Level:
@@ -21,6 +22,7 @@ class Level:
         self.obstacle_sprites = pygame.sprite.Group()
         self.doors = pygame.sprite.Group()
         self.puzzle = pygame.sprite.Group()
+        self.npc = pygame.sprite.Group()
         self.sorting_challenge_complete = False
         self.difficulty = difficulty
         self.map_name = 'room0'  # Nome do mapa atual
@@ -28,28 +30,25 @@ class Level:
         self.bfs_start = False
         self.bfs = BFS(difficulty, self.display_surface)  # Initialize BFS object
 
-        #inimigos
-        self.enemy_sprites = pygame.sprite.Group()
+        self.player = Player((100, 100), [self.visible_sprites], self.obstacle_sprites)
 
-        self.player = Player((100,100) , [self.visible_sprites], self.obstacle_sprites)
+        self.create_map('../map/start.tmx', player_pos=-1)
+        self.tmx_data = pytmx.load_pygame('../map/start.tmx')
 
-        self.create_enemies()
-
-        # Carregamento do mapa e dados do TMX
-        self.create_map('../map/hub.tmx', player_pos=-1)
-        self.tmx_data = pytmx.load_pygame('../map/hub.tmx')
-
-        # Inicialização de menus e desafios
         self.pause_menu = Menu(self)
         self.challenge = None
         self.menu = Menu(self)
+        self.dialog_box = DialogBox(self)
         self.hanoi_challenge = Hanoi(self.display_surface, self.end_challenge, difficulty)
         self.sorting_challenge = SortingChallenge(self, difficulty)
 
-        # Estados do jogo
         self.show_menu = False
         self.show_challenge = False
+        self.show_dialogue = False
         self.player_can_move = True
+
+        self.door_cooldown = 1000  # Cooldown de 1 segundo
+        self.last_door_interaction = pygame.time.get_ticks()
 
     def get_pos(self, tmx_data, name):
         # Obtém a posição de um objeto no mapa pelo nome
@@ -86,15 +85,11 @@ class Level:
         else:
             player_pos = self.get_pos(tmx_data, player_pos)
         self.player = Player((player_pos), [self.visible_sprites], self.obstacle_sprites)
-        self.capecao = Capecao(self.player, (self.get_pos(tmx_data, 'capecao')))
-        self.visible_sprites.add(self.capecao)
+        #self.capecao = Capecao(self.player, (self.get_pos(tmx_data, 'capecao')))
+        #self.visible_sprites.add(self.capecao)
         self.visible_sprites.player = self.player
         self.map_name = map_path.split('/')[-1].split('.')[0]  # Atualiza o nome do mapa
 
-        # Não serão necessários inimigos no momento
-        #self.create_enemies()
-        #for enemy in self.enemy_sprites:
-        #    self.visible_sprites.add(enemy)
 
     def process_layers(self, tmx_data):
         # Processa as camadas do TMX
@@ -124,6 +119,8 @@ class Level:
             Tile(position, [self.visible_sprites, self.obstacle_sprites], 'wall', tile)
         elif layer_name == 'puzzle':
             Tile(position, [self.visible_sprites, self.obstacle_sprites, self.puzzle], 'door', tile)
+        elif layer_name == 'npc':
+            Tile(position, [self.visible_sprites, self.obstacle_sprites, self.npc], 'npc', tile)
 
     def change_map(self, new_map_path, player_pos):
         # Clear all sprite groups
@@ -136,8 +133,8 @@ class Level:
         self.tmx_data = pytmx.load_pygame(new_map_path)
         self.create_map(new_map_path, player_pos)
 
-        self.capecao = Capecao(self.player, (self.get_pos(self.tmx_data, 'capecao')))
-        self.visible_sprites.add(self.capecao)
+        #self.capecao = Capecao(self.player, (self.get_pos(self.tmx_data, 'capecao')))
+        #self.visible_sprites.add(self.capecao)
         self.visible_sprites.player = self.player
 
     def check_collision_with_door(self, tmx_data):
@@ -146,7 +143,6 @@ class Level:
             keys = pygame.key.get_pressed()
             if keys[pygame.K_e]:
                 if self.player.rect.colliderect(sprite.rect):
-                    print(sprite.rect)
                     door = self.get_name(tmx_data, sprite.rect)
                     if self.get_player_new_location(tmx_data,sprite.rect):
                         player_pos = self.get_player_new_location(tmx_data,sprite.rect)
@@ -159,15 +155,31 @@ class Level:
             keys = pygame.key.get_pressed()
             if keys[pygame.K_e]:
                 if self.player.rect.colliderect(sprite.rect):
-                    print(sprite.rect)
                     if self.map_name == 'hanoi':
                         self.start_hanoi()
                     if self.map_name == 'sorting':
                         self.start_challenge()
 
+    def check_collision_with_npc(self):
+        for npc in self.npc:
+            if self.player.rect.colliderect(npc.rect):
+                keys = pygame.key.get_pressed()
+                if keys[pygame.K_e] and not self.dialog_box.is_active:
+                    self.dialog_box.set_dialogue(self.map_name)
+                    self.dialog_box.toggle_dialogue()
+                    self.pause_game()
+
+    def pause_game(self):
+        self.game_paused = True
+        self.player_can_move = False
+
+    def resume_game(self):
+        self.game_paused = False
+        self.player_can_move = True
+    
     def toggle_menu(self):
         # Não faz nada se o menu de desafio estiver ativo
-        if self.show_challenge:
+        if self.show_challenge or self.show_dialogue:
             return
 
         # Alterna o estado do menu de pausa
@@ -188,6 +200,7 @@ class Level:
             self.sorting_challenge.is_active = False  # Desativa o desafio até que a dificuldade seja selecionada
             self.player_can_move = False
             self.hanoi_challenge.start()
+
     def start_challenge(self):
         # Inicia o desafio de ordenação apenas se não estiver ativo
         if not self.show_challenge and not self.show_menu:
@@ -195,6 +208,7 @@ class Level:
             self.show_challenge = True
             self.sorting_challenge.is_active = False  # Desativa o desafio até que a dificuldade seja selecionada
             self.player_can_move = False
+
     def toggle_challenge_menu(self):
         # Alterna o estado do menu de desafio
         self.sorting_challenge.toggle_menu()
@@ -214,16 +228,16 @@ class Level:
         # Reseta o estado do jogador
         self.player_can_move = True
 
-    def create_enemies(self):
-        if len(self.enemy_sprites) == 0:
-            enemy = Enemy(self.player,(random.randint(0,800),random.randint(0,600)))
-            self.enemy_sprites.add(enemy)
+    #def create_enemies(self):
+    #    if len(self.enemy_sprites) == 0:
+    #        enemy = Enemy(self.player,(random.randint(0,800),random.randint(0,600)))
+    #        self.enemy_sprites.add(enemy)
 
-    def check_level_completed(self):
-        # Verifica se o jogador chegou ao final do nível
-        if self.player.rect.colliderect(self.capecao.rect):
-            return True
-        return False
+    #def check_level_completed(self):
+    #    # Verifica se o jogador chegou ao final do nível
+    #    if self.player.rect.colliderect(self.capecao.rect):
+    #        return True
+    #    return False
 
     def run(self):
         global DIFICULDADE
@@ -237,11 +251,14 @@ class Level:
                     self.hanoi_challenge.display()
                 elif self.map_name == 'sorting':
                     self.sorting_challenge.display()
+            elif self.show_dialogue:
+                self.player_can_move = False
+                self.dialog_box.display()
             else:
                 self.pause_menu.display()
         else:
             self.visible_sprites.update()
-            self.enemy_sprites.update()
+            #self.enemy_sprites.update()
 
         if self.challenge:
             self.challenge.display()
@@ -267,10 +284,11 @@ class Level:
 
         self.check_collision_with_puzzle(self.tmx_data)
         self.check_collision_with_door(self.tmx_data)
-        debug(f"game_paused: {self.game_paused}")
-        debug(f"player_can_move: {self.player_can_move}", 50)
-        debug(f"sorting_challenge_complete: {self.sorting_challenge_complete}", 100)
-        debug(f"Current map: {self.map_name}", 150)  # Adiciona a linha de debug para o nome do mapa
+        self.check_collision_with_npc()
+        # debug(f"game_paused: {self.game_paused}")
+        # debug(f"player_can_move: {self.player_can_move}", 50)
+        # debug(f"sorting_challenge_complete: {self.sorting_challenge_complete}", 100)
+        # debug(f"Current map: {self.map_name}", 150)  # Adiciona a linha de debug para o nome do mapa
 
 class BFS:
     def __init__(self,difficulty='easy', display_surface=None):

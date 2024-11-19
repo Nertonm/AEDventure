@@ -3,6 +3,7 @@ import sys
 from settings import *
 from level import Level
 from menu import *
+
 class Game:
     def __init__(self):
         pygame.init()
@@ -39,15 +40,16 @@ class Game:
                 if event.type == pygame.QUIT:
                     pygame.quit()
                     sys.exit()
-                if event.type == pygame.KEYDOWN:
-                    if event.key == pygame.K_p or event.key == pygame.K_ESCAPE:
-                        self.level.toggle_menu()
-                if event.type == pygame.MOUSEBUTTONDOWN:
-                    if self.level.show_challenge and not self.level.sorting_challenge.is_active:
-                        self.level.sorting_challenge.check_difficulty_selection(event)
-                    else:
-                        self.level.sorting_challenge.check_button_click(event)
-                        self.level.pause_menu.check_mouse_click(event)
+                if not self.level.dialog_box.is_active:  # Verifica se o diálogo não está ativo
+                    if event.type == pygame.KEYDOWN:
+                        if event.key == pygame.K_p or event.key == pygame.K_ESCAPE:
+                            self.level.toggle_menu()
+                    if event.type == pygame.MOUSEBUTTONDOWN:
+                        if self.level.show_challenge and not self.level.sorting_challenge.is_active:
+                            self.level.sorting_challenge.check_difficulty_selection(event)
+                        else:
+                            self.level.sorting_challenge.check_button_click(event)
+                            self.level.pause_menu.check_mouse_click(event)
 
             self.screen.fill('black')
             self.level.run()

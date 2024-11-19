@@ -373,7 +373,7 @@ class SortingChallenge:
                     center=(self.display_surface.get_width() // 2, self.display_surface.get_height() // 2 - 100))
                 self.display_surface.blit(completed_message_surf, completed_message_rect)
 
-        debug(self.array, 500)
+        # debug(self.array, 500)
         pygame.display.update()
 
     def display_algorithm_selection(self):

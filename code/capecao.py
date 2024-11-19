@@ -6,7 +6,7 @@ class Capecao(pygame.sprite.Sprite):
         super().__init__()
         self.image = pygame.image.load('../graphics/capecao/right_idle/idle_right.png').convert_alpha()
         self.rect = self.image.get_rect(topleft = position)
-        #self.hitbox = self.rect.inflate(0, -26)
+        self.hitbox = self.rect.inflate(0, -26)
 
         # graphics setup
         self.import_capecao_assets()
@@ -46,7 +46,7 @@ class Capecao(pygame.sprite.Sprite):
         elif not moving and '_idle' not in self.status:
             self.status += '_idle'
 
-    
+
     def move(self):
         # checa se o capecao esta se movendo ou nao
         moving = False
@@ -60,10 +60,8 @@ class Capecao(pygame.sprite.Sprite):
             self.rect.x -= self.speed
             self.status = 'left'
             moving = True
-        self.moving(moving)
-
         # IF trata do capecao seguindo o jogador por baixo
-        if self.rect.y < self.player.rect.y + 62:
+        elif self.rect.y < self.player.rect.y + 62:
             self.rect.y += self.speed
             moving = True
         # ELIF trata do capecao seguindo o jogador por cima
@@ -76,6 +74,6 @@ class Capecao(pygame.sprite.Sprite):
     def update(self):
         self.animate()
         self.move()
-        
+
 
 
