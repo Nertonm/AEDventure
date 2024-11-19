@@ -10,7 +10,7 @@ import pytmx
 from capecao import *
 from hanoi import Hanoi
 from collections import deque
-from enemy import Enemy
+#from enemy import Enemy
 import random
 
 class Level:
@@ -30,11 +30,11 @@ class Level:
         self.bfs = BFS(difficulty, self.display_surface)  # Initialize BFS object
 
         #inimigos
-        self.enemy_sprites = pygame.sprite.Group()
+        #self.enemy_sprites = pygame.sprite.Group()
 
         self.player = Player((100,100) , [self.visible_sprites], self.obstacle_sprites)
 
-        self.create_enemies()
+        #self.create_enemies()
 
         # Carregamento do mapa e dados do TMX
         self.create_map('../map/hub.tmx', player_pos=-1)
@@ -217,10 +217,10 @@ class Level:
         # Reseta o estado do jogador
         self.player_can_move = True
 
-    def create_enemies(self):
-        if len(self.enemy_sprites) == 0:
-            enemy = Enemy(self.player,(random.randint(0,800),random.randint(0,600)))
-            self.enemy_sprites.add(enemy)
+    #def create_enemies(self):
+    #    if len(self.enemy_sprites) == 0:
+    #        enemy = Enemy(self.player,(random.randint(0,800),random.randint(0,600)))
+    #        self.enemy_sprites.add(enemy)
 
     def check_level_completed(self):
         # Verifica se o jogador chegou ao final do nível
@@ -246,7 +246,7 @@ class Level:
                 self.pause_menu.display()
         else:
             self.visible_sprites.update()
-            self.enemy_sprites.update()
+            #self.enemy_sprites.update()
 
         if self.challenge:
             self.challenge.display()
