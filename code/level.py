@@ -7,7 +7,7 @@ from menu import Menu
 from dialogue import DialogBox
 from challenge_sorting import SortingChallenge
 import pytmx
-from capecao import *
+#from capecao import *
 from hanoi import Hanoi
 from collections import deque
 #from enemy import Enemy
@@ -37,8 +37,8 @@ class Level:
         #self.create_enemies()
 
         # Carregamento do mapa e dados do TMX
-        self.create_map('../map/hub.tmx', player_pos=-1)
-        self.tmx_data = pytmx.load_pygame('../map/hub.tmx')
+        self.create_map('../map/start.tmx', player_pos=-1)
+        self.tmx_data = pytmx.load_pygame('../map/start.tmx')
 
         # Inicialização de menus e desafios
         self.pause_menu = Menu(self)
@@ -89,8 +89,8 @@ class Level:
         else:
             player_pos = self.get_pos(tmx_data, player_pos)
         self.player = Player((player_pos), [self.visible_sprites], self.obstacle_sprites)
-        self.capecao = Capecao(self.player, (self.get_pos(tmx_data, 'capecao')))
-        self.visible_sprites.add(self.capecao)
+        #self.capecao = Capecao(self.player, (self.get_pos(tmx_data, 'capecao')))
+        #self.visible_sprites.add(self.capecao)
         self.visible_sprites.player = self.player
         self.map_name = map_path.split('/')[-1].split('.')[0]  # Atualiza o nome do mapa
 
@@ -138,8 +138,8 @@ class Level:
         self.tmx_data = pytmx.load_pygame(new_map_path)
         self.create_map(new_map_path, player_pos)
 
-        self.capecao = Capecao(self.player, (self.get_pos(self.tmx_data, 'capecao')))
-        self.visible_sprites.add(self.capecao)
+        #self.capecao = Capecao(self.player, (self.get_pos(self.tmx_data, 'capecao')))
+        #self.visible_sprites.add(self.capecao)
         self.visible_sprites.player = self.player
 
     def check_collision_with_door(self, tmx_data):
@@ -222,11 +222,11 @@ class Level:
     #        enemy = Enemy(self.player,(random.randint(0,800),random.randint(0,600)))
     #        self.enemy_sprites.add(enemy)
 
-    def check_level_completed(self):
-        # Verifica se o jogador chegou ao final do nível
-        if self.player.rect.colliderect(self.capecao.rect):
-            return True
-        return False
+    #def check_level_completed(self):
+    #    # Verifica se o jogador chegou ao final do nível
+    #    if self.player.rect.colliderect(self.capecao.rect):
+    #        return True
+    #    return False
 
     def run(self):
         global DIFICULDADE
