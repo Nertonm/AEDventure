@@ -288,10 +288,10 @@ class Level:
         self.check_collision_with_puzzle(self.tmx_data)
         self.check_collision_with_door(self.tmx_data)
         self.check_collision_with_npc()
-        debug(f"game_paused: {self.game_paused}")
-        debug(f"player_can_move: {self.player_can_move}", 50)
-        debug(f"sorting_challenge_complete: {self.sorting_challenge_complete}", 100)
-        debug(f"Current map: {self.map_name}", 150)  # Adiciona a linha de debug para o nome do mapa
+        # debug(f"game_paused: {self.game_paused}")
+        # debug(f"player_can_move: {self.player_can_move}", 50)
+        # debug(f"sorting_challenge_complete: {self.sorting_challenge_complete}", 100)
+        # debug(f"Current map: {self.map_name}", 150)  # Adiciona a linha de debug para o nome do mapa
 
 class BFS:
     def __init__(self,difficulty='easy', display_surface=None):
