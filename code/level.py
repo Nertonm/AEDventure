@@ -22,6 +22,7 @@ class Level:
         self.obstacle_sprites = pygame.sprite.Group()
         self.doors = pygame.sprite.Group()
         self.puzzle = pygame.sprite.Group()
+        self.npc = pygame.sprite.Group()
         self.sorting_challenge_complete = False
         self.difficulty = difficulty
         self.map_name = 'room0'  # Nome do mapa atual
@@ -121,6 +122,8 @@ class Level:
             Tile(position, [self.visible_sprites, self.obstacle_sprites], 'wall', tile)
         elif layer_name == 'puzzle':
             Tile(position, [self.visible_sprites, self.obstacle_sprites, self.puzzle], 'door', tile)
+        elif layer_name == 'npc':
+            Tile(position, [self.visible_sprites, self.obstacle_sprites, self.npc], 'npc', tile)
 
     def change_map(self, new_map_path, player_pos):
         # Clear all sprite groups
