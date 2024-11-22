@@ -1,4 +1,4 @@
-import pygame 
+import pygame
 from settings import *
 from support import import_folder
 
@@ -7,7 +7,7 @@ class Player(pygame.sprite.Sprite):
 		super().__init__(groups)
 		self.image = pygame.image.load('../graphics/player/down_idle/idle_down.png').convert_alpha()
 		self.rect = self.image.get_rect(topleft = pos)
-		self.hitbox = pygame.Rect(self.rect.left - 20, self.rect.bottom, self.rect.width - 20, 20)
+		self.hitbox = pygame.Rect(self.rect.left , self.rect.bottom, self.rect.width - 60 , 50)
 
 		# graphics setup
 		self.import_player_assets()
@@ -15,7 +15,7 @@ class Player(pygame.sprite.Sprite):
 		self.frame_index = 0
 		self.animation_speed = 0.15
 
-		# movement 
+		# movement
 		self.direction = pygame.math.Vector2()
 		self.speed = 5
 
@@ -31,9 +31,7 @@ class Player(pygame.sprite.Sprite):
 			self.animations[animation] = import_folder(full_path)
 
 	def input(self):
-		if not self.attacking:
 			keys = pygame.key.get_pressed()
-
 			# movement input
 			if keys[MOVE_UP] or keys[MOVE_UP1]:
 				self.direction.y = -1
@@ -108,8 +106,7 @@ class Player(pygame.sprite.Sprite):
 
 	def animate(self):
 		animation = self.animations[self.status]
-
-		# loop over the frame index 
+		# loop over the frame index
 		self.frame_index += self.animation_speed
 		if self.frame_index >= len(animation):
 			self.frame_index = 0
