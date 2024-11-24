@@ -98,7 +98,7 @@
 </data>
  </layer>
  <objectgroup id="5" name="player">
-  <object id="1" name="player" x="710" y="782"/>
+  <object id="1" name="player" x="732" y="645"/>
   <object id="2" name="capecao" x="642" y="784"/>
  </objectgroup>
  <objectgroup id="6" name="door">
