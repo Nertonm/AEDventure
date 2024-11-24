@@ -12,6 +12,8 @@ from hanoi import Hanoi
 from collections import deque
 #from enemy import Enemy
 import random
+from labirinto import *
+from PIL import Image , ImageDraw
 
 class Level:
     def __init__(self, difficulty):
@@ -442,3 +444,48 @@ class YSortCameraGroup(pygame.sprite.Group):
         for sprite in sorted(self.sprites(), key=lambda sprite: sprite.rect.centery):
             offset_pos = sprite.rect.topleft - self.offset
             self.display_surface.blit(sprite.image, offset_pos)
+
+class Labirinto:
+    def __init__(self, difficulty):
+        if difficulty == 'easy':
+            tamanho = [5, 5]
+        elif difficulty == 'medium':
+            tamanho = [10, 10]
+        elif difficulty == 'hard':
+            tamanho = [15, 10]
+        else:
+            raise ValueError("Invalid difficulty level")
+
+        # Tamanho do espaço entre as linhas e colunas
+        size = 33
+
+        # Retorna um lista com duas sublista contendo 1 para parede, 0 para espaço vazio -
+        l = gerar_labirinto(tamanho[0], tamanho[1])
+
+        # Cria uma imagem em branco 
+        img_new = Image.new('RGBA', (tamanho[0] * (size + 1) + 1, tamanho[1] * (size + 1) + 1), (0, 0, 0, 0))
+
+        # Cria uma "máscara" onde o labirinto vai ser desenhado
+        draw = ImageDraw.Draw(img_new)
+
+        # Desenha o labirinto na "máscara"
+        desenhar_labirinto_pillow(draw, tamanho, l, size)
+
+        # Salva a imagem com o labirinto já desenhado
+        img_new.save("rect.png", "PNG")
+
+        size += 1
+        id_jogador = 0
+        cor = [randint(15, 255), randint(15, 255), randint(15, 255)]
+        tela = pg.display.set_mode((tamanho[0] * size + 1, tamanho[1] * size + 1))
+        fps = pg.time.Clock()
+        img = Image.open("rect.png")
+        fundo = pg.image.load("rect.png")
+        fundo_rect = fundo.get_rect()
+        img = img.convert('RGB')
+        rgb = img.load()
+        move_square = pg.draw.rect(tela, cor, ((tamanho[0] * size - size / 2, size / 2), (size - 1, size - 1)))
+        posicoes = {id_jogador: [[tamanho[0] * size - size / 2, size / 2], cor]}
+        print(posicoes[id_jogador][0])
+        tela.blit(fundo, fundo_rect)
+        pg.display.update()
