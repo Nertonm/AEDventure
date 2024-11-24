@@ -121,7 +121,7 @@ class Level:
         elif layer_name == 'puzzle':
             Tile(position, [self.visible_sprites, self.obstacle_sprites, self.puzzle], 'door', tile)
         elif layer_name == 'npc':
-            Tile(position, [self.visible_sprites, self.obstacle_sprites, self.npc], 'npc', tile)
+            Tile(position, [self.visible_sprites, self.npc], 'npc', tile)
 
     def change_map(self, new_map_path, player_pos):
         # Clear all sprite groups
@@ -314,7 +314,7 @@ class YSortCameraGroup(pygame.sprite.Group):
         # Desenha os sprites com base na posição do jogador
         self.update_offset(player)
         self.draw_floor()
-        self.draw_sprites()
+        self.draw_sprites()a
 
     def update_offset(self, player):
         # Atualiza o offset da câmera baseado na posição do jogador

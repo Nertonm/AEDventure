@@ -7,9 +7,9 @@ class Player(pygame.sprite.Sprite):
 		super().__init__(groups)
 		self.image = pygame.image.load('../graphics/player/down_idle/idle_down.png').convert_alpha()
 		self.rect = self.image.get_rect(topleft = pos)
-		self.hitbox = pygame.Rect(self.rect.left , self.rect.bottom, self.rect.width - 60 , 50)
-
+		self.hitbox = pygame.Rect(self.rect.left, self.rect.bottom , self.rect.width - 60 , 10)
 		# graphics setup
+
 		self.import_player_assets()
 		self.status = 'down'
 		self.frame_index = 0
