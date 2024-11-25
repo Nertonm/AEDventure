@@ -128,7 +128,7 @@
   <object id="8" name="nodec" x="700" y="450"/>
  </objectgroup>
  <objectgroup id="6" name="door">
-  <object id="5" name="tonoded" x="640" y="640">
+  <object id="5" name="tonodec" x="640" y="640">
    <properties>
     <property name="path" value="../map/medium/nodec.tmx"/>
    </properties>
@@ -141,6 +141,7 @@
   <object id="9" name="tonode0" x="768" y="0">
    <properties>
     <property name="path" value="../map/medium/node0.tmx"/>
+    <property name="player" value="nodea"/>
    </properties>
   </object>
  </objectgroup>

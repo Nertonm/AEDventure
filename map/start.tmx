@@ -106,7 +106,7 @@
     <property name="path" value="../map/meet.tmx"/>
    </properties>
   </object>
-  <object id="6" x="896" y="128">
+  <object id="6" x="1024" y="128">
    <properties>
     <property name="path" value="..map/meet.tmx"/>
    </properties>

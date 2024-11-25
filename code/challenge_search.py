@@ -1,6 +1,6 @@
 from collections import deque
 from itertools import permutations
-
+import pygame
 
 class BFS:
     def __init__(self, level, difficulty='easy', display_surface=None):
@@ -122,10 +122,15 @@ class DFS:
         self.display_surface = display_surface
         self.win = False
         self.lost = False
+        self.failure_message = "You failed!"
+        self.font = pygame.font.Font(None, 36)
         self.visited_rooms = ['node0']
         self.rooms = ['node0', 'nodea', 'nodeb', 'nodec', 'noded']
         self.qnt_nodes = 5
         if self.difficulty == 'medium':
+            self.rooms = ['node0', 'nodea', 'nodec', 'noded', 'nodeb', 'nodee', 'nodeg', 'nodef']
+            self.qnt_nodes = 8
+        elif self.difficulty == 'hard':
             self.rooms = ['node0', 'nodea', 'nodec', 'noded', 'nodeb', 'nodee', 'nodeg', 'nodef']
             self.qnt_nodes = 8
 
@@ -159,6 +164,9 @@ class DFS:
                         return False
                 else:
                     print(f"{room} is not part of a valid DFS path!")
+                    message_surf = self.font.render(self.failure_message, True, (255, 0, 0))
+                    message_rect = message_surf.get_rect(center=self.display_surface.get_rect().center)
+                    self.display_surface.blit(message_surf, message_rect)
                     self.lost = True
                     print("Wrong path!")
                     return False

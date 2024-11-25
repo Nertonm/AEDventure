@@ -50,7 +50,7 @@
 </data>
  </layer>
  <objectgroup id="4" name="player">
-  <object id="1" name="player" x="228" y="725"/>
+  <object id="1" name="player" x="266.667" y="755"/>
   <object id="3" name="arvore" x="1282.92" y="897.333"/>
  </objectgroup>
  <layer id="3" name="door" width="30" height="20">

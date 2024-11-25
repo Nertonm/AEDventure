@@ -58,6 +58,11 @@ class DialogBox:
                 pygame.image.load('../graphics/dialogue/start/dialogo_2.png'),
                 pygame.image.load('../graphics/dialogue/start/dialogo_3.png'),
                 pygame.image.load('../graphics/dialogue/start/dialogo_4.png')
+            ],
+            'node0': [
+                pygame.image.load('../graphics/dialogue/desafio árvore/dialogo_0.png'),
+                pygame.image.load('../graphics/dialogue/desafio árvore/dialogo_1.png'),
+                pygame.image.load('../graphics/dialogue/desafio árvore/dialogo_2.png'),
             ]
         }
         self.current_dialogue = 'start'
