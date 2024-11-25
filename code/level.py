@@ -293,7 +293,7 @@ class Level:
             self.bfs_start = False
 
         #DFS logic
-        if self.map_name == 'node0' and self.completion == 5:
+        if self.map_name == 'node0':
             self.dfs_start = True
             #self.dfs.visit_room('room0')
             self.mapa_atual = self.map_name  # Initialize mapa_atual with the current map
@@ -301,10 +301,10 @@ class Level:
             if self.mapa_atual != self.map_name:
                 self.dfs.visit_room(f"{self.map_name}")
                 self.mapa_atual = self.map_name  # Initialize mapa_atual with the current map
-                print(f"{self.bfs.rooms}")
+                print(f"{self.dfs.rooms}")
                 print(f"Current path: {self.dfs.visited_rooms}")
                 if self.map_name == 'hub.tmx':
-                    self.bfs.visited_rooms.clear()
+                    self.dfs.visited_rooms.clear()
                 #print(self.bfs.visited_rooms)
                 #print(self.bfs.required_path)
         if self.dfs.is_complete() and self.dfs_start:

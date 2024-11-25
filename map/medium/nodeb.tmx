@@ -125,7 +125,7 @@
  <objectgroup id="5" name="player">
   <object id="1" name="player" x="768" y="256"/>
   <object id="2" name="nodef" x="976" y="446"/>
-  <object id="8" name="nodee" x="700" y="450"/>
+  <object id="8" name="nodec" x="700" y="450"/>
  </objectgroup>
  <objectgroup id="6" name="door">
   <object id="5" name="tonodee" x="640" y="640">

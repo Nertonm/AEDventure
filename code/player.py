@@ -75,7 +75,7 @@ class Player(pygame.sprite.Sprite):
 			self.direction = self.direction.normalize()
 		keys = pygame.key.get_pressed()
 		if keys[SPRINT] or keys[SPRINT1]:
-			speed = speed*2
+			speed = speed*5
 		self.hitbox.x += self.direction.x * speed
 		self.collision('horizontal')
 		self.hitbox.y += self.direction.y * speed
