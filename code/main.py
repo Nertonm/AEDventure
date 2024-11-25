@@ -18,6 +18,7 @@ class Game:
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
+
             click_result = self.opening_screen.check_click(event)
             key_result = self.opening_screen.check_key(event)
             if click_result == "start_game" or key_result == "start_game":

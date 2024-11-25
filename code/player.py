@@ -7,7 +7,7 @@ class Player(pygame.sprite.Sprite):
 		super().__init__(groups)
 		self.image = pygame.image.load('../graphics/player/down_idle/idle_down.png').convert_alpha()
 		self.rect = self.image.get_rect(topleft = pos)
-		self.hitbox = pygame.Rect(self.rect.left, self.rect.bottom , self.rect.width - 60 , 10)
+		self.hitbox = pygame.Rect(self.rect.left, self.rect.bottom , self.rect.width - 90 , 10)
 		# graphics setup
 
 		self.import_player_assets()
@@ -64,26 +64,25 @@ class Player(pygame.sprite.Sprite):
 			#	print('magic')
 
 	def get_status(self):
-
 		# idle status
 		if self.direction.x == 0 and self.direction.y == 0:
 			if not 'idle' in self.status:
 				self.status = self.status + '_idle'
 
 
-	def move(self,speed):
+	def move(self, speed):
 		if self.direction.magnitude() != 0:
 			self.direction = self.direction.normalize()
 		keys = pygame.key.get_pressed()
 		if keys[SPRINT] or keys[SPRINT1]:
-			speed = speed*1.8
+			speed = speed*2
 		self.hitbox.x += self.direction.x * speed
 		self.collision('horizontal')
 		self.hitbox.y += self.direction.y * speed
 		self.collision('vertical')
 		self.rect.center = self.hitbox.center
 
-	def collision(self,direction):
+	def collision(self, direction):
 		if direction == 'horizontal':
 			for sprite in self.obstacle_sprites:
 				if sprite.hitbox.colliderect(self.hitbox):

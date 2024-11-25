@@ -9,7 +9,6 @@ from challenge_sorting import SortingChallenge
 import pytmx
 #from capecao import *
 from hanoi import Hanoi
-from collections import deque
 #from enemy import Enemy
 from challenge_search import *
 import random
@@ -31,10 +30,13 @@ class Level:
         self.bfs_start = False
         self.bfs = BFS(difficulty, self.display_surface)  # Initialize BFS object
 
+        self.dfs_start = False
+        self.dfs = DFS(difficulty, self.display_surface)  # Initialize BFS object
+
         self.player = Player((100, 100), [self.visible_sprites], self.obstacle_sprites)
 
-        self.create_map('../map/start.tmx', player_pos=-1)
-        self.tmx_data = pytmx.load_pygame('../map/start.tmx')
+        self.create_map('../map/easy/node0.tmx', player_pos=-1)
+        self.tmx_data = pytmx.load_pygame('../map/easy/node0.tmx')
 
         self.pause_menu = Menu(self)
         self.challenge = None
@@ -50,6 +52,8 @@ class Level:
 
         self.door_cooldown = 1000  # Cooldown de 1 segundo
         self.last_door_interaction = pygame.time.get_ticks()
+
+        self.completion = 0
 
     def get_pos(self, tmx_data, name):
         # Obtém a posição de um objeto no mapa pelo nome
@@ -224,6 +228,7 @@ class Level:
     def mark_challenge_complete(self):
         # Marca o desafio como completo
         self.sorting_challenge_complete = True
+        self.completion += 1
 
     def reset_player_state(self):
         # Reseta o estado do jogador
@@ -263,8 +268,11 @@ class Level:
         if self.challenge:
             self.challenge.display()
 
+        #FOR DEBUG
+        self.completion = 5
+
         # BFS logic
-        if self.map_name == 'room0':
+        if self.map_name == 'room0' and self.completion != 5:
             self.bfs_start = True
             self.bfs.visit_room('room0')
             self.mapa_atual = self.map_name  # Initialize mapa_atual with the current map
@@ -281,6 +289,31 @@ class Level:
             self.bfs.current_tuple_visited.clear()
             self.change_map('../map/hub.tmx', player_pos=-1)
             self.bfs_start = False
+
+
+
+        #DFS logic
+        if self.map_name == 'node0' and self.completion == 5:
+            self.dfs_start = True
+            #self.dfs.visit_room('room0')
+            self.mapa_atual = self.map_name  # Initialize mapa_atual with the current map
+        if self.dfs_start:
+            if self.mapa_atual != self.map_name:
+                self.dfs.visit_room(f"{self.map_name}")
+                self.mapa_atual = self.map_name  # Initialize mapa_atual with the current map
+                print(f"{self.bfs.rooms}")
+                print(f"Current path: {self.dfs.visited_rooms}")
+                if self.map_name == 'hub.tmx':
+                    self.bfs.visited_rooms.clear()
+                #print(self.bfs.visited_rooms)
+                #print(self.bfs.required_path)
+        if self.dfs.is_complete() and self.dfs_start:
+            self.dfs_start = False
+            self.dfs.visited_rooms.clear()
+            self.dfs.current_tuple_index = 0
+            self.change_map('../map/hub.tmx', player_pos=-1)
+            self.dfs_start = False
+
 
         self.check_collision_with_puzzle(self.tmx_data)
         self.check_collision_with_door(self.tmx_data)
@@ -314,7 +347,7 @@ class YSortCameraGroup(pygame.sprite.Group):
         # Desenha os sprites com base na posição do jogador
         self.update_offset(player)
         self.draw_floor()
-        self.draw_sprites()a
+        self.draw_sprites()
 
     def update_offset(self, player):
         # Atualiza o offset da câmera baseado na posição do jogador
