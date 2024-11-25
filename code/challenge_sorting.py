@@ -247,7 +247,7 @@ class SortingChallenge:
         self.sorted = all(self.array[i] <= self.array[i + 1] for i in range(len(self.array) - 1))
         if self.sorted:
             self.success_message = "Congratulations!"
-            self.level.mark_challenge_complete()
+            self.level.mark_challenge_complete(self.__class__)
             self.challenge_completed = True  # Desafio completado
 
     def check_button_click(self, event):
