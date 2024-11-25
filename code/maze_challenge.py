@@ -27,14 +27,27 @@ class MazeChallenge:
             self.tamanho = [8, 8]
         # tamanho do espaço entre linhas
         self.size = 33
-        self.maze = gerar_labirinto(self.tamanho[0], self.tamanho[1])
+        self.maze = self.gerar_labirinto()
         img_new = Image.new('RGBA', (self.tamanho[0] * (self.size + 1) + 1, self.tamanho[1] * (self.size + 1) + 1), (0, 0, 0, 0))
-        self.draw = ImageDraw.Draw(self.img_new)
+        self.draw = ImageDraw.Draw(img_new)
+        self.draw.rectangle((0, 0, self.tamanho[0] * self.size, self.tamanho[1] * self.size), fill=(255, 255, 255), outline=(255, 255, 255))
+        #self.mode = img_new.mode
+        #self.img_size = img_new.size
+        #self.data = img_new.tobytes()
+        #self.lab_img = pygame.image.fromstring(self.data, self.img_size, self.mode)
+
         self.desenhar_labirinto_pillow()
-        img_new.save("rect.png", "PNG")
+        img_new.save("../graphics/rect.png", "PNG")
         self.size += 1
         self.id_jogador = 0
         self.cor = [randint(15, 255), randint(15, 255), randint(15, 255)]
+        self.img = Image.open("../graphics/rect.png")
+        self.fundo = pygame.image.load("../graphics/rect.png")
+        self.fundo_rect = self.fundo.get_rect(topleft=(0, 0))
+        self.img = self.img.convert('RGB')
+        self.rgb = self.img.load()
+        self.posicoes = {self.id_jogador: [[self.tamanho[0] * self.size - self.size / 2, self.size / 2], self.cor]}
+        self.movements_stack = []
 
         # Graphics settings
         self.display_surface = pygame.display.get_surface()
@@ -52,6 +65,16 @@ class MazeChallenge:
             self.display_surface.get_height() - button_height - 10,
             button_width, button_height)
 
+        self.buttons = {
+            "up": pygame.Rect(50, self.display_surface.get_height() - 160, 120, 50),
+            "down": pygame.Rect(180, self.display_surface.get_height() - 160, 120, 50),
+            "left": pygame.Rect(290, self.display_surface.get_height() - 160, 120, 50),
+            "right": pygame.Rect(400, self.display_surface.get_height() - 160, 120, 50),
+            "unstack": pygame.Rect(510, self.display_surface.get_height() - 160, 200, 50)
+        }
+        self.button_order = ["up", "down", "left", "right", "unstack"]
+        self.selected_button = 0
+
     @property
     def challenge_completed(self):
         return self.success
@@ -64,8 +87,75 @@ class MazeChallenge:
             raise ValueError("challenge_completed must be boolean")
 
     # def generate_something(self): ...
+    def gerar_labirinto(self):
+        vis = [[0] * self.tamanho[0] + [1] for _ in range(self.tamanho[1])] + [[1] * (self.tamanho[0] + 1)]
+        ver = [["|  "] * self.tamanho[0] + ['|'] for _ in range(self.tamanho[1])] + [[]]
+        hor = [["+--"] * self.tamanho[0] + ['+'] for _ in range(self.tamanho[1] + 1)]
 
-    # def start(self): ...
+        def walk(x, y):
+            vis[y][x] = 1
+            d = [(x - 1, y), (x, y + 1), (x + 1, y), (x, y - 1)]
+            shuffle(d)
+            for (xx, yy) in d:
+                if vis[yy][xx]:
+                    continue
+                if xx == x:
+                    hor[max(y, yy)][x] = "+  "
+                if yy == y:
+                    ver[y][max(x, xx)] = "   "
+                walk(xx, yy)
+        walk(randrange(self.tamanho[0]), randrange(self.tamanho[1]))
+        labirinto = [[],[]]
+        for (a, b) in zip(hor, ver):
+            for l in a:
+                if l == '+--':
+                    labirinto[0].append(1)
+                elif l == '+':
+                    pass
+                else:
+                    labirinto[0].append(0)
+            if len(b) != 0:
+                for c in b:
+                    if '|' in c:
+                        labirinto[1].append(1)
+                    else:
+                        labirinto[1].append(0)
+
+        return labirinto
+
+    def process_movements(self):
+        while self.movements_stack:
+            direction = self.movements_stack.pop()
+            if direction == "up":
+                self.posicoes, jogou = self.cima(self.rgb, self.size, self.posicoes, self.id_jogador)
+            elif direction == "down":
+                self.posicoes, jogou = self.baixo(self.rgb, self.size, self.posicoes, self.id_jogador)
+            elif direction == "left":
+                self.posicoes, jogou = self.esquerda(self.rgb, self.size, self.posicoes, self.id_jogador)
+            elif direction == "right":
+                self.posicoes, jogou = self.direita(self.rgb, self.size, self.posicoes, self.id_jogador)
+            self.posicionar_jogadores(self.display_surface, self.posicoes, self.size)
+            pygame.display.update()
+
+    def desenhar_labirinto_pillow(self):
+        contX = contY = 0
+        cor = (255, 255, 255)
+        for yy in range(0, self.tamanho[1] * self.size + 1, self.size):
+            for xx in range(0, self.tamanho[0] * self.size + 1, self.size):
+                try:
+                    if self.maze[0][contX]:
+                        self.draw.line((xx, yy, xx + self.size, yy), fill=cor, width=2)
+                    if self.maze[1][contY]:
+                        self.draw.line((xx, yy, xx, yy + self.size), fill=cor, width=2)
+                except IndexError:
+                    pass
+                contX += 1
+            contX = 0
+            contY += 1
+        self.desenha_fim_pillow()
+
+    def desenha_fim_pillow(self):
+        self.draw.rectangle((1, self.tamanho[1] * self.size - self.size + 1, self.size - 1, self.tamanho[1] * self.size - 1), fill=(255, 0, 0), outline=(255, 0, 0))
 
     def toggle_menu(self):
         # Alterna o estado do menu de desafio
@@ -94,37 +184,37 @@ class MazeChallenge:
             return
 
         # Put here your specific input code
-            for event in pygame.event.get():
+        for event in pygame.event.get():
 
-                if event.type == pygame.KEYDOWN:
-                    if event.key == pygame.K_LEFT:
-                        self_selected_button = (self.selected_button - 1) % len(self.button_order)
-                    if event.key == pygame.K_RIGHT:
-                        self.selected_button = (self.selected_button + 1) % len(self.button_order)
-                    if event.key == pygame.K_RETURN:
-                        if self.button_order[self.selected_button] == "up":
-                            self.movements_stack.append("up")
-                        elif self.button_order[self.selected_button] == "down":
-                            self.movements_stack.append("down")
-                        elif self.button_order[self.selected_button] == "left":
-                            self.movements_stack.append("left")
-                        elif self.button_order[self.selected_button] == "right":
-                            self.movements_stack.append("right")
-                        elif self.button_order[self.selected_button] == "enter":
-                            self.process_movements()
-                self.check_button_click(event)
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_LEFT:
+                    self_selected_button = (self.selected_button - 1) % len(self.button_order)
+                if event.key == pygame.K_RIGHT:
+                    self.selected_button = (self.selected_button + 1) % len(self.button_order)
+                if event.key == pygame.K_RETURN:
+                    if self.button_order[self.selected_button] == "up":
+                        self.movements_stack.append("up")
+                    elif self.button_order[self.selected_button] == "down":
+                        self.movements_stack.append("down")
+                    elif self.button_order[self.selected_button] == "left":
+                        self.movements_stack.append("left")
+                    elif self.button_order[self.selected_button] == "right":
+                        self.movements_stack.append("right")
+                    elif self.button_order[self.selected_button] == "enter":
+                        self.process_movements()
+            self.check_button_click(event)
 
 
     def reset_with_failure(self):
         ...
 
     def is_solved(self):
-        ...
-
-        if ...:
-            self.success = True
-            self.level.mark_challenge_complete(self.__class__)
-            self.challenge_completed = True
+        for i, p in self.posicoes.items():
+            if p[0] == [self.size / 2, self.tamanho[1] * self.size - self.size / 2]:
+                self.level.mark_challenge_complete(self.__class__)
+                self.challenge_completed = True
+                return True
+        return False
 
     def check_button_click(self, event):
         if not self.is_active:
@@ -156,12 +246,12 @@ class MazeChallenge:
         mouse_pos = pygame.mouse.get_pos()
         self.button_hovered = self.close_button.collidepoint(mouse_pos)
 
-    def check_won(self, posicao, tamanho, size):
-        for ID, p in posicao.items():
-            if p[0] == [size / 2, tamanho[1] * size - size / 2]:
-                return True
-
-        return False
+    def draw_buttons(self):
+        for i, (text, rect) in enumerate(self.buttons.items()):
+            color = (0, 0, 0) if i != self.selected_button else (255, 0, 0)
+            pygame.draw.rect(self.display_surface, color, rect)
+            label = self.font.render(text, True, (255, 255, 255))
+            self.display_surface.blit(label, (rect.x + 10, rect.y + 10))
 
     def display(self):
         self.input()
@@ -174,13 +264,15 @@ class MazeChallenge:
         self.display_surface.blit(surface, (0, 0))
 
         if not self.success and not self.failure:
-            # Desenha o labirinto
-            self.desenhar_labirinto_pillow()
+            # Desenha o labirinto (altera self.draw)
+            self.display_surface.blit(self.fundo,self.fundo_rect)
+
+
             #codigo do jogo
             self.draw_buttons()
 
-            vencedor = self.check_won(self.posicoes, self.tamanho, self.size)
-            pygame.display.update()
+            vencedor = self.is_solved()
+
             for pos in self.posicoes.values():
                 x, y = pos[0]
                 pygame.draw.rect(self.display_surface, pos[1], ((pos[0][0] - self.size / 2 + 1, pos[0][1] - self.size / 2 + 1), (self.size - 1, self.size - 1)))

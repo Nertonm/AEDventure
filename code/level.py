@@ -6,11 +6,13 @@ from support import *
 from menu import Menu
 from dialogue import DialogBox
 from challenge_sorting import SortingChallenge
+from challenge_search import *
 import pytmx
 #from capecao import *
 from hanoi import Hanoi
 from collections import deque
 #from enemy import Enemy
+from maze_challenge import MazeChallenge
 import random
 
 class Level:
@@ -32,15 +34,16 @@ class Level:
 
         self.player = Player((100, 100), [self.visible_sprites], self.obstacle_sprites)
 
-        self.create_map('../map/start.tmx', player_pos=-1)
-        self.tmx_data = pytmx.load_pygame('../map/start.tmx')
+        self.create_map('../map/maze.tmx', player_pos=-1)
+        self.tmx_data = pytmx.load_pygame('../map/maze.tmx')
 
         self.pause_menu = Menu(self)
         self.challenge = None
         self.menu = Menu(self)
         self.dialog_box = DialogBox(self)
-        self.hanoi_challenge = Hanoi(self.display_surface, self.end_challenge, difficulty)
+        self.hanoi_challenge = Hanoi(self, self.display_surface, self.end_challenge, difficulty)
         self.sorting_challenge = SortingChallenge(self, difficulty)
+        self.maze_challenge = MazeChallenge(self, difficulty)
 
         self.show_menu = False
         self.show_challenge = False
@@ -159,6 +162,8 @@ class Level:
                         self.start_hanoi()
                     if self.map_name == 'sorting':
                         self.start_challenge()
+                    if self.map_name == 'maze':
+                        self.start_maze()
 
     def check_collision_with_npc(self):
         for npc in self.npc:
@@ -187,11 +192,6 @@ class Level:
         self.player_can_move = not self.game_paused
         self.show_menu = self.game_paused  # Atualiza o estado de exibição do menu de pausa
 
-    def end_challenge(self):
-        self.game_paused = False
-        self.show_challenge = False
-        self.player_can_move = True
-
     def start_hanoi(self):
         # Inicia o desafio de ordenação apenas se não estiver ativo
         if not self.show_challenge and not self.show_menu:
@@ -200,6 +200,14 @@ class Level:
             self.sorting_challenge.is_active = False  # Desativa o desafio até que a dificuldade seja selecionada
             self.player_can_move = False
             self.hanoi_challenge.start()
+
+    def start_maze(self):
+        # Inicia o desafio de ordenação apenas se não estiver ativo
+        if not self.show_challenge and not self.show_menu:
+            self.game_paused = True
+            self.show_challenge = True
+            self.maze_challenge.is_active = False
+            self.player_can_move = False
 
     def start_challenge(self):
         # Inicia o desafio de ordenação apenas se não estiver ativo
@@ -251,6 +259,8 @@ class Level:
                     self.hanoi_challenge.display()
                 elif self.map_name == 'sorting':
                     self.sorting_challenge.display()
+                elif self.map_name == 'maze':
+                    self.maze_challenge.display()
             elif self.show_dialogue:
                 self.player_can_move = False
                 self.dialog_box.display()
@@ -289,115 +299,6 @@ class Level:
         # debug(f"player_can_move: {self.player_can_move}", 50)
         # debug(f"sorting_challenge_complete: {self.sorting_challenge_complete}", 100)
         # debug(f"Current map: {self.map_name}", 150)  # Adiciona a linha de debug para o nome do mapa
-
-class BFS:
-    def __init__(self,difficulty='easy', display_surface=None):
-        self.difficulty = difficulty
-        self.display_surface = display_surface
-        self.win = False
-        self.visited_rooms = []
-        self.rooms = {
-            'room0': ['room1_up', 'room1_down', 'room1_left', 'room1_right', 'room1_down_right'],
-            'room1_up': ['room2_up_left', 'room2_up_right'],
-            'room1_down': ['room2_left_down', 'room2_down'],
-            'room1_left': ['room2_up_left', 'room2_left'],
-            'room1_right': ['room2_right', 'room2_up_right'],
-            'room1_down_right': ['room2_down_right', 'room2_right'],
-            'room2_up_left': ['room3_up_left', 'room3_up'],
-            'room2_up_right': ['room3_up_right', 'room3_up'],
-            'room2_left_down': ['room3_down_left'],
-            'room2_down': ['room3_down_left', 'room3_down_right'],
-            'room2_right': ['room3_right_down', 'room3_right_up'],
-            'room2_down_right': ['room3_down_right'],
-            'room2_left': ['room3_left', 'room3_left_up', 'room3_left_down'],
-            'room3_up_left': [],
-            'room3_up': [],
-            'room3_up_right': [],
-            'room3_down_left': [],
-            'room3_down_right': [],
-            'room3_right_down': [],
-            'room3_right_up': [],
-            'room3_left': [],
-            'room3_left_up': [],
-            'room3_left_down': [],
-        }
-        if difficulty == 'hard':
-            self.required_path = [('room0'),
-                                  ('room1_up', 'room1_down', 'room1_left', 'room1_right',
-                                   'room1_down_right'), ('room2_up_left',
-                                'room2_up_right', 'room2_left_down', 'room2_down',
-                                'room2_right', 'room2_down_right', 'room2_left'),
-                                ('room3_up_left','room3_up','room3_up_right',
-                               'room3_down_left','room3_down_right','room3_right_down',
-                               'room3_right_left','room3_left','room3_left_up','room3_left_down')]
-        elif difficulty == 'medium':
-            self.required_path = [('room0'),
-                                  ('room1_up', 'room1_down', 'room1_left', 'room1_right',
-                                   'room1_down_right'), ('room2_up_left',
-                                'room2_up_right', 'room2_left_down', 'room2_down',
-                                'room2_right', 'room2_down_right', 'room2_left')]
-        elif difficulty == 'easy':
-            self.required_path = [('room0'),
-                                ('room1_up','room1_down', 'room1_left', 'room1_right',
-                                'room1_down_right')]
-        self.current_tuple_index = 0
-        self.current_tuple_visited = set()
-
-    def is_complete(self):
-        return self.win
-
-    def visit_room(self, room):
-        if self.win == False:
-            current_tuple = self.required_path[self.current_tuple_index]
-            if isinstance(current_tuple, tuple):
-                if (room not in current_tuple) and (room not in self.visited_rooms):
-                    print("Caminho errado")
-                    return False
-            else:
-                if room != current_tuple:
-                    print("Caminho errado")
-                    return False
-
-            if room in self.rooms:
-                if room not in self.visited_rooms:
-                    self.visited_rooms.append(room)
-                    self.current_tuple_visited.add(room)
-                    self.check_path()
-                return True
-            print("Caminho errado")
-            return False
-    def bfs(self, start_room, target_room):
-        visited = set()
-        queue = deque([start_room])
-
-        while queue:
-            current_room = queue.popleft()
-            if current_room == target_room:
-                return True
-            if current_room not in visited:
-                visited.add(current_room)
-                queue.extend(self.rooms[current_room])
-        return False
-
-    def check_path(self):
-        current_tuple = self.required_path[self.current_tuple_index]
-        if isinstance(current_tuple, tuple):
-            if all(room in self.current_tuple_visited for room in current_tuple):
-                self.current_tuple_index += 1
-                self.current_tuple_visited.clear()
-        else:
-            if current_tuple in self.current_tuple_visited:
-                self.current_tuple_index += 1
-                self.current_tuple_visited.clear()
-
-        if self.current_tuple_index == len(self.required_path):
-            print("Path completed successfully!")
-            self.win = True
-            return True
-        else:
-            print(f"Current path: {self.visited_rooms}")
-#        if self.check_level_completed():
- #           return 'next_level'
 
 
 class YSortCameraGroup(pygame.sprite.Group):

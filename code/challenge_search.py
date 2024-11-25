@@ -1,4 +1,5 @@
 class BFS:
+    def __init__(self, display_surface, difficulty):
         self.difficulty = difficulty
         self.display_surface = display_surface
         self.win = False
