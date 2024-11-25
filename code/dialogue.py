@@ -8,6 +8,7 @@ class DialogBox:
         self.font = pygame.font.Font(UI_FONT, UI_FONT_SIZE_MENU)
         self.dialogues = {
             'hub': [
+                pygame.image.load('../graphics/dialogue/hub/dialogo_0.png'),
                 pygame.image.load('../graphics/dialogue/hub/dialogo_1.png'),
                 pygame.image.load('../graphics/dialogue/hub/dialogo_2.png'),
                 pygame.image.load('../graphics/dialogue/hub/dialogo_3.png'),
@@ -17,21 +18,29 @@ class DialogBox:
                 pygame.image.load('../graphics/dialogue/hub/dialogo_7.png'),
                 pygame.image.load('../graphics/dialogue/hub/dialogo_8.png'),
                 pygame.image.load('../graphics/dialogue/hub/dialogo_9.png'),
-                pygame.image.load('../graphics/dialogue/hub/dialogo_10.png'),
-                pygame.image.load('../graphics/dialogue/hub/dialogo_11.png'),
-                pygame.image.load('../graphics/dialogue/hub/dialogo_12.png')
+                pygame.image.load('../graphics/dialogue/hub/dialogo_10.png')
             ],
             'hanoi': [
                 pygame.image.load('../graphics/dialogue/desafio hanoi/dialogo_0.png'),
-                pygame.image.load('../graphics/dialogue/desafio hanoi/dialogo_1.png')
+                pygame.image.load('../graphics/dialogue/desafio hanoi/dialogo_1.png'),
+                pygame.image.load('../graphics/dialogue/desafio hanoi/dialogo_2.png'),
+                pygame.image.load('../graphics/dialogue/desafio hanoi/dialogo_3.png')
             ],
             'sorting': [
                 pygame.image.load('../graphics/dialogue/desafio sorting/dialogo_0.png'),
-                pygame.image.load('../graphics/dialogue/desafio sorting/dialogo_1.png')
+                pygame.image.load('../graphics/dialogue/desafio sorting/dialogo_1.png'),
+                pygame.image.load('../graphics/dialogue/desafio sorting/dialogo_2.png'),
+                pygame.image.load('../graphics/dialogue/desafio sorting/dialogo_3.png')
             ],
             'room0': [
-                pygame.image.load('../graphics/dialogue/desafio grafo/dialogo_0.png'),
-                pygame.image.load('../graphics/dialogue/desafio grafo/dialogo_1.png')
+                pygame.image.load('../graphics/dialogue/desafio árvore/dialogo_0.png'),
+                pygame.image.load('../graphics/dialogue/desafio árvore/dialogo_1.png'),
+                pygame.image.load('../graphics/dialogue/desafio árvore/dialogo_2.png')
+            ],
+            'stack': [
+                pygame.image.load('../graphics/dialogue/desafio stack/dialogo_0.png'),
+                pygame.image.load('../graphics/dialogue/desafio stack/dialogo_1.png'),
+                pygame.image.load('../graphics/dialogue/desafio stack/dialogo_2.png')
             ],
             'meet': [
                 pygame.image.load('../graphics/dialogue/meet/dialogo_0.png'),
@@ -48,12 +57,11 @@ class DialogBox:
                 pygame.image.load('../graphics/dialogue/start/dialogo_1.png'),
                 pygame.image.load('../graphics/dialogue/start/dialogo_2.png'),
                 pygame.image.load('../graphics/dialogue/start/dialogo_3.png'),
-                pygame.image.load('../graphics/dialogue/start/dialogo_4.png'),
-                pygame.image.load('../graphics/dialogue/start/dialogo_5.png')
+                pygame.image.load('../graphics/dialogue/start/dialogo_4.png')
             ]
         }
         self.current_dialogue = 'start'
-        self.rect_images = [pygame.transform.scale(img, (960, 192)) for img in self.dialogues[self.current_dialogue]]
+        self.rect_images = [pygame.transform.scale(img, (840, 240)) for img in self.dialogues[self.current_dialogue]]
         self.current_image_index = 0
         self.is_active = False
         self.selection_time = None
@@ -83,7 +91,7 @@ class DialogBox:
     def set_dialogue(self, dialogue_name):
         if dialogue_name in self.dialogues:
             self.current_dialogue = dialogue_name
-            self.rect_images = [pygame.transform.scale(img, (960, 192)) for img in self.dialogues[self.current_dialogue]]
+            self.rect_images = [pygame.transform.scale(img, (840, 240)) for img in self.dialogues[self.current_dialogue]]
             self.current_image_index = 0
 
     def _draw(self):

@@ -5,6 +5,8 @@ WIDTH    = 1280
 HEIGHT   = 720
 FPS      = 60
 TILESIZE = 128
+
+SPEED = 5
 DIFFICULTY = 'medium'  # 'easy', 'medium', or 'hard'
 # Key bindings
 MOVE_UP = pygame.K_UP
@@ -24,6 +26,10 @@ SPRINT1 = pygame.K_LSHIFT
 # Cores
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
+GREY = (170, 170, 170)
+VIOLET = (86, 55, 103)
+PURPLE = (54, 13, 45)
+
 TEXT_COLOR = (255, 255, 255)  # Default text color
 TEXT_COLOR_SELECTED = (0, 255, 0)  # Color for the first selected number
 TEXT_COLOR_SECOND_SELECTED = (0, 255, 200)  # Color for the second selected number

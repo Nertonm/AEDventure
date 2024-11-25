@@ -10,6 +10,9 @@ class Tile(pygame.sprite.Sprite):
 			self.rect = self.image.get_rect(topleft = (pos[0],pos[1]))
 		if sprite_type == 'invisible':
 			self.rect = self.image.get_rect(topleft = pos)
+		if sprite_type == 'npc':
+			self.image = pygame.transform.scale(self.image,(TILESIZE*2,TILESIZE*2))
+			self.rect = self.image.get_rect(topleft = pos)
 		else:
 			self.rect = self.image.get_rect(topleft = pos)
 		self.hitbox = self.rect.inflate(0,0)

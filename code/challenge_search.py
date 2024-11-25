@@ -1,5 +1,4 @@
 class BFS:
-    def __init__(self,difficulty='easy', display_surface=None):
         self.difficulty = difficulty
         self.display_surface = display_surface
         self.win = False
@@ -104,5 +103,3 @@ class BFS:
             return True
         else:
             print(f"Current path: {self.visited_rooms}")
-#        if self.check_level_completed():
- #           return 'next_level'

@@ -7,14 +7,11 @@ from menu import Menu
 from dialogue import DialogBox
 from challenge_sorting import SortingChallenge
 import pytmx
-# from capecao import *
+#from capecao import *
 from hanoi import Hanoi
 from collections import deque
-from maze_challenge import MazeChallenge
-# from enemy import Enemy
-from challenge_search import BFS
+#from enemy import Enemy
 import random
-
 
 class Level:
     def __init__(self, difficulty):
@@ -31,23 +28,19 @@ class Level:
         self.map_name = 'room0'  # Nome do mapa atual
 
         self.bfs_start = False
-        # Initialize BFS object
-        self.bfs = BFS(difficulty, self.display_surface)
+        self.bfs = BFS(difficulty, self.display_surface)  # Initialize BFS object
 
-        self.player = Player(
-            (100, 100), [self.visible_sprites], self.obstacle_sprites)
+        self.player = Player((100, 100), [self.visible_sprites], self.obstacle_sprites)
 
-        self.create_map('../map/maze.tmx', player_pos=-1)
-        self.tmx_data = pytmx.load_pygame('../map/maze.tmx')
+        self.create_map('../map/start.tmx', player_pos=-1)
+        self.tmx_data = pytmx.load_pygame('../map/start.tmx')
 
         self.pause_menu = Menu(self)
         self.challenge = None
         self.menu = Menu(self)
         self.dialog_box = DialogBox(self)
-        self.hanoi_challenge = Hanoi(
-            self.display_surface, self.end_challenge, difficulty)
+        self.hanoi_challenge = Hanoi(self.display_surface, self.end_challenge, difficulty)
         self.sorting_challenge = SortingChallenge(self, difficulty)
-        self.maze_challenge = MazeChallenge(self, difficulty)
 
         self.show_menu = False
         self.show_challenge = False
@@ -91,13 +84,12 @@ class Level:
             player_pos = self.get_pos(tmx_data, 'player')
         else:
             player_pos = self.get_pos(tmx_data, player_pos)
-        self.player = Player(
-            (player_pos), [self.visible_sprites], self.obstacle_sprites)
-        # self.capecao = Capecao(self.player, (self.get_pos(tmx_data, 'capecao')))
-        # self.visible_sprites.add(self.capecao)
+        self.player = Player((player_pos), [self.visible_sprites], self.obstacle_sprites)
+        #self.capecao = Capecao(self.player, (self.get_pos(tmx_data, 'capecao')))
+        #self.visible_sprites.add(self.capecao)
         self.visible_sprites.player = self.player
-        self.map_name = map_path.split(
-            '/')[-1].split('.')[0]  # Atualiza o nome do mapa
+        self.map_name = map_path.split('/')[-1].split('.')[0]  # Atualiza o nome do mapa
+
 
     def process_layers(self, tmx_data):
         # Processa as camadas do TMX
@@ -118,22 +110,17 @@ class Level:
         if layer_name == 'invisible':
             Tile(position, [self.visible_sprites], 'invisible')
         elif layer_name == 'grass':
-            Tile(position, [self.visible_sprites,
-                 self.obstacle_sprites], 'grass', tile)
+            Tile(position, [self.visible_sprites, self.obstacle_sprites], 'grass', tile)
         elif layer_name == 'objects':
-            Tile(position, [self.visible_sprites,
-                 self.obstacle_sprites], 'object', tile)
+            Tile(position, [self.visible_sprites, self.obstacle_sprites], 'object', tile)
         elif layer_name == 'door':
-            Tile(position, [self.visible_sprites,
-                 self.obstacle_sprites, self.doors], 'door', tile)
+            Tile(position, [self.visible_sprites, self.obstacle_sprites, self.doors], 'door', tile)
         elif layer_name == 'wall':
-            Tile(position, [self.visible_sprites,
-                 self.obstacle_sprites], 'wall', tile)
+            Tile(position, [self.visible_sprites, self.obstacle_sprites], 'wall', tile)
         elif layer_name == 'puzzle':
-            Tile(position, [self.visible_sprites,
-                 self.obstacle_sprites, self.puzzle], 'door', tile)
+            Tile(position, [self.visible_sprites, self.obstacle_sprites, self.puzzle], 'door', tile)
         elif layer_name == 'npc':
-            Tile(position, [self.visible_sprites, self.npc], 'npc', tile)
+            Tile(position, [self.visible_sprites, self.obstacle_sprites, self.npc], 'npc', tile)
 
     def change_map(self, new_map_path, player_pos):
         # Clear all sprite groups
@@ -146,8 +133,8 @@ class Level:
         self.tmx_data = pytmx.load_pygame(new_map_path)
         self.create_map(new_map_path, player_pos)
 
-        # self.capecao = Capecao(self.player, (self.get_pos(self.tmx_data, 'capecao')))
-        # self.visible_sprites.add(self.capecao)
+        #self.capecao = Capecao(self.player, (self.get_pos(self.tmx_data, 'capecao')))
+        #self.visible_sprites.add(self.capecao)
         self.visible_sprites.player = self.player
 
     def check_collision_with_door(self, tmx_data):
@@ -157,9 +144,8 @@ class Level:
             if keys[pygame.K_e]:
                 if self.player.rect.colliderect(sprite.rect):
                     door = self.get_name(tmx_data, sprite.rect)
-                    if self.get_player_new_location(tmx_data, sprite.rect):
-                        player_pos = self.get_player_new_location(
-                            tmx_data, sprite.rect)
+                    if self.get_player_new_location(tmx_data,sprite.rect):
+                        player_pos = self.get_player_new_location(tmx_data,sprite.rect)
                     else:
                         player_pos = -1
                     self.change_map(door, player_pos)
@@ -169,13 +155,10 @@ class Level:
             keys = pygame.key.get_pressed()
             if keys[pygame.K_e]:
                 if self.player.rect.colliderect(sprite.rect):
-                    print("colidiu")
                     if self.map_name == 'hanoi':
                         self.start_hanoi()
                     if self.map_name == 'sorting':
                         self.start_challenge()
-                    if self.map_name == 'maze':
-                        self.start_maze_challenge()
 
     def check_collision_with_npc(self):
         for npc in self.npc:
@@ -193,7 +176,7 @@ class Level:
     def resume_game(self):
         self.game_paused = False
         self.player_can_move = True
-
+    
     def toggle_menu(self):
         # Não faz nada se o menu de desafio estiver ativo
         if self.show_challenge or self.show_dialogue:
@@ -202,8 +185,7 @@ class Level:
         # Alterna o estado do menu de pausa
         self.game_paused = not self.game_paused
         self.player_can_move = not self.game_paused
-        # Atualiza o estado de exibição do menu de pausa
-        self.show_menu = self.game_paused
+        self.show_menu = self.game_paused  # Atualiza o estado de exibição do menu de pausa
 
     def end_challenge(self):
         self.game_paused = False
@@ -215,8 +197,7 @@ class Level:
         if not self.show_challenge and not self.show_menu:
             self.game_paused = True
             self.show_challenge = True
-            # Desativa o desafio até que a dificuldade seja selecionada
-            self.sorting_challenge.is_active = False
+            self.sorting_challenge.is_active = False  # Desativa o desafio até que a dificuldade seja selecionada
             self.player_can_move = False
             self.hanoi_challenge.start()
 
@@ -225,19 +206,8 @@ class Level:
         if not self.show_challenge and not self.show_menu:
             self.game_paused = True
             self.show_challenge = True
-            # Desativa o desafio até que a dificuldade seja selecionada
-            self.sorting_challenge.is_active = False
+            self.sorting_challenge.is_active = False  # Desativa o desafio até que a dificuldade seja selecionada
             self.player_can_move = False
-
-    def start_maze_challenge(self):
-        # Inicia o desafio de ordenação apenas se não estiver ativo
-        if not self.show_challenge and not self.show_menu:
-            self.game_paused = True
-            self.show_challenge = True
-            # Desativa o desafio até que a dificuldade seja selecionada
-            self.maze_challenge.is_active = True
-            self.player_can_move = False
-            self.maze_challenge.desenhar_labirinto_pillow()
 
     def toggle_challenge_menu(self):
         # Alterna o estado do menu de desafio
@@ -250,23 +220,20 @@ class Level:
         self.sorting_challenge.is_active = False
         self.reset_player_state()
 
-    def mark_challenge_complete(self, challenge):
+    def mark_challenge_complete(self):
         # Marca o desafio como completo
-        if challenge is SortingChallenge:
-                self.sorting_challenge_complete = True
-        elif challenge is MazeChallenge:
-                self.challenge_complete = True
+        self.sorting_challenge_complete = True
 
     def reset_player_state(self):
         # Reseta o estado do jogador
         self.player_can_move = True
 
-    # def create_enemies(self):
+    #def create_enemies(self):
     #    if len(self.enemy_sprites) == 0:
     #        enemy = Enemy(self.player,(random.randint(0,800),random.randint(0,600)))
     #        self.enemy_sprites.add(enemy)
 
-    # def check_level_completed(self):
+    #def check_level_completed(self):
     #    # Verifica se o jogador chegou ao final do nível
     #    if self.player.rect.colliderect(self.capecao.rect):
     #        return True
@@ -274,6 +241,7 @@ class Level:
 
     def run(self):
         global DIFICULDADE
+
         # Executa a lógica principal do nível
         self.visible_sprites.custom_draw(self.player)
 
@@ -283,8 +251,6 @@ class Level:
                     self.hanoi_challenge.display()
                 elif self.map_name == 'sorting':
                     self.sorting_challenge.display()
-                elif self.map_name == 'maze':
-                    self.maze_challenge.display()
             elif self.show_dialogue:
                 self.player_can_move = False
                 self.dialog_box.display()
@@ -292,7 +258,7 @@ class Level:
                 self.pause_menu.display()
         else:
             self.visible_sprites.update()
-            # self.enemy_sprites.update()
+            #self.enemy_sprites.update()
 
         if self.challenge:
             self.challenge.display()
@@ -323,6 +289,115 @@ class Level:
         # debug(f"player_can_move: {self.player_can_move}", 50)
         # debug(f"sorting_challenge_complete: {self.sorting_challenge_complete}", 100)
         # debug(f"Current map: {self.map_name}", 150)  # Adiciona a linha de debug para o nome do mapa
+
+class BFS:
+    def __init__(self,difficulty='easy', display_surface=None):
+        self.difficulty = difficulty
+        self.display_surface = display_surface
+        self.win = False
+        self.visited_rooms = []
+        self.rooms = {
+            'room0': ['room1_up', 'room1_down', 'room1_left', 'room1_right', 'room1_down_right'],
+            'room1_up': ['room2_up_left', 'room2_up_right'],
+            'room1_down': ['room2_left_down', 'room2_down'],
+            'room1_left': ['room2_up_left', 'room2_left'],
+            'room1_right': ['room2_right', 'room2_up_right'],
+            'room1_down_right': ['room2_down_right', 'room2_right'],
+            'room2_up_left': ['room3_up_left', 'room3_up'],
+            'room2_up_right': ['room3_up_right', 'room3_up'],
+            'room2_left_down': ['room3_down_left'],
+            'room2_down': ['room3_down_left', 'room3_down_right'],
+            'room2_right': ['room3_right_down', 'room3_right_up'],
+            'room2_down_right': ['room3_down_right'],
+            'room2_left': ['room3_left', 'room3_left_up', 'room3_left_down'],
+            'room3_up_left': [],
+            'room3_up': [],
+            'room3_up_right': [],
+            'room3_down_left': [],
+            'room3_down_right': [],
+            'room3_right_down': [],
+            'room3_right_up': [],
+            'room3_left': [],
+            'room3_left_up': [],
+            'room3_left_down': [],
+        }
+        if difficulty == 'hard':
+            self.required_path = [('room0'),
+                                  ('room1_up', 'room1_down', 'room1_left', 'room1_right',
+                                   'room1_down_right'), ('room2_up_left',
+                                'room2_up_right', 'room2_left_down', 'room2_down',
+                                'room2_right', 'room2_down_right', 'room2_left'),
+                                ('room3_up_left','room3_up','room3_up_right',
+                               'room3_down_left','room3_down_right','room3_right_down',
+                               'room3_right_left','room3_left','room3_left_up','room3_left_down')]
+        elif difficulty == 'medium':
+            self.required_path = [('room0'),
+                                  ('room1_up', 'room1_down', 'room1_left', 'room1_right',
+                                   'room1_down_right'), ('room2_up_left',
+                                'room2_up_right', 'room2_left_down', 'room2_down',
+                                'room2_right', 'room2_down_right', 'room2_left')]
+        elif difficulty == 'easy':
+            self.required_path = [('room0'),
+                                ('room1_up','room1_down', 'room1_left', 'room1_right',
+                                'room1_down_right')]
+        self.current_tuple_index = 0
+        self.current_tuple_visited = set()
+
+    def is_complete(self):
+        return self.win
+
+    def visit_room(self, room):
+        if self.win == False:
+            current_tuple = self.required_path[self.current_tuple_index]
+            if isinstance(current_tuple, tuple):
+                if (room not in current_tuple) and (room not in self.visited_rooms):
+                    print("Caminho errado")
+                    return False
+            else:
+                if room != current_tuple:
+                    print("Caminho errado")
+                    return False
+
+            if room in self.rooms:
+                if room not in self.visited_rooms:
+                    self.visited_rooms.append(room)
+                    self.current_tuple_visited.add(room)
+                    self.check_path()
+                return True
+            print("Caminho errado")
+            return False
+    def bfs(self, start_room, target_room):
+        visited = set()
+        queue = deque([start_room])
+
+        while queue:
+            current_room = queue.popleft()
+            if current_room == target_room:
+                return True
+            if current_room not in visited:
+                visited.add(current_room)
+                queue.extend(self.rooms[current_room])
+        return False
+
+    def check_path(self):
+        current_tuple = self.required_path[self.current_tuple_index]
+        if isinstance(current_tuple, tuple):
+            if all(room in self.current_tuple_visited for room in current_tuple):
+                self.current_tuple_index += 1
+                self.current_tuple_visited.clear()
+        else:
+            if current_tuple in self.current_tuple_visited:
+                self.current_tuple_index += 1
+                self.current_tuple_visited.clear()
+
+        if self.current_tuple_index == len(self.required_path):
+            print("Path completed successfully!")
+            self.win = True
+            return True
+        else:
+            print(f"Current path: {self.visited_rooms}")
+#        if self.check_level_completed():
+ #           return 'next_level'
 
 
 class YSortCameraGroup(pygame.sprite.Group):
@@ -367,9 +442,3 @@ class YSortCameraGroup(pygame.sprite.Group):
         for sprite in sorted(self.sprites(), key=lambda sprite: sprite.rect.centery):
             offset_pos = sprite.rect.topleft - self.offset
             self.display_surface.blit(sprite.image, offset_pos)
-            if hasattr(sprite, 'hitbox'):
-                hitbox_rect = sprite.hitbox.copy()
-                hitbox_rect.topleft = hitbox_rect.topleft - self.offset
-                # Desenha o retângulo em vermelho
-                pygame.draw.rect(self.display_surface,
-                                 (255, 0, 0), hitbox_rect, 2)

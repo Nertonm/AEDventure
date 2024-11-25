@@ -1,4 +1,4 @@
-import pygame 
+import pygame
 from settings import *
 from support import import_folder
 
@@ -7,15 +7,15 @@ class Player(pygame.sprite.Sprite):
 		super().__init__(groups)
 		self.image = pygame.image.load('../graphics/player/down_idle/idle_down.png').convert_alpha()
 		self.rect = self.image.get_rect(topleft = pos)
-		self.hitbox = pygame.Rect(self.rect.left - 20, self.rect.bottom, self.rect.width - 20, 20)
-
+		self.hitbox = pygame.Rect(self.rect.left, self.rect.bottom , self.rect.width - 90 , 10)
 		# graphics setup
+
 		self.import_player_assets()
 		self.status = 'down'
 		self.frame_index = 0
 		self.animation_speed = 0.15
 
-		# movement 
+		# movement
 		self.direction = pygame.math.Vector2()
 		self.speed = 5
 
@@ -32,7 +32,6 @@ class Player(pygame.sprite.Sprite):
 
 	def input(self):
 			keys = pygame.key.get_pressed()
-
 			# movement input
 			if keys[MOVE_UP] or keys[MOVE_UP1]:
 				self.direction.y = -1
@@ -65,26 +64,25 @@ class Player(pygame.sprite.Sprite):
 			#	print('magic')
 
 	def get_status(self):
-
 		# idle status
 		if self.direction.x == 0 and self.direction.y == 0:
 			if not 'idle' in self.status:
 				self.status = self.status + '_idle'
 
 
-	def move(self,speed):
+	def move(self, speed):
 		if self.direction.magnitude() != 0:
 			self.direction = self.direction.normalize()
 		keys = pygame.key.get_pressed()
 		if keys[SPRINT] or keys[SPRINT1]:
-			speed = speed*1.8
+			speed = speed*2
 		self.hitbox.x += self.direction.x * speed
 		self.collision('horizontal')
 		self.hitbox.y += self.direction.y * speed
 		self.collision('vertical')
 		self.rect.center = self.hitbox.center
 
-	def collision(self,direction):
+	def collision(self, direction):
 		if direction == 'horizontal':
 			for sprite in self.obstacle_sprites:
 				if sprite.hitbox.colliderect(self.hitbox):
@@ -107,8 +105,7 @@ class Player(pygame.sprite.Sprite):
 
 	def animate(self):
 		animation = self.animations[self.status]
-
-		# loop over the frame index 
+		# loop over the frame index
 		self.frame_index += self.animation_speed
 		if self.frame_index >= len(animation):
 			self.frame_index = 0
