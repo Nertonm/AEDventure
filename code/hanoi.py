@@ -1,9 +1,11 @@
 import pygame, sys, time
 import settings
 from settings import *
+
 class Hanoi:
-    def __init__(self, display_surface, end_challenge_callback, difficulty):
+    def __init__(self, level, display_surface, end_challenge_callback, difficulty):
         # Variáveis utilizadas pro funcionamento
+        self.level = level
         self.n_disks = self.set_difficulty(difficulty)
         self.disks = []
         self.steps = 0
@@ -62,6 +64,7 @@ class Hanoi:
     def check_won(self):
         if all(disk['tower'] == 2 for disk in self.disks):
             time.sleep(0.2)
+            self.level.mark_challenge_complete()
             self.end_challenge_callback()
             return True
 
