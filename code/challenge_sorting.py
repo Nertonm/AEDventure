@@ -10,7 +10,7 @@ class SortingChallenge:
         self.display_surface = pygame.display.get_surface()
         self.font = pygame.font.Font(UI_FONT, UI_FONT_SIZE_MENU)
         self.font_small = pygame.font.Font(UI_FONT, UI_FONT_SIZE)
-        self.difficulty = None  # Adiciona a dificuldade como None inicialmente
+        self.difficulty = difficulty  # Adiciona a dificuldade como None inicialmente
         self.selected_button = None  # Adiciona o botão selecionado
         self.array = []
         self.selection_index = 0
@@ -29,8 +29,6 @@ class SortingChallenge:
         self.challenge_completed = False
         self.sort_algorithm = None
         self.current_position = 0
-        # Adiciona a dificuldade
-        self.difficulty = difficulty
 
         # Configuração dos botões de seleção de algoritmo
         self.bubble_button_rect = pygame.Rect(
@@ -114,12 +112,6 @@ class SortingChallenge:
             self.success_message = None
             self.failure_message = None
             self.current_position = 0  # Resetar a posição inicial para o Selection Sort
-
-    def toggle_menu(self):
-        # Alterna o estado do menu de desafio
-        self.is_active = not self.is_active
-        if not self.is_active:
-            self.level.reset_player_state()
 
     def input(self):
         # Gerencia a entrada do usuário
@@ -283,10 +275,6 @@ class SortingChallenge:
         self.button_hovered = self.button_rect.collidepoint(mouse_pos)
 
     def display(self):
-        if not self.is_active:
-            self.display_difficulty_selection()
-            return
-
         self.input()
         self.swap_cooldown()
         self.move_cooldown()
@@ -345,12 +333,12 @@ class SortingChallenge:
 
             if self.failure_message:
                 button_text = "Try Again"
-                button_color = (0, 255, 0) if self.button_hovered or self.button_selected else (255, 0, 0)
+                button_color = (0, 255, 0) if self.button_hovered or self.button_selected else (255, 255, 255)
             else:
                 button_text = "Close"
-                button_color = (0, 255, 0) if self.button_hovered or self.button_selected else (255, 0, 0)
+                button_color = (0, 255, 0) if self.button_hovered or self.button_selected else (255, 255, 255)
 
-            button_text_surf = self.font.render(button_text, True, (255, 255, 255))
+            button_text_surf = self.font.render(button_text, True, (0, 0, 0))
             button_text_rect = button_text_surf.get_rect(center=self.button_rect.center)
             self.button_rect = button_text_rect
             pygame.draw.rect(self.display_surface, button_color, self.button_rect)
@@ -387,8 +375,8 @@ class SortingChallenge:
         # Ajusta a posição dos botões para aumentar a distância entre eles
         bubble_button_text = "Bubble Sort"
         bubble_button_color = (0, 255, 0) if self.bubble_button_rect.collidepoint(pygame.mouse.get_pos()) else (
-        255, 0, 0)
-        bubble_button_surf = self.font_small.render(bubble_button_text, True, (255, 255, 255))
+        255, 255, 255)
+        bubble_button_surf = self.font_small.render(bubble_button_text, True, (0, 0, 0))
         bubble_button_rect = bubble_button_surf.get_rect(
             center=(self.display_surface.get_width() // 2 - 200, self.display_surface.get_height() // 2))
         bubble_button_rect.inflate_ip(20, 10)  # Aumenta o tamanho do retângulo
@@ -399,8 +387,8 @@ class SortingChallenge:
 
         selection_button_text = "Selection Sort"
         selection_button_color = (0, 255, 0) if self.selection_button_rect.collidepoint(pygame.mouse.get_pos()) else (
-        255, 0, 0)
-        selection_button_surf = self.font_small.render(selection_button_text, True, (255, 255, 255))
+        255, 255, 255)
+        selection_button_surf = self.font_small.render(selection_button_text, True, (0, 0, 0))
         selection_button_rect = selection_button_surf.get_rect(
             center=(self.display_surface.get_width() // 2 + 200, self.display_surface.get_height() // 2))
         selection_button_rect.inflate_ip(20, 10)  # Aumenta o tamanho do retângulo
@@ -408,56 +396,6 @@ class SortingChallenge:
         pygame.draw.rect(self.display_surface, selection_button_color, selection_button_rect)
         selection_button_surf_rect = selection_button_surf.get_rect(center=selection_button_rect.center)
         self.display_surface.blit(selection_button_surf, selection_button_surf_rect)
-
-    def display_difficulty_selection(self):
-        # Exibe a tela de seleção de dificuldade
-        selection_message = "Escolha a dificuldade"
-        selection_message_surf = self.font_small.render(selection_message, True, (255, 255, 255))
-        selection_message_rect = selection_message_surf.get_rect(
-            center=(self.display_surface.get_width() // 2, self.display_surface.get_height() // 2 - 100))
-
-        # Cria uma superfície semi-transparente
-        overlay = pygame.Surface((self.display_surface.get_width(), self.display_surface.get_height()))
-        overlay.set_alpha(128)  # Define a transparência (0-255)
-        overlay.fill((0, 0, 0))  # Preenche a superfície com a cor preta
-        self.display_surface.blit(overlay, (0, 0))  # Desenha a superfície na tela
-
-        self.display_surface.blit(selection_message_surf, selection_message_rect)
-
-        mouse_pos = pygame.mouse.get_pos()
-
-        easy_button_text = "Easy"
-        easy_button_color = (0, 255, 0) if self.bubble_button_rect.collidepoint(mouse_pos) else (255, 0, 0)
-        easy_button_surf = self.font_small.render(easy_button_text, True, (255, 255, 255))
-        easy_button_rect = easy_button_surf.get_rect(
-            center=(self.display_surface.get_width() // 2 - 200, self.display_surface.get_height() // 2))
-        easy_button_rect.inflate_ip(20, 10)
-        self.bubble_button_rect = easy_button_rect
-        pygame.draw.rect(self.display_surface, easy_button_color, easy_button_rect)
-        easy_button_surf_rect = easy_button_surf.get_rect(center=easy_button_rect.center)
-        self.display_surface.blit(easy_button_surf, easy_button_surf_rect)
-
-        medium_button_text = "Normal"
-        medium_button_color = (0, 255, 0) if self.selection_button_rect.collidepoint(mouse_pos) else (255, 0, 0)
-        medium_button_surf = self.font_small.render(medium_button_text, True, (255, 255, 255))
-        medium_button_rect = medium_button_surf.get_rect(
-            center=(self.display_surface.get_width() // 2, self.display_surface.get_height() // 2))
-        medium_button_rect.inflate_ip(20, 10)
-        self.selection_button_rect = medium_button_rect
-        pygame.draw.rect(self.display_surface, medium_button_color, medium_button_rect)
-        medium_button_surf_rect = medium_button_surf.get_rect(center=medium_button_rect.center)
-        self.display_surface.blit(medium_button_surf, medium_button_surf_rect)
-
-        hard_button_text = "Hard"
-        hard_button_color = (0, 255, 0) if self.hard_button_rect.collidepoint(mouse_pos) else (255, 0, 0)
-        hard_button_surf = self.font_small.render(hard_button_text, True, (255, 255, 255))
-        hard_button_rect = hard_button_surf.get_rect(
-            center=(self.display_surface.get_width() // 2 + 200, self.display_surface.get_height() // 2))
-        hard_button_rect.inflate_ip(20, 10)
-        self.hard_button_rect = hard_button_rect
-        pygame.draw.rect(self.display_surface, hard_button_color, hard_button_rect)
-        hard_button_surf_rect = hard_button_surf.get_rect(center=hard_button_rect.center)
-        self.display_surface.blit(hard_button_surf, hard_button_surf_rect)
 
     def generate_array(self):
         # Gera o array com base na dificuldade
@@ -471,15 +409,5 @@ class SortingChallenge:
     def check_difficulty_selection(self, event):
         # Verifica se o jogador selecionou uma dificuldade
         if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
-            if self.bubble_button_rect.collidepoint(event.pos):
-                self.difficulty = 'easy'
-                self.selected_button = 'easy'
-            elif self.selection_button_rect.collidepoint(event.pos):
-                self.difficulty = 'medium'
-                self.selected_button = 'medium'
-            elif self.hard_button_rect.collidepoint(event.pos):
-                self.difficulty = 'hard'
-                self.selected_button = 'hard'
             if self.difficulty:
                 self.is_active = True
-
