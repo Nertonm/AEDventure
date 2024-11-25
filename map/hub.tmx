@@ -124,10 +124,10 @@
    </properties>
   </object>
   <object id="41" name="sorting" x="2100" y="323.333" width="22" height="20"/>
-  <object id="42" name="room0" x="2688" y="1024">
+  <object id="42" name="node0" x="2688" y="1024">
    <properties>
-    <property name="path" value="../map/room0.tmx"/>
-    <property name="player" value="room0"/>
+    <property name="path" value="../map/{difficulty}/node0.tmx"/>
+    <property name="player" value=""/>
    </properties>
   </object>
  </objectgroup>
