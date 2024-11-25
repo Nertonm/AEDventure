@@ -11,6 +11,7 @@ from hanoi import Hanoi
 from challenge_search import *
 import random
 import os
+
 class Level:
     def __init__(self, difficulty):
         # Inicialização de variáveis e grupos de sprites
@@ -34,9 +35,9 @@ class Level:
 
         # Inicialização de objetos de busca
         self.bfs_start = False
-        self.bfs = BFS(self, difficulty, self.display_surface)  # Initialize BFS object
+        self.bfs = BFS(self, self.difficulty, self.display_surface)  # Initialize BFS object
         self.dfs_start = False
-        self.dfs = DFS(self, difficulty, self.display_surface)  # Initialize DFS object
+        self.dfs = DFS(self, self.difficulty, self.display_surface)  # Initialize DFS object
 
         # Inicialização do jogador
         self.player = Player((100, 100), [self.visible_sprites], self.obstacle_sprites)
@@ -53,8 +54,8 @@ class Level:
 
         # Inicialização de desafios
         self.challenge = None
-        self.hanoi_challenge = Hanoi(self, self.display_surface, self.end_challenge, difficulty)
-        self.sorting_challenge = SortingChallenge(self, difficulty)
+        self.hanoi_challenge = Hanoi(self, self.display_surface, self.end_challenge, self.difficulty)
+        self.sorting_challenge = SortingChallenge(self, self.difficulty)
 
         # Inicialização de cooldowns e interações
         self.door_cooldown = 1000  # Cooldown de 1 segundo
@@ -235,10 +236,6 @@ class Level:
         self.show_challenge = False
         self.reset_player_state()
 
-    def toggle_challenge_menu(self):
-        # Alterna o estado do menu de desafio
-        self.sorting_challenge.toggle_menu()
-
     def mark_challenge_complete(self):
         # Adiciona +1 ao contador de desafios completos
         self.completion += 1
@@ -318,6 +315,7 @@ class Level:
         self.check_collision_with_door(self.tmx_data)
         self.check_collision_with_npc()
         debug(self.completion, 50)
+        debug(self.difficulty, 100)
         # debug(f"game_paused: {self.game_paused}")
         # debug(f"player_can_move: {self.player_can_move}", 50)
         # debug(f"Current map: {self.map_name}", 150)  # Adiciona a linha de debug para o nome do mapa
