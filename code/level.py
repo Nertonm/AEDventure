@@ -43,8 +43,8 @@ class Level:
 
 
         # Criação do mapa inicial
-        self.create_map('../map/hub.tmx', player_pos=-1)
-        self.tmx_data = pytmx.load_pygame('../map/hub.tmx')
+        self.create_map('../map/start.tmx', player_pos=-1)
+        self.tmx_data = pytmx.load_pygame('../map/start.tmx')
 
         # Inicialização de menus
         self.pause_menu = Menu(self)

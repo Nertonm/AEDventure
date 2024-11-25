@@ -99,6 +99,8 @@ class OpeningScreen:
 
     def display(self):
         self.screen.fill(BLACK)
+        background = pygame.image.load('../graphics/background/background.png')
+        self.screen.blit(background, (0,0))
         title_surf = self.font.render("AEDventure", True, WHITE)
         title_rect = title_surf.get_rect(center=(self.screen.get_width() // 2, self.screen.get_height() // 4))
         self.screen.blit(title_surf, title_rect)

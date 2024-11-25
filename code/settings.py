@@ -31,7 +31,7 @@ VIOLET = (86, 55, 103)
 PURPLE = (54, 13, 45)
 
 TEXT_COLOR = (255, 255, 255)  # Default text color
-TEXT_COLOR_SELECTED = (0, 255, 0)  # Color for the first selected number
+TEXT_COLOR_SELECTED = (126, 2, 2)  # Color for the first selected number
 TEXT_COLOR_SECOND_SELECTED = (0, 255, 200)  # Color for the second selected number
 
 # Outras configurações
