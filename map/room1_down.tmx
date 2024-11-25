@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.11.0" orientation="orthogonal" renderorder="right-down" width="30" height="20" tilewidth="128" tileheight="128" infinite="0" nextlayerid="8" nextobjectid="9">
+<map version="1.10" tiledversion="1.11.0" orientation="orthogonal" renderorder="right-down" width="30" height="20" tilewidth="128" tileheight="128" infinite="0" nextlayerid="8" nextobjectid="11">
  <tileset firstgid="1" source="dungeon_tile.tsx"/>
  <tileset firstgid="101" source="dungeon_tile2.tsx"/>
  <layer id="1" name="floor" width="30" height="20">
@@ -99,24 +99,29 @@
 </data>
  </layer>
  <objectgroup id="4" name="door">
-  <object id="6" name="room0" x="768" y="0">
+  <object id="6" name="toroom0" x="768" y="0">
    <properties>
     <property name="path" value="../map/room0.tmx"/>
+    <property name="player" value="room1_down"/>
    </properties>
   </object>
-  <object id="7" name="room2_left_down" x="0" y="640">
+  <object id="7" name="toroom2_left_down" x="0" y="640">
    <properties>
     <property name="path" value="../map/room2_left_down.tmx"/>
+    <property name="player" value="room1_down"/>
    </properties>
   </object>
-  <object id="8" name="room2_down" x="768" y="1024">
+  <object id="8" name="toroom2_down" x="768" y="1024">
    <properties>
     <property name="path" value="../map/room2_down.tmx"/>
+    <property name="player" value="room1_down"/>
    </properties>
   </object>
  </objectgroup>
  <objectgroup id="5" name="player">
-  <object id="4" name="player" x="833" y="196"/>
+  <object id="4" name="room0" x="820" y="294.667"/>
+  <object id="9" name="room2_left_down" x="256" y="640" width="32" height="26.6667"/>
+  <object id="10" name="room2_down" x="829.333" y="840"/>
  </objectgroup>
  <objectgroup id="6" name="capecao">
   <object id="5" name="capecão" x="918" y="197"/>

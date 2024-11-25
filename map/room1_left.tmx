@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.11.0" orientation="orthogonal" renderorder="right-down" width="30" height="20" tilewidth="128" tileheight="128" infinite="0" nextlayerid="8" nextobjectid="8">
+<map version="1.10" tiledversion="1.11.0" orientation="orthogonal" renderorder="right-down" width="30" height="20" tilewidth="128" tileheight="128" infinite="0" nextlayerid="8" nextobjectid="11">
  <tileset firstgid="1" source="dungeon_tile.tsx"/>
  <tileset firstgid="101" source="dungeon_tile2.tsx"/>
  <layer id="1" name="floor" width="30" height="20">
@@ -54,11 +54,11 @@
   <data encoding="csv">
 0,34,2684354594,34,179,34,2684354594,34,2684354594,34,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,26,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-0,0,0,0,0,0,0,25,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,26,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-0,0,0,0,0,0,0,0,26,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-0,0,25,0,0,26,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,26,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
@@ -99,26 +99,29 @@
 </data>
  </layer>
  <objectgroup id="4" name="door">
-  <object id="5" name="room0" x="1280" y="384">
+  <object id="5" name="toroom0" x="1280" y="384">
    <properties>
     <property name="path" value="../map/room0.tmx"/>
+    <property name="player" value="room1_left"/>
    </properties>
   </object>
-  <object id="6" name="room2_up_left" x="896" y="0">
+  <object id="6" name="toroom2_up_left" x="896" y="0">
    <properties>
     <property name="path" value="../map/room2_up_left.tmx"/>
+    <property name="player" value="room1_left"/>
    </properties>
   </object>
-  <object id="7" name="room2_left" x="0" y="640">
+  <object id="7" name="toroom2_left" x="0" y="640">
    <properties>
     <property name="path" value="../map/room2_left.tmx"/>
+    <property name="player" value="room1_left"/>
    </properties>
   </object>
  </objectgroup>
  <objectgroup id="5" name="player">
-  <object id="3" name="player" x="1144.48" y="450.121"/>
+  <object id="3" name="room0" x="1152" y="384"/>
+  <object id="8" name="room2_left" x="256" y="640"/>
+  <object id="9" name="room2_up_left" x="896" y="256"/>
  </objectgroup>
- <objectgroup id="6" name="capecao">
-  <object id="4" name="capecao" x="1219.45" y="453.758"/>
- </objectgroup>
+ <objectgroup id="6" name="capecao"/>
 </map>

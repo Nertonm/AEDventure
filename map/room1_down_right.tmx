@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.11.0" orientation="orthogonal" renderorder="right-down" width="30" height="20" tilewidth="128" tileheight="128" infinite="0" nextlayerid="8" nextobjectid="6">
+<map version="1.10" tiledversion="1.11.0" orientation="orthogonal" renderorder="right-down" width="30" height="20" tilewidth="128" tileheight="128" infinite="0" nextlayerid="8" nextobjectid="9">
  <tileset firstgid="1" source="dungeon_tile.tsx"/>
  <tileset firstgid="101" source="dungeon_tile2.tsx"/>
  <layer id="1" name="floor" width="30" height="20">
@@ -54,7 +54,7 @@
   <data encoding="csv">
 0,34,34,34,179,34,34,34,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-0,0,0,26,0,0,0,25,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,26,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,26,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,26,0,25,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
@@ -102,23 +102,26 @@
   <object id="1" name="room2_down_right" x="1152" y="768">
    <properties>
     <property name="path" value="../map/room2_down_right.tmx"/>
+    <property name="player" value="room1_down_right"/>
    </properties>
   </object>
-  <object id="2" name="room2_right" x="1024" y="0">
+  <object id="2" name="toroom2_right" x="1024" y="0">
    <properties>
     <property name="path" value="../map/room2_right.tmx"/>
+    <property name="player" value="room1_down_right"/>
    </properties>
   </object>
-  <object id="5" name="room0" x="0" y="384">
+  <object id="5" name="toroom0" x="0" y="384">
    <properties>
     <property name="path" value="../map/room0.tmx"/>
+    <property name="player" value="room1_down_right"/>
    </properties>
   </object>
  </objectgroup>
  <objectgroup id="5" name="player">
-  <object id="3" name="player" x="268" y="460"/>
+  <object id="3" name="room0" x="254" y="362" width="42" height="28"/>
+  <object id="7" name="room2_right" x="964" y="275" width="42" height="28"/>
+  <object id="8" name="room2_down_right" x="971" y="771" width="42" height="28"/>
  </objectgroup>
- <objectgroup id="6" name="capecao">
-  <object id="4" name="capecao" x="166" y="460"/>
- </objectgroup>
+ <objectgroup id="6" name="capecao"/>
 </map>

@@ -110,6 +110,7 @@
   <object id="38" name="room0" x="3072" y="128">
    <properties>
     <property name="path" value="../map/room0.tmx"/>
+    <property name="player" value="room0"/>
    </properties>
   </object>
   <object id="39" name="bfs" x="3072" y="384">
