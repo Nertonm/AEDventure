@@ -3,7 +3,8 @@ from itertools import permutations
 
 
 class BFS:
-    def __init__(self,difficulty='easy', display_surface=None):
+    def __init__(self, level, difficulty='easy', display_surface=None):
+        self.level = level
         self.difficulty = difficulty
         self.display_surface = display_surface
         self.win = False
@@ -58,6 +59,10 @@ class BFS:
     def is_complete(self):
         return self.win
 
+    def check_completed(self):
+        if self.win == True:
+            self.level.mark_challenge_complete()
+
     def visit_room(self, room):
         if self.win == False:
             current_tuple = self.required_path[self.current_tuple_index]
@@ -105,12 +110,14 @@ class BFS:
         if self.current_tuple_index == len(self.required_path):
             print("Path completed successfully!")
             self.win = True
+            self.check_completed()
             return True
         else:
             print(f"Current path: {self.visited_rooms}")
 
 class DFS:
-    def __init__(self, difficulty='medium', display_surface=None):
+    def __init__(self, level, difficulty='medium', display_surface=None):
+        self.level = level
         self.difficulty = difficulty
         self.display_surface = display_surface
         self.win = False
@@ -165,6 +172,10 @@ class DFS:
     def is_complete(self):
         return self.win
 
+    def check_completed(self):
+        if self.win == True:
+            self.level.mark_challenge_complete()
+
     def is_dfs_subpath(self):
         required_sequences = self.rooms
         for sequence in required_sequences:
@@ -183,6 +194,7 @@ class DFS:
                 if self.is_dfs_subpath():
                     if self.is_graph_fully_traversed():
                         self.win = True
+                        self.check_completed()
                         print("Path completed successfully!")
                         return True
                     else:

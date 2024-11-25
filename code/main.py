@@ -13,6 +13,7 @@ class Game:
         self.level = None
         self.opening_screen = OpeningScreen(self.screen)
         self.show_opening = True
+
     def handle_opening_events(self):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
