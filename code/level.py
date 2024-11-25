@@ -10,7 +10,7 @@ import pytmx
 from hanoi import Hanoi
 from challenge_search import *
 import random
-
+import os
 class Level:
     def __init__(self, difficulty):
         # Inicialização de variáveis e grupos de sprites
@@ -40,6 +40,7 @@ class Level:
 
         # Inicialização do jogador
         self.player = Player((100, 100), [self.visible_sprites], self.obstacle_sprites)
+
 
         # Criação do mapa inicial
         self.create_map('../map/hub.tmx', player_pos=-1)
@@ -78,6 +79,13 @@ class Level:
                 print(obj.path)
                 return obj.path
         return None
+
+    def replace_difficulty_in_path(self, path):
+        if '{difficulty}' in path:
+            new_path = path.replace('{difficulty}', self.difficulty)
+            if os.path.exists(new_path):
+                return new_path
+        return path
 
     def get_player_new_location(self, tmx_data, pos):
         # Obtém o nome de um objeto no mapa pela posição
@@ -134,6 +142,7 @@ class Level:
             Tile(position, [self.visible_sprites, self.npc], 'npc', tile)
 
     def change_map(self, new_map_path, player_pos):
+        new_map_path = self.replace_difficulty_in_path(new_map_path)
         # Clear all sprite groups
         self.visible_sprites.empty()
         self.obstacle_sprites.empty()

@@ -103,7 +103,7 @@
  <objectgroup id="6" name="door">
   <object id="9" name="tonode0" x="384" y="0">
    <properties>
-    <property name="path" value="../map/easy/nodeb.tmx"/>
+    <property name="path" value="../map/medium/nodee.tmx"/>
     <property name="player" value="noded"/>
    </properties>
   </object>
