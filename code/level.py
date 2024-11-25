@@ -35,8 +35,8 @@ class Level:
 
         self.player = Player((100, 100), [self.visible_sprites], self.obstacle_sprites)
 
-        self.create_map('../map/room0.tmx', player_pos=-1)
-        self.tmx_data = pytmx.load_pygame('../map/room0.tmx')
+        self.create_map('../map/easy/node0.tmx', player_pos=-1)
+        self.tmx_data = pytmx.load_pygame('../map/easy/node0.tmx')
 
         self.pause_menu = Menu(self)
         self.challenge = None
@@ -293,9 +293,9 @@ class Level:
 
 
         #DFS logic
-        if self.map_name == 'room0' and self.completion == 5:
+        if self.map_name == 'node0' and self.completion == 5:
             self.dfs_start = True
-            self.dfs.visit_room('room0')
+            #self.dfs.visit_room('room0')
             self.mapa_atual = self.map_name  # Initialize mapa_atual with the current map
         if self.dfs_start:
             if self.mapa_atual != self.map_name:
