@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.11.0" orientation="orthogonal" renderorder="right-down" width="30" height="20" tilewidth="128" tileheight="128" infinite="0" nextlayerid="18" nextobjectid="42">
+<map version="1.10" tiledversion="1.11.0" orientation="orthogonal" renderorder="right-down" width="30" height="20" tilewidth="128" tileheight="128" infinite="0" nextlayerid="18" nextobjectid="46">
  <tileset firstgid="1" source="dungeon_tile2.tsx"/>
  <layer id="11" name="floor" width="30" height="20">
   <data encoding="csv">
@@ -38,7 +38,7 @@
 3221225481,3,3,3,3,3,3,0,0,0,3,3,3,3,3,0,0,0,3,3,3,3,3,0,0,0,3,3,3,2684354561,
 2684354644,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2684354561,
 2684354644,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2684354561,
-2684354569,84,84,84,84,84,84,84,84,84,84,84,84,84,84,84,84,84,84,84,84,84,84,84,84,84,101,3221225473,3221225473,2684354561,
+2684354569,84,84,84,84,84,84,84,84,84,84,84,84,84,84,84,84,84,84,84,84,84,84,84,84,84,101,0,0,2684354561,
 1610612737,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,2684354561,0,1610612737,0,0,2684354561,
 1610612737,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,157,0,0,2684354561,0,1610612737,0,0,2684354561,
 1610612737,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,207,0,0,2684354561,0,1610612737,0,0,2684354561,
@@ -123,6 +123,8 @@
    </properties>
   </object>
   <object id="41" name="sorting" x="2100" y="323.333" width="22" height="20"/>
+  <object id="43" name="tomaze" x="2849.04" y="1708.67"/>
+  <object id="44" name="maze" x="2886.68" y="1840.4"/>
  </objectgroup>
  <layer id="17" name="npc" width="30" height="20">
   <data encoding="csv">

@@ -10,6 +10,7 @@ import pytmx
 # from capecao import *
 from hanoi import Hanoi
 from collections import deque
+from maze_challenge import MazeChallenge
 # from enemy import Enemy
 from challenge_search import BFS
 import random
@@ -36,8 +37,8 @@ class Level:
         self.player = Player(
             (100, 100), [self.visible_sprites], self.obstacle_sprites)
 
-        self.create_map('../map/start.tmx', player_pos=-1)
-        self.tmx_data = pytmx.load_pygame('../map/start.tmx')
+        self.create_map('../map/maze.tmx', player_pos=-1)
+        self.tmx_data = pytmx.load_pygame('../map/maze.tmx')
 
         self.pause_menu = Menu(self)
         self.challenge = None
@@ -46,6 +47,7 @@ class Level:
         self.hanoi_challenge = Hanoi(
             self.display_surface, self.end_challenge, difficulty)
         self.sorting_challenge = SortingChallenge(self, difficulty)
+        self.maze_challenge = MazeChallenge(self, difficulty)
 
         self.show_menu = False
         self.show_challenge = False
@@ -167,10 +169,13 @@ class Level:
             keys = pygame.key.get_pressed()
             if keys[pygame.K_e]:
                 if self.player.rect.colliderect(sprite.rect):
+                    print("colidiu")
                     if self.map_name == 'hanoi':
                         self.start_hanoi()
                     if self.map_name == 'sorting':
                         self.start_challenge()
+                    if self.map_name == 'maze':
+                        self.start_maze_challenge()
 
     def check_collision_with_npc(self):
         for npc in self.npc:
@@ -224,6 +229,16 @@ class Level:
             self.sorting_challenge.is_active = False
             self.player_can_move = False
 
+    def start_maze_challenge(self):
+        # Inicia o desafio de ordenação apenas se não estiver ativo
+        if not self.show_challenge and not self.show_menu:
+            self.game_paused = True
+            self.show_challenge = True
+            # Desativa o desafio até que a dificuldade seja selecionada
+            self.maze_challenge.is_active = True
+            self.player_can_move = False
+            self.maze_challenge.desenhar_labirinto_pillow()
+
     def toggle_challenge_menu(self):
         # Alterna o estado do menu de desafio
         self.sorting_challenge.toggle_menu()
@@ -239,7 +254,7 @@ class Level:
         # Marca o desafio como completo
         if challenge is SortingChallenge:
                 self.sorting_challenge_complete = True
-        elif challenge is Challenge:
+        elif challenge is MazeChallenge:
                 self.challenge_complete = True
 
     def reset_player_state(self):
@@ -268,6 +283,8 @@ class Level:
                     self.hanoi_challenge.display()
                 elif self.map_name == 'sorting':
                     self.sorting_challenge.display()
+                elif self.map_name == 'maze':
+                    self.maze_challenge.display()
             elif self.show_dialogue:
                 self.player_can_move = False
                 self.dialog_box.display()
