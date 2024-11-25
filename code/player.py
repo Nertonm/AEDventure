@@ -31,7 +31,6 @@ class Player(pygame.sprite.Sprite):
 			self.animations[animation] = import_folder(full_path)
 
 	def input(self):
-		if not self.attacking:
 			keys = pygame.key.get_pressed()
 
 			# movement input
