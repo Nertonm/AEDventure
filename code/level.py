@@ -24,6 +24,9 @@ class Level:
         self.npc = pygame.sprite.Group()
         self.create_light_mask()
 
+        self.font = pygame.font.Font(UI_FONT, UI_FONT_SIZE_MENU)
+        self.font_small = pygame.font.Font(UI_FONT, UI_FONT_SIZE)
+
         self.dialogue = True
 
         # Inicialização de estados do jogo
@@ -346,8 +349,13 @@ class Level:
         self.check_collision_with_puzzle(self.tmx_data)
         self.check_collision_with_door(self.tmx_data)
         self.check_collision_with_npc()
-        debug(self.completion, 50)
-        debug(self.difficulty, 100)
+
+
+        score_surf = self.font.render(f"Score: {self.completion}", True, WHITE)
+        score_rect = score_surf.get_rect(topleft=(10, 10))
+        self.display_surface.blit(score_surf, score_rect)
+        #debug(self.completion, 50)
+        #debug(self.difficulty, 100)
         # debug(f"game_paused: {self.game_paused}")
         # debug(f"player_can_move: {self.player_can_move}", 50)
         # debug(f"Current map: {self.map_name}", 150)  # Adiciona a linha de debug para o nome do mapa
