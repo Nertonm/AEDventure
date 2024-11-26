@@ -1,0 +1,15 @@
+### CONTEXTO DO JOGO ###
+
+AEDventure é um jogo educacional de puzzle-aventura que desafia os jogadores a explorar uma masmorra cheia de enigmas baseados em estruturas de dados e algoritmos. A protagonista, uma aventureira destemida, é desafiada pelo mestre da Dungeon a resolver uma série de puzzles sobre Algoritmos e Estruturas de Dados (AED). Durante sua jornada, ela enfrenta desafios que envolvem conceitos de programação, como recursão, algoritmos de ordenação e manipulação de estruturas de dados.
+
+A protagonista é acompanhada por Capecão, um fiel companheiro canino que, após falhar nos desafios do mestre da Dungeon, foi amaldiçoado e transformado em um cão. Agora, ele a guia através dos desafios enquanto tenta se livrar da maldição. Todos os que falham nos desafios do mestre são transformados em cães, tornando a missão ainda mais urgente e desafiadora.
+
+O objetivo do jogo é ajudar a protagonista a resolver os puzzles, completar os algoritmos e, no final, derrotar o mestre da Dungeon para quebrar a maldição de Capecão e escapar da masmorra.
+
+### CONTROLES ###
+
+- Movimentação: [WASD, Setas Direcionais (cima, baixo, esquerda, direita)]
+- Correr: [LShift]
+- Interagir com portas e puzzles: [E]
+- Interagir com NPCs: [C]
+- Pausar: [P, ESC]
