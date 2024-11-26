@@ -1,6 +1,7 @@
 from collections import deque
 from itertools import permutations
 import pygame
+from settings import *
 
 class BFS:
     def __init__(self, level, difficulty='easy', display_surface=None):
@@ -123,7 +124,8 @@ class DFS:
         self.win = False
         self.lost = False
         self.failure_message = "You failed!"
-        self.font = pygame.font.Font(None, 36)
+        self.font = pygame.font.Font(UI_FONT, UI_FONT_SIZE_MENU)
+        self.font_small = pygame.font.Font(UI_FONT, UI_FONT_SIZE)
         self.visited_rooms = ['node0']
         self.rooms = ['node0', 'nodea', 'nodeb', 'nodec', 'noded']
         self.qnt_nodes = 5
@@ -157,6 +159,14 @@ class DFS:
                     if self.is_graph_fully_traversed():
                         self.win = True
                         self.check_completed()
+                        completed_message = "You have completed this challenge."
+                        completed_message_surf = self.font_small.render(completed_message, True, (255, 255, 0))
+                        completed_message_rect = completed_message_surf.get_rect(
+                            center=(
+                            self.display_surface.get_width() // 2, self.display_surface.get_height() // 2 - 100))
+                        self.display_surface.blit(completed_message_surf, completed_message_rect)
+                        pygame.display.update()  # Update the display to show the message
+                        pygame.time.wait(2000)  # Wait for 2 seconds to let the player see the message
                         print("Path completed successfully!")
                         return True
                     else:
@@ -167,9 +177,12 @@ class DFS:
                     message_surf = self.font.render(self.failure_message, True, (255, 0, 0))
                     message_rect = message_surf.get_rect(center=self.display_surface.get_rect().center)
                     self.display_surface.blit(message_surf, message_rect)
+                    pygame.display.update()  # Update the display to show the message
+                    pygame.time.wait(2000)  # Wait for 2 seconds to let the player see the message
+                    self.visited_rooms = ['node0']  # Reset the visited rooms to the start
                     self.lost = True
-                    print("Wrong path!")
-                    return False
+                    print("Wrong path! Teleporting to the start.")
+                    return "perdeu"
             else:
                 print(f"{room} has already been visited.")
                 return False

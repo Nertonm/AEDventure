@@ -183,7 +183,7 @@ class Level:
         for npc in self.npc:
             if self.player.rect.colliderect(npc.rect):
                 keys = pygame.key.get_pressed()
-                if keys[pygame.K_e] and not self.dialog_box.is_active:
+                if keys[pygame.K_c] and not self.dialog_box.is_active:
                     self.dialog_box.set_dialogue(self.map_name)
                     self.dialog_box.toggle_dialogue()
                     self.pause_game()
@@ -299,7 +299,10 @@ class Level:
             self.mapa_atual = self.map_name  # Initialize mapa_atual with the current map
         if self.dfs_start:
             if self.mapa_atual != self.map_name:
-                self.dfs.visit_room(f"{self.map_name}")
+                if self.dfs.visit_room(f"{self.map_name}") == 'perdeu':
+                    self.dfs.visited_rooms.clear()
+                    self.change_map('../map/hub.tmx', player_pos=-1)
+                    self.dfs_start = False
                 self.mapa_atual = self.map_name  # Initialize mapa_atual with the current map
                 print(f"{self.dfs.rooms}")
                 print(f"Current path: {self.dfs.visited_rooms}")
