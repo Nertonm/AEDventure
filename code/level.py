@@ -11,6 +11,7 @@ from hanoi import Hanoi
 from challenge_search import *
 import random
 import os
+import math
 
 class Level:
     def __init__(self, difficulty):
@@ -21,6 +22,7 @@ class Level:
         self.doors = pygame.sprite.Group()
         self.puzzle = pygame.sprite.Group()
         self.npc = pygame.sprite.Group()
+        self.create_light_mask()
 
         # Inicialização de estados do jogo
         self.game_paused = False
@@ -63,6 +65,22 @@ class Level:
 
         # Inicialização de contadores
         self.completion = 0
+
+    def create_light_mask(self):
+        # Cria uma superfície preta com um buraco transparente no meio
+        self.light_mask = pygame.Surface(self.display_surface.get_size(), pygame.SRCALPHA)
+        self.light_mask.fill((0, 0, 0, 255))
+        light_radius = 100
+        light_center = (self.display_surface.get_width() // 2, self.display_surface.get_height() // 2)
+        pygame.draw.circle(self.light_mask, (0, 0, 0, 0), light_center, light_radius)
+
+    def apply_light_mask(self):
+        # Aplica a máscara de luz sobre o mapa
+        player_pos = self.player.rect.center
+        light_radius = 150
+        light_center = (self.display_surface.get_width() // 2, self.display_surface.get_height() // 2)
+        mask_rect = self.light_mask.get_rect(center=light_center)
+        self.display_surface.blit(self.light_mask, mask_rect.topleft)
 
     # Métodos de obtenção de posição e nome
     def get_pos(self, tmx_data, name):
@@ -249,6 +267,9 @@ class Level:
         global DIFICULDADE
         # Executa a lógica principal do nível
         self.visible_sprites.custom_draw(self.player)
+
+        if self.map_name == 'boss':
+            self.apply_light_mask()
 
         if self.game_paused:
             if self.show_challenge:
