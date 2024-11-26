@@ -97,7 +97,6 @@ class Level:
         # Obtém o nome de um objeto no mapa pela posição
         for obj in tmx_data.objects:
             if obj.x == pos[0] and obj.y == pos[1]:
-                print(obj.path)
                 return obj.path
         return None
 
@@ -210,12 +209,6 @@ class Level:
                     self.dialog_box.set_dialogue(self.map_name)
                     self.dialog_box.toggle_dialogue()
                     self.pause_game()
-
-        if self.get_name(self.tmx_data, pos) == 'parada':
-            print(1)
-            self.dialog_box.set_dialogue(self.map_name)
-            self.dialog_box.toggle_dialogue()
-            self.pause_game()
 
 
     # Métodos de controle de jogo
