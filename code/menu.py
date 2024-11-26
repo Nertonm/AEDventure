@@ -7,7 +7,7 @@ class Menu:
         self.level = level  # Referência à instância de Level
         self.display_surface = pygame.display.get_surface()
         self.font = pygame.font.Font(UI_FONT, UI_FONT_SIZE_MENU)  # Usar fonte maior para o menu
-        self.options = ["Resume", "Config", "Quit"]
+        self.options = ["Resume", "Quit"]
         self.selection_index = 0
         self.selection_time = None
         self.can_move = True
@@ -39,9 +39,9 @@ class Menu:
     def select_option(self):
         if self.options[self.selection_index] == "Resume":
             self.level.toggle_menu()  # Chama o método para alternar a pausa
-        elif self.options[self.selection_index] == "Config":
-            # Implementar lógica para abrir configuração
-            pass
+        # elif self.options[self.selection_index] == "Config":
+        #     # Implementar lógica para abrir configuração
+        #     pass
         elif self.options[self.selection_index] == "Quit":
             pygame.quit()
             exit()
