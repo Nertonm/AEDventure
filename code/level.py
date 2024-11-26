@@ -20,6 +20,7 @@ class Level:
         self.doors = pygame.sprite.Group()
         self.puzzle = pygame.sprite.Group()
         self.npc = pygame.sprite.Group()
+        self.dialogue = True
 
         # Inicialização de estados do jogo
         self.game_paused = False
@@ -180,13 +181,22 @@ class Level:
                         self.start_challenge()
 
     def check_collision_with_npc(self):
+        pos = (self.player.rect.x, self.player.rect.y)
         for npc in self.npc:
             if self.player.rect.colliderect(npc.rect):
                 keys = pygame.key.get_pressed()
-                if keys[pygame.K_c] and not self.dialog_box.is_active:
+                if (keys[pygame.K_c] and not self.dialog_box.is_active) or self.dialogue:
+                    self.dialogue = False
                     self.dialog_box.set_dialogue(self.map_name)
                     self.dialog_box.toggle_dialogue()
                     self.pause_game()
+
+        if self.get_name(self.tmx_data, pos) == 'parada':
+            print(1)
+            self.dialog_box.set_dialogue(self.map_name)
+            self.dialog_box.toggle_dialogue()
+            self.pause_game()
+
 
     # Métodos de controle de jogo
     def pause_game(self):
