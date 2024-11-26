@@ -14,6 +14,11 @@ class Game:
         self.opening_screen = OpeningScreen(self.screen)
         self.show_opening = True
 
+        # Adiciona a música de fundo
+        pygame.mixer.music.load('../audio/music/Ambient 8.mp3')
+        pygame.mixer.music.play(-1)  # -1 faz a música tocar em loop
+        pygame.mixer.music.set_volume(0.4)  # Define o volume da música (0.0 a 1.0)
+
     def handle_opening_events(self):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
