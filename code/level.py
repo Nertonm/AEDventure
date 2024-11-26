@@ -129,6 +129,8 @@ class Level:
         self.player = Player((player_pos), [self.visible_sprites], self.obstacle_sprites)
         self.visible_sprites.player = self.player
         self.map_name = map_path.split('/')[-1].split('.')[0]  # Atualiza o nome do mapa
+        if self.map_name == "meet":
+            self.dialogue = True
 
     def process_layers(self, tmx_data):
         # Processa as camadas do TMX
@@ -392,7 +394,9 @@ class YSortCameraGroup(pygame.sprite.Group):
         for sprite in sorted(self.sprites(), key=lambda sprite: sprite.rect.centery):
             offset_pos = sprite.rect.topleft - self.offset
             self.display_surface.blit(sprite.image, offset_pos)
+            """""
             if hasattr(sprite, 'hitbox'):
                 hitbox_rect = sprite.hitbox.copy()
                 hitbox_rect.topleft = hitbox_rect.topleft - self.offset
                 pygame.draw.rect(self.display_surface, (255, 0, 0), hitbox_rect, 2)  # Desenha o retângulo em vermelho
+            """""

@@ -2,6 +2,7 @@
 <map version="1.10" tiledversion="1.11.0" orientation="orthogonal" renderorder="right-down" width="30" height="20" tilewidth="128" tileheight="128" infinite="0" nextlayerid="12" nextobjectid="27">
  <tileset firstgid="1" source="dungeon_tile.tsx"/>
  <tileset firstgid="101" source="dungeon_tile2.tsx"/>
+ <tileset firstgid="726" source="easy/dungeon_tile2.tsx"/>
  <layer id="1" name="floor" width="30" height="20">
   <data encoding="csv">
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
@@ -75,7 +76,7 @@
 </data>
  </layer>
  <objectgroup id="2" name="player" offsetx="-7" offsety="1">
-  <object id="2" name="player" x="734.545" y="151.758"/>
+  <object id="2" name="player" x="710.545" y="233.758"/>
  </objectgroup>
  <objectgroup id="9" name="capecao"/>
  <layer id="10" name="objects" width="30" height="20">
@@ -164,7 +165,7 @@
  <layer id="11" name="npc" width="30" height="20">
   <data encoding="csv">
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-0,165,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,911,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
