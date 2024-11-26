@@ -380,6 +380,7 @@ class YSortCameraGroup(pygame.sprite.Group):
                         position = (x * TILESIZE, y * TILESIZE)
                         self.floor_tiles.append((tile, position))
 
+
     def custom_draw(self, player):
         # Desenha os sprites com base na posição do jogador
         self.update_offset(player)
