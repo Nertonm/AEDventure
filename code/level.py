@@ -198,6 +198,8 @@ class Level:
                         self.start_hanoi()
                     if self.map_name == 'sorting':
                         self.start_challenge()
+                    if self.map_name == 'boss':
+                        pass
 
     def check_collision_with_npc(self):
         pos = (self.player.rect.x, self.player.rect.y)
